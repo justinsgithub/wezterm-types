@@ -1,8 +1,14 @@
 ---@meta
 
 ---@alias BoldBrightening "No" | "BrightAndBold" | "BrightOnly"
+---@alias WindowDecorations "NONE" | "TITLE" | "RESIZE" | "TITLE | RESIZE"
+---@alias IntegratedTitleButton "Hide" | "Maximize" | "Close"
+---@alias IntegratedTitleButtonAlignment "Right" | "Left"
+---@alias IntegratedTitleButtonStyle "Windows" | "Gnome" | "MacOsNative"
 
----@class WeztermConfig
+--TODO: define anys
+
+---@class Config
 ---@field font FontAttributes The baseline font to use
 ---@field dpi_by_screen { [string]: number }
 ---@field colors Palette The color palette
@@ -151,9 +157,9 @@
 ---@field clean_exit_codes number[]
 ---@field freetype_interpreter_version number Selects the freetype interpret version to use. Likely values are 35, 38 and 40 which have different characteristics with respective to subpixel hinting. See https://freetype.org/freetype2/docs/subpixel-hinting.html
 ---@field freetype_pcf_long_family_names boolean
----@field term string
----@field initial_cols number
----@field enable_title_reporting boolean
+---@field term string What to set the TERM variable to
+---@field initial_cols number Specifies the height of a new window, expressed in character cells.
+---@field enable_title_reporting boolean Whether the terminal should respond to requests to read the title string. Disabled by default for security concerns with shells that might otherwise attempt to execute the response. <https://marc.info/?l=bugtraq&m=104612710031920&w=2>
 ---@field enable_kitty_keyboard boolean
 ---@field enable_kitty_graphics boolean
 ---@field initial_rows number
@@ -161,93 +167,109 @@
 ---@field scrollback_lines number
 ---@field color_scheme string Use a named color scheme rather than the palette specified by the colors setting.
 ---@field keys Key[]
---     key_tables = HashMap<String, Vec<Key>>
---     bypass_mouse_reporting_modifiers = Modifiers
---     leader = Option<LeaderKey>
---     mouse_bindings = Vec<Mouse>
---     daemon_options = DaemonOptions
---     macos_forward_to_ime_modifier_mask = Modifiers
---     tab_bar_style TabBarStyle
---     window_frame = WindowFrameConfig
---     color_schemes = HashMap<String, Palette>  Named color schemes
--- How many lines of scrollback you want to retain
--- `default_prog` is implemented as an array where the 0th element is the command to run and the rest of the elements are passed -- as the positional arguments to that command.
---     default_prog = Option<Vec<String>>
--- Specifies the default current working directory if none is specified
--- through configuration or OSC 7 (see docs for `default_cwd` for more
--- info!)
---     default_cwd = Option<PathBuf>
---     exit_behavior = ExitBehavior
---     exit_behavior_messaging = ExitBehaviorMessaging
--- Specifies a map of environment variables that should be set
--- when spawning commands in the local domain.
--- This is not used when working with remote domains.
---     set_environment_variables = HashMap<String, String>
--- Specifies the height of a new window, expressed in character cells.
--- Whether the terminal should respond to requests to read the title string. Disabled by default for security concerns with shells that might otherwise attempt to execute the response. <https://marc.info/?l=bugtraq&m=104612710031920&w=2>
--- Specifies the width of a new window, expressed in character cells
---     hyperlink_rules = Vec<hyperlink::Rule>
--- What to set the TERM variable to
---     font_locator = FontLocatorSelection
---     font_rasterizer = FontRasterizerSelection
---     font_shaper = FontShaperSelection
---     display_pixel_geometry = DisplayPixelGeometry
---     freetype_load_target = FreeTypeLoadTarget
---     freetype_render_target = Option<FreeTypeLoadTarget>
---     freetype_load_flags = FreeTypeLoadFlags
---     front_end = FrontEndSelection
--- Whether to select the higher powered discrete GPU when
--- the system has a choice of integrated or discrete.
--- Defaults to low power.
---     webgpu_power_preference = WebGpuPowerPreference
---     webgpu_preferred_adapter = Option<GpuInfo>
---     wsl_domains = Option<Vec<WslDomain>>
---     exec_domains = Vec<ExecDomain>
---     serial_ports = Vec<SerialDomain>
--- The set of unix domains
---     unix_domains = Vec<UnixDomain>
---     ssh_domains = Option<Vec<SshDomain>>
---     ssh_backend = SshBackend
--- When running in server mode, defines configuration for
--- each of the endpoints that we'll listen for connections
---     tls_servers = Vec<TlsDomainServer>
--- The set of tls domains that we can connect to as a client
---     tls_clients = Vec<TlsDomainClient>
--- try_from = "crate::units::PixelUnit", default = "default_half_cell")]
---     min_scroll_bar_height = Dimension
--- Controls the amount of padding to use around the terminal cell area
---     window_padding = WindowPadding
--- Specifies the path to a background image attachment file.
--- The file can be any image format that the rust `image`
--- crate is able to identify and load.
--- A window background image is rendered into the background
--- of the window before any other content.
--- The image will be scaled to fit the window.
---     window_background_image = Option<PathBuf>
---     window_background_gradient = Option<Gradient>
---     window_background_image_hsb = Option<HsbTransform>
---     foreground_text_hsb = HsbTransform
---     background = Vec<BackgroundLayer>
--- Specifies the default cursor style.  various escape sequences
--- can override the default style in different situations (eg:
--- an editor can change it depending on the mode), but this value
--- controls how the cursor appears when it is reset to default.
--- The default is `SteadyBlock`.
--- Acceptable values are `SteadyBlock`, `BlinkingBlock`
--- `SteadyUnderline`, `BlinkingUnderline`, `SteadyBar`
--- and `BlinkingBar`.
---     default_cursor_style = DefaultCursorStyle
---     ime_preedit_rendering = ImePreeditRendering
---     launch_menu = Vec<SpawnCommand>
---     window_close_confirmation = WindowCloseConfirmation
---     bidi_direction = ParagraphDirectionHint
---     visual_bell = VisualBell
---     audible_bell = AudibleBell
---     canonicalize_pasted_newlines = Option<NewlineCanon>
---     key_map_preference = KeyMapPreference
---     quote_dropped_files = DroppedFileQuoting
---     ui_key_cap_rendering = UIKeyCapRendering
-local WeztermConfig = {
+-- ---@field key_tables = HashMap<String, Vec<Key>>
+---@field key_tables any
+-- ---@field bypass_mouse_reporting_modifiers = Modifiers
+---@field bypass_mouse_reporting_modifiers any
+-- ---@field leader = Option<LeaderKey>
+---@field leader any
+-- ---@field mouse_bindings = Vec<Mouse>
+---@field mouse_bindings any
+-- ---@field daemon_options = DaemonOptions
+---@field daemon_options any
+-- ---@field macos_forward_to_ime_modifier_mask = Modifiers
+---@field macos_forward_to_ime_modifier_mask any
+-- ---@field tab_bar_style TabBarStyle
+---@field tab_bar_style any
+-- ---@field window_frame = WindowFrameConfig
+---@field window_frame any
+-- ---@field color_schemes = HashMap<String, Palette>  Named color schemes
+---@field color_schemes any
+-- ---@field default_prog = Option<Vec<String>> How many lines of scrollback you want to retain `default_prog` is implemented as an array where the 0th element is the command to run and the rest of the elements are passed -- as the positional arguments to that command.
+---@field default_prog any
+-- ---@field default_cwd = Option<PathBuf> Specifies the default current working directory if none is specified through configuration or OSC 7 (see docs for `default_cwd` for more info!)
+---@field default_cwd any
+-- ---@field exit_behavior = ExitBehavior
+---@field exit_behavior any
+-- ---@field exit_behavior_messaging = ExitBehaviorMessaging
+---@field exit_behavior_messaging any
+-- ---@field set_environment_variables = HashMap<String, String> Specifies a map of environment variables that should be set when spawning commands in the local domain. This is not used when working with remote domains.
+---@field set_environment_variables any
+-- ---@field hyperlink_rules = Vec<hyperlink::Rule>
+---@field hyperlink_rules any
+-- ---@field font_locator = FontLocatorSelection
+---@field font_locator any
+-- ---@field font_rasterizer = FontRasterizerSelection
+---@field font_rasterizer any
+-- ---@field font_shaper = FontShaperSelection
+---@field font_shaper any
+-- ---@field display_pixel_geometry = DisplayPixelGeometry
+---@field display_pixel_geometry any
+-- ---@field freetype_load_target = FreeTypeLoadTarget
+---@field freetype_load_target any
+-- ---@field freetype_render_target = Option<FreeTypeLoadTarget>
+---@field freetype_render_target any
+-- ---@field freetype_load_flags = FreeTypeLoadFlags
+---@field freetype_load_flags any
+-- ---@field front_end = FrontEndSelection
+---@field front_end any
+-- ---@field webgpu_power_preference = WebGpuPowerPreference Whether to select the higher powered discrete GPU when the system has a choice of integrated or discrete. Defaults to low power.
+---@field webgpu_power_preference any
+-- ---@field webgpu_preferred_adapter = Option<GpuInfo>
+---@field webgpu_preferred_adapter any
+-- ---@field wsl_domains = Option<Vec<WslDomain>>
+---@field wsl_domains any
+-- ---@field exec_domains = Vec<ExecDomain>
+---@field exec_domains any
+-- ---@field serial_ports = Vec<SerialDomain>
+---@field serial_ports any
+-- ---@field unix_domains = Vec<UnixDomain> The set of unix domains
+---@field unix_domains any
+-- ---@field ssh_domains = Option<Vec<SshDomain>>
+---@field ssh_domains any
+-- ---@field ssh_backend = SshBackend
+---@field ssh_backend any
+-- ---@field tls_servers = Vec<TlsDomainServer> When running in server mode, defines configuration for each of the endpoints that we'll listen for connections
+---@field tls_servers any
+-- ---@field tls_clients = Vec<TlsDomainClient> The set of tls domains that we can connect to as a client
+---@field tls_clients any
+-- ---@field min_scroll_bar_height = Dimension
+---@field min_scroll_bar_height any
+-- ---@field window_padding = WindowPadding Controls the amount of padding to use around the terminal cell area
+---@field window_padding any
+-- ---@field window_background_image = Option<PathBuf> Specifies the path to a background image attachment file. The file can be any image format that the rust `image` crate is able to identify and load. A window background image is rendered into the background of the window before any other content. The image will be scaled to fit the window.
+---@field window_background_image any
+-- ---@field window_background_gradient = Option<Gradient>
+---@field window_background_gradient any
+-- ---@field window_background_image_hsb = Option<HsbTransform>
+---@field window_background_image_hsb any
+-- ---@field foreground_text_hsb = HsbTransform
+---@field foreground_text_hsb any
+-- ---@field background = Vec<BackgroundLayer>
+---@field background any
+-- ---@field default_cursor_style = DefaultCursorStyle Specifies the default cursor style.  various escape sequences can override the default style in different situations (eg: an editor can change it depending on the mode), but this value controls how the cursor appears when it is reset to default. The default is `SteadyBlock`. Acceptable values are `SteadyBlock`, `BlinkingBlock` `SteadyUnderline`, `BlinkingUnderline`, `SteadyBar` and `BlinkingBar`.
+---@field default_cursor_style any
+-- ---@field ime_preedit_rendering = ImePreeditRendering
+---@field ime_preedit_rendering any
+-- ---@field launch_menu = Vec<SpawnCommand>
+---@field launch_menu any
+-- ---@field window_close_confirmation = WindowCloseConfirmation
+---@field window_close_confirmation any
+-- ---@field bidi_direction = ParagraphDirectionHint
+---@field bidi_direction any
+-- ---@field visual_bell = VisualBell
+---@field visual_bell any
+-- ---@field audible_bell = AudibleBell
+---@field audible_bell any
+-- ---@field canonicalize_pasted_newlines = Option<NewlineCanon>
+---@field canonicalize_pasted_newlines any
+-- ---@field key_map_preference = KeyMapPreference
+---@field key_map_preference any
+-- ---@field quote_dropped_files = DroppedFileQuoting
+---@field quote_dropped_files any
+-- ---@field ui_key_cap_rendering = UIKeyCapRendering
+---@field ui_key_cap_rendering any
+local Config = {
 	-- The font size, measured in points
 	font_size = 12.0,
 

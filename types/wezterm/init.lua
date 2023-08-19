@@ -1,98 +1,76 @@
 ---@meta
 
----@alias ActionParam table<KeyAssignment, any>: {KeyAssignment: any}
+--TODO: finish
 
 ---@class Wezterm
+---@field GLOBAL any
+---@field action Action
+---@field action_callback any
+---@field add_to_config_reload_watch_list any
+---@field background_child_process any
+---@field battery_info any
+---@field column_width any
+---@field config_dir any
+---@field config_file any
+---@field default_hyperlink_rules any
+---@field default_ssh_domains any
+---@field default_wsl_domains any
+---@field emit any
+---@field enumerate_ssh_hosts any
+---@field executable_dir any
+---@field font_with_fallback any
+---@field format any
+---@field get_builtin_color_schemes any
+---@field glob any
+---@field gradient_colors any
+---@field has_action any
+---@field home_dir any
+---@field hostname any
+---@field json_encode any
+---@field json_parse any
+---@field log_error any
+---@field log_info any
+---@field log_warn any
+---@field nerdfonts any
+---@field open_with any
+---@field pad_left any
+---@field pad_right any
+---@field permute_any_mods any
+---@field permute_any_or_no_mods any
+---@field read_dir any
+---@field reload_configuration any
+---@field run_child_process any
+---@field running_under_wsl any
+---@field shell_join_args any
+---@field shell_quote_arg any
+---@field shell_split any
+---@field sleep_ms any
+---@field split_by_newlines any
+---@field strftime any
+---@field strftime_utc any
+---@field target_triple any
+---@field truncate_left any
+---@field truncate_right any
+---@field utf16_to_utf8 any
+---@field version any
 local Wezterm = {}
 
----@param param KeyAssignmentTables
-Wezterm.action = function(param) end
-
-Wezterm.action.ActivateCommandPalette = function(param) end
-Wezterm.action.ActivateCopyMode = function(param) end
-Wezterm.action.ActivateKeyTable = function(param) end
-Wezterm.action.ActivateLastTab = function(param) end
-Wezterm.action.ActivatePaneByIndex = function(param) end
-Wezterm.action.ActivatePaneDirection = function(param) end
-Wezterm.action.ActivateTab = function(param) end
-Wezterm.action.ActivateTabRelative = function(param) end
-Wezterm.action.ActivateTabRelativeNoWrap = function(param) end
-Wezterm.action.ActivateWindow = function(param) end
-Wezterm.action.ActivateWindowRelative = function(param) end
-Wezterm.action.ActivateWindowRelativeNoWrap = function(param) end
-Wezterm.action.AdjustPaneSize = function(param) end
-Wezterm.action.AttachDomain = function(param) end
-Wezterm.action.CharSelect = function(param) end
-Wezterm.action.ClearKeyTableStack = function(param) end
-Wezterm.action.ClearScrollback = function(param) end
-Wezterm.action.ClearSelection = function(param) end
-Wezterm.action.CloseCurrentPane = function(param) end
----@param param {confirm: boolean}
-Wezterm.action.CloseCurrentTab = function(param) end
-Wezterm.action.CompleteSelection = function(param) end
-Wezterm.action.CompleteSelectionOrOpenLinkAtMouseCursor = function(param) end
-Wezterm.action.Copy = function(param) end
-Wezterm.action.CopyTo = function(param) end
-Wezterm.action.DecreaseFontSize = function(param) end
-Wezterm.action.DetachDomain = function(param) end
-Wezterm.action.DisableDefaultAssignment = function(param) end
-Wezterm.action.EmitEvent = function(param) end
-Wezterm.action.ExtendSelectionToMouseCursor = function(param) end
-Wezterm.action.Hide = function(param) end
-Wezterm.action.HideApplication = function(param) end
-Wezterm.action.IncreaseFontSize = function(param) end
-Wezterm.action.InputSelector = function(param) end
-Wezterm.action.MoveTab = function(param) end
-Wezterm.action.MoveTabRelative = function(param) end
-Wezterm.action.Multiple = function(param) end
-Wezterm.action.Nop = function(param) end
-Wezterm.action.OpenLinkAtMouseCursor = function(param) end
-Wezterm.action.PaneSelect = function(param) end
-Wezterm.action.Paste = function(param) end
-Wezterm.action.PasteFrom = function(param) end
-Wezterm.action.PastePrimarySelection = function(param) end
-Wezterm.action.PopKeyTable = function(param) end
-Wezterm.action.PromptInputLine = function(param) end
-Wezterm.action.QuickSelect = function(param) end
-Wezterm.action.QuickSelectArgs = function(param) end
-Wezterm.action.QuitApplication = function(param) end
-Wezterm.action.ReloadConfiguration = function(param) end
-Wezterm.action.ResetFontAndWindowSize = function(param) end
-Wezterm.action.ResetFontSize = function(param) end
-Wezterm.action.ResetTerminal = function(param) end
-Wezterm.action.RotatePanes = function(param) end
-Wezterm.action.ScrollByCurrentEventWheelDelta = function(param) end
-Wezterm.action.ScrollByLine = function(param) end
-Wezterm.action.ScrollByPage = function(param) end
-Wezterm.action.ScrollToBottom = function(param) end
-Wezterm.action.ScrollToPrompt = function(param) end
-Wezterm.action.ScrollToTop = function(param) end
-Wezterm.action.Search = function(param) end
-Wezterm.action.SelectTextAtMouseCursor = function(param) end
-Wezterm.action.SendKey = function(param) end
-Wezterm.action.SendString = function(param) end
-Wezterm.action.SetPaneZoomState = function(param) end
-Wezterm.action.Show = function(param) end
-Wezterm.action.ShowDebugOverlay = function(param) end
-Wezterm.action.ShowLauncher = function(param) end
-Wezterm.action.ShowLauncherArgs = function(param) end
-Wezterm.action.ShowTabNavigator = function(param) end
-Wezterm.action.SpawnCommandInNewTab = function(param) end
-Wezterm.action.SpawnCommandInNewWindow = function(param) end
-Wezterm.action.SpawnTab = function(param) end
-Wezterm.action.SpawnWindow = function(param) end
-Wezterm.action.SplitHorizontal = function(param) end
-Wezterm.action.SplitPane = function(param) end
-Wezterm.action.SplitVertical = function(param) end
-Wezterm.action.StartWindowDrag = function(param) end
-Wezterm.action.SwitchToWorkspace = function(param) end
-Wezterm.action.SwitchWorkspaceRelative = function(param) end
-Wezterm.action.ToggleFullScreen = function(param) end
-Wezterm.action.TogglePaneZoomState = function(param) end
+---@param event_name WindowEvent | MultiplexerEvent | GuiEvent
+---@param callback function(window: table, pane: table, ...) other params passed in depending on event
+--TODO: more specific .on callback params
+Wezterm.on = function(event_name, callback) end
 
 ---@param family string
 ---@param attributes? FontAttributes
 ---@return FontAttributes
 Wezterm.font = function(family, attributes) end
 
---TODO:? specify any
+---@return Config
+-- only exists on newer versions, check for nil if not sure
+-- config = {}
+-- if wezterm.config_builder then
+-- config = wezterm.config_builder()
+-- end
+Wezterm.config_builder = function() end
+
+--TODO: specify "any" types where possible
