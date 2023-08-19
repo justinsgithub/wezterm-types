@@ -1,0 +1,25 @@
+---@meta
+
+--TODO: finish
+
+---@class Color
+---@field adjust_hue_fixed any
+---@field adjust_hue_fixed_ryb any
+---@field complement any
+---@field complement_ryb any
+---@field contrast_ratio any
+---@field darken any
+---@field darken_fixed any
+---@field delta_e any
+---@field desaturate any
+---@field desaturate_fixed any
+---@field hsla any
+---@field laba any
+---@field lighten any
+---@field lighten_fixed any
+---@field linear_rgba any
+---@field saturate any
+---@field saturate_fixed any
+---@field square any
+---@field srgb_u8 any
+---@field triad any
