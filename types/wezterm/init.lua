@@ -2,7 +2,9 @@
 
 --TODO: finish
 
----@class Wezterm
+---@alias PathBuf string
+
+---@class Wezterm :ExecDomain
 ---@field GLOBAL any
 ---@field action Action
 ---@field action_callback any
@@ -54,6 +56,10 @@
 ---@field utf16_to_utf8 any
 ---@field version any
 local Wezterm = {}
+
+Wezterm.exec_domain("haha", function(cmd)
+	print(cmd.ha)
+end, "hahahahah")
 
 ---@param event_name WindowEvent | MultiplexerEvent | GuiEvent
 ---@param callback function(window: table, pane: table, ...) other params passed in depending on event
