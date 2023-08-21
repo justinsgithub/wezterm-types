@@ -17,13 +17,14 @@
 ---@field pane_select_bg_color RgbaColor
 ---@field tab_bar_style TabBarStyle
 ---@field resolved_palette Palette
+---@field color_scheme String
 --     -- Use a named color scheme rather than the palette specified
 --     -- by the colors setting.
----@field color_scheme String
---     -- Named color schemes
 ---@field color_schemes {[String]: Palette}
---     -- How many lines of scrollback you want to retain
+--     -- Named color schemes
 ---@field scrollback_lines usize
+--     -- How many lines of scrollback you want to retain
+---@field default_prog String[]
 --     -- If no `prog` is specified on the command line, use this
 --     -- instead of running the user's shell.
 --     -- For example, to have `wezterm` always run `top` by default
@@ -35,35 +36,34 @@
 --     -- `default_prog` is implemented as an array where the 0th element
 --     -- is the command to run and the rest of the elements are passed
 --     -- as the positional arguments to that command.
----@field default_prog String[]
 ---@field default_gui_startup_args String[]
+---@field default_cwd PathBuf
 --     -- Specifies the default current working directory if none is specified
 --     -- through configuration or OSC 7 (see docs for `default_cwd` for more
 --     -- info!)
----@field default_cwd PathBuf
 ---@field exit_behavior ExitBehavior
 ---@field exit_behavior_messaging ExitBehaviorMessaging
 ---@field clean_exit_codes u32[]
 ---@field detect_password_input bool
+---@field set_environment_variables {[String]: String}
 --     -- Specifies a map of environment variables that should be set
 --     -- when spawning commands in the local domain.
 --     -- This is not used when working with remote domains.
----@field set_environment_variables {[String]: String}
---     -- Specifies the height of a new window, expressed in character cells.
 ---@field initial_rows u16
+--     -- Specifies the height of a new window, expressed in character cells.
 ---@field enable_kitty_graphics bool
 ---@field enable_kitty_keyboard bool
+---@field enable_title_reporting bool
 --     -- Whether the terminal should respond to requests to read the
 --     -- title string.
 --     -- Disabled by default for security concerns with shells that might
 --     -- otherwise attempt to execute the response.
 --     -- <https://marc.info/?l=bugtraq&m=104612710031920&w=2>
----@field enable_title_reporting bool
---     -- Specifies the width of a new window, expressed in character cells
 ---@field initial_cols u16
+--     -- Specifies the width of a new window, expressed in character cells
 ---@field hyperlink_rules HyperlinkRule[]
---     -- What to set the TERM variable to
 ---@field term String
+--     -- What to set the TERM variable to
 ---@field font_locator FontLocatorSelection
 ---@field font_rasterizer FontRasterizerSelection
 ---@field font_shaper FontShaperSelection
@@ -71,12 +71,13 @@
 ---@field freetype_load_target FreeTypeLoadTarget
 ---@field freetype_render_target FreeTypeLoadTarget
 ---@field freetype_load_flags FreeTypeLoadFlags
+---@field freetype_interpreter_version u32
 --     -- Selects the freetype interpret version to use.
 --     -- Likely values are 35, 38 and 40 which have different
 --     -- characteristics with respective to subpixel hinting.
 --     -- See https://freetype.org/freetype2/docs/subpixel-hinting.html
----@field freetype_interpreter_version u32
 ---@field freetype_pcf_long_family_names bool
+---@field harfbuzz_features String[]
 --     -- Specify the features to enable when using harfbuzz for font shaping.
 --     -- There is some light documentation here:
 --     -- <https://harfbuzz.github.io/shaping-opentype-features.html>
@@ -110,42 +111,41 @@
 --     -- # when using the Fira Code font
 --     -- harfbuzz_features ["zero"]
 --     -- ```
----@field harfbuzz_features String[]
 ---@field front_end FrontEndSelection
+---@field webgpu_power_preference WebGpuPowerPreference
 --     -- Whether to select the higher powered discrete GPU when
 --     -- the system has a choice of integrated or discrete.
 --     -- Defaults to low power.
----@field webgpu_power_preference WebGpuPowerPreference
 ---@field webgpu_force_fallback_adapter bool
 ---@field webgpu_preferred_adapter GpuInfo
 ---@field wsl_domains WslDomain[]
 ---@field exec_domains ExecDomain[]
 ---@field serial_ports SerialDomain[]
---     -- The set of unix domains
 ---@field unix_domains UnixDomain[]
+--     -- The set of unix domains
 ---@field ssh_domains SshDomain[]
 ---@field ssh_backend SshBackend
+---@field tls_servers TlsDomainServer[]
 --     -- When running in server mode, defines configuration for
 --     -- each of the endpoints that we'll listen for connections
----@field tls_servers TlsDomainServer[]
---     -- The set of tls domains that we can connect to as a client
 ---@field tls_clients TlsDomainClient[]
+--     -- The set of tls domains that we can connect to as a client
+---@field ratelimit_mux_line_prefetches_per_second u32
 --     -- Constrains the rate at which the multiplexer client will
 --     -- speculatively fetch line data.
 --     -- This helps to avoid saturating the link between the client
 --     -- and server if the server is dumping a large amount of output
 --     -- to the client.
----@field ratelimit_mux_line_prefetches_per_second u32
+---@field mux_output_parser_buffer_size usize
 --     -- The buffer size used by parse_buffered_data in the mux module.
 --     -- This should not be too large, otherwise the processing cost
 --     -- of applying a batch of actions to the terminal will be too
 --     -- high and the user experience will be laggy and less responsive.
----@field mux_output_parser_buffer_size usize
+---@field mux_output_parser_coalesce_delay_ms u64
 --     -- How many ms to delay after reading a chunk of output
 --     -- in order to try to coalesce fragmented writes into
 --     -- a single bigger chunk of output and reduce the chances
 --     -- observing "screen tearing" with un-synchronized output
----@field mux_output_parser_coalesce_delay_ms u64
 ---@field mux_env_remove String[]
 ---@field keys Key[]
 ---@field key_tables {[String]: Key[]}
@@ -164,49 +164,49 @@
 ---@field send_composed_key_when_right_alt_is_pressed bool
 ---@field macos_forward_to_ime_modifier_mask Modifiers
 ---@field treat_left_ctrlalt_as_altgr bool
+---@field swap_backspace_and_delete bool
 --     -- If true, the `Backspace` and `Delete` keys generate `Delete` and `Backspace`
 --     -- keypresses, respectively, rather than their normal keycodes.
 --     -- On macOS the default for this is true because its Backspace key
 --     -- is labeled as Delete and things are backwards.
----@field swap_backspace_and_delete bool
+---@field enable_tab_bar bool
 --     -- If true, display the tab bar UI at the top of the window.
 --     -- The tab bar shows the titles of the tabs and which is the
 --     -- active tab.  Clicking on a tab activates it.
----@field enable_tab_bar bool
 ---@field use_fancy_tab_bar bool
 ---@field tab_bar_at_bottom bool
 ---@field mouse_wheel_scrolls_tabs bool
---     -- If true, tab bar titles are prefixed with the tab index
 ---@field show_tab_index_in_tab_bar bool
+--     -- If true, tab bar titles are prefixed with the tab index
 ---@field show_tabs_in_tab_bar bool
 ---@field show_new_tab_button_in_tab_bar bool
+---@field tab_and_split_indices_are_zero_based bool
 --     -- If true, show_tab_index_in_tab_bar uses a zero-based index.
 --     -- The default is false and the tab shows a one-based index.
----@field tab_and_split_indices_are_zero_based bool
+---@field tab_max_width usize
 --     -- Specifies the maximum width that a tab can have in the
 --     -- tab bar.  Defaults to 16 glyphs in width.
----@field tab_max_width usize
---     -- If true, hide the tab bar if the window only has a single tab.
 ---@field hide_tab_bar_if_only_one_tab bool
+--     -- If true, hide the tab bar if the window only has a single tab.
 ---@field enable_scroll_bar bool
---     -- try_from "crate::units::PixelUnit", default = "default_half_cell")]
 ---@field min_scroll_bar_height Dimension
+---@field enable_wayland bool
 --     -- If false, do not try to use a Wayland protocol connection
 --     -- when starting the gui frontend, and instead use X11.
 --     -- This option is only considered on X11/Wayland systems and
 --     -- has no effect on macOS or Windows.
 --     -- The default is true.
----@field enable_wayland bool
 ---@field enable_zwlr_output_manager bool
+--     -- driver updates without breaking and losing your work.
 --     -- Whether to prefer EGL over other GL implementations.
 --     -- EGL on Windows has jankier resize behavior than WGL (which
 --     -- is used if EGL is unavailable), but EGL survives graphics
---     -- driver updates without breaking and losing your work.
 ---@field prefer_egl bool
 ---@field custom_block_glyphs bool
 ---@field anti_alias_custom_block_glyphs bool
---     -- Controls the amount of padding to use around the terminal cell area
 ---@field window_padding WindowPadding
+--     -- Controls the amount of padding to use around the terminal cell area
+---@field window_background_image PathBuf
 --     -- Specifies the path to a background image attachment file.
 --     -- The file can be any image format that the rust `image`
 --     -- crate is able to identify and load.
@@ -214,16 +214,16 @@
 --     -- of the window before any other content.
 --     --
 --     -- The image will be scaled to fit the window.
----@field window_background_image PathBuf
 ---@field window_background_gradient Gradient
 ---@field window_background_image_hsb HsbTransform
 ---@field foreground_text_hsb HsbTransform
 ---@field background BackgroundLayer[]
---     -- Only works on MacOS
 ---@field macos_window_background_blur i64
---     -- Only works on Windows
+--     -- Only works on MacOS
 ---@field win32_system_backdrop SystemBackdrop
+--     -- Only works on Windows
 ---@field win32_acrylic_accent_color RgbaColor
+---@field window_background_opacity f32
 --     -- Specifies the alpha value to use when rendering the background
 --     -- of the window.  The background is taken either from the
 --     -- window_background_image, or if there is none, the background
@@ -234,7 +234,7 @@
 --     -- This only works on systems with a compositing window manager.
 --     -- Setting opacity to a value other than 1.0 can impact render
 --     -- performance.
----@field window_background_opacity f32
+---@field inactive_pane_hsb HsbTransform
 --     -- inactive_pane_hue, inactive_pane_saturation and
 --     -- inactive_pane_brightness allow for transforming the color
 --     -- of inactive panes.
@@ -264,19 +264,19 @@
 --     -- A subtle dimming effect can be achieved by setting:
 --     -- inactive_pane_saturation 0.9
 --     -- inactive_pane_brightness 0.8
----@field inactive_pane_hsb HsbTransform
 ---@field text_background_opacity f32
+---@field cursor_blink_rate u64
 --     -- Specifies how often a blinking cursor transitions between visible
 --     -- and invisible, expressed in milliseconds.
 --     -- Setting this to 0 disables blinking.
 --     -- Note that this value is approximate due to the way that the system
 --     -- event loop schedulers manage timers; non-zero values will be at
 --     -- least the interval specified with some degree of slop.
----@field cursor_blink_rate u64
 ---@field cursor_blink_ease_in EasingFunction
 ---@field cursor_blink_ease_out EasingFunction
 ---@field animation_fps u8
 ---@field force_reverse_video_cursor bool
+---@field default_cursor_style DefaultCursorStyle
 --     -- Specifies the default cursor style.  various escape sequences
 --     -- can override the default style in different situations (eg:
 --     -- an editor can change it depending on the mode), but this value
@@ -285,54 +285,53 @@
 --     -- Acceptable values are `SteadyBlock`, `BlinkingBlock`
 --     -- `SteadyUnderline`, `BlinkingUnderline`, `SteadyBar`
 --     -- and `BlinkingBar`.
----@field default_cursor_style DefaultCursorStyle
+---@field text_blink_rate u64
 --     -- Specifies how often blinking text (normal speed) transitions
 --     -- between visible and invisible, expressed in milliseconds.
 --     -- Setting this to 0 disables slow text blinking.  Note that this
 --     -- value is approximate due to the way that the system event loop
 --     -- schedulers manage timers; non-zero values will be at least the
 --     -- interval specified with some degree of slop.
----@field text_blink_rate u64
 ---@field text_blink_ease_in EasingFunction
 ---@field text_blink_ease_out EasingFunction
+---@field text_blink_rate_rapid u64
 --     -- Specifies how often blinking text (rapid speed) transitions
 --     -- between visible and invisible, expressed in milliseconds.
 --     -- Setting this to 0 disables rapid text blinking.  Note that this
 --     -- value is approximate due to the way that the system event loop
 --     -- schedulers manage timers; non-zero values will be at least the
 --     -- interval specified with some degree of slop.
----@field text_blink_rate_rapid u64
 ---@field text_blink_rapid_ease_in EasingFunction
 ---@field text_blink_rapid_ease_out EasingFunction
+---@field hide_mouse_cursor_when_typing bool
 --     -- If true, the mouse cursor will be hidden while typing.
 --     -- This option is true by default.
----@field hide_mouse_cursor_when_typing bool
+---@field periodic_stat_logging u64
 --     -- If non-zero, specifies the period (in seconds) at which various
 --     -- statistics are logged.  Note that there is a minimum period of
 --     -- 10 seconds.
----@field periodic_stat_logging u64
+---@field scroll_to_bottom_on_input bool
 --     -- If false, do not scroll to the bottom of the terminal when
 --     -- you send input to the terminal.
 --     -- The default is to scroll to the bottom when you send input
 --     -- to the terminal.
----@field scroll_to_bottom_on_input bool
 ---@field use_ime bool
 ---@field xim_im_name String
 ---@field ime_preedit_rendering ImePreeditRendering
 ---@field use_dead_keys bool
 ---@field launch_menu SpawnCommand[]
 ---@field use_box_model_render bool
+---@field automatically_reload_config bool
 --     -- When true, watch the config file and reload it automatically
 --     -- when it is detected as changing.
----@field automatically_reload_config bool
 ---@field check_for_updates bool
 ---@field show_update_window bool
 ---@field check_for_updates_interval_seconds u64
+---@field enable_csi_u_key_encoding bool
 --     -- When set to true, use the CSI-U encoding scheme as described
 --     -- in http://www.leonerd.org.uk/hacks/fixterms/
 --     -- This is off by default because @wez and @jsgf find the shift-space
 --     -- mapping annoying in vim :-p
----@field enable_csi_u_key_encoding bool
 ---@field window_close_confirmation WindowCloseConfirmation
 ---@field native_macos_fullscreen_mode bool
 ---@field selection_word_boundary String

@@ -1,5 +1,10 @@
 ---@meta
 
+---@alias SshBackend "Ssh2" | "LibSsh"
+
+---@alias Modifiers "NONE" | "SHIFT" | "ALT" | "CTRL" | "SUPER" | "LEFT_ALT" | "RIGHT_ALT" | "LEFT_CTRL" | "RIGHT_CTRL" | "LEFT_SHIFT" | "RIGHT_SHIFT" | "ENHANCED_KEY"
+---| "LEADER" This is a virtual modifier used by wezterm
+
 ---@alias WebGpuPowerPreference "LowPower" | "HighPerformance"
 
 ---@alias FontRasterizerSelection "FreeType" Only Option
@@ -333,3 +338,6 @@ local FontAttributes = {
 -- Don't use default_local_echo_threshold_ms() here to disable the predictive echo for Unix domains by default.
 ---@field overlay_lag_indicator bool
 -- Show time since last response when waiting for a response. It is recommended to use <https://wezfurlong.org/wezterm/config/lua/pane/get_metadata.html#since_last_response_ms> instead.
+
+---@class LeaderKey :KeyNoAction
+---@field timeout_milliseconds u64
