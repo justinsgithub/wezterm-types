@@ -1,5 +1,14 @@
 ---@meta
 
+--- alias to help identify types that should actually be any
+---@alias ANY any
+
+---@alias FormatItemAttribute { Underline: "None" | "Single" | "Double" | "Curly" | "Dotted" | "Dashed" } | { Intensity: "Normal" | "Bold" | "Half" } | { Italic: boolean }
+---@alias FormatItemReset "ResetAttributes" Reset all attributes to default.
+---@alias FormatItem { Attribute: FormatItemAttribute } | { Foreground: ColorSpec } | { Background: ColorSpec } | { Text: string } | FormatItemReset
+
+---@alias CopyToTarget "Clipboard" | "PrimarySelection" | "ClipboardAndPrimarySelection"
+
 ---@alias SshBackend "Ssh2" | "LibSsh"
 
 ---@alias Modifiers "NONE" | "SHIFT" | "ALT" | "CTRL" | "SUPER" | "LEFT_ALT" | "RIGHT_ALT" | "LEFT_CTRL" | "RIGHT_CTRL" | "LEFT_SHIFT" | "RIGHT_SHIFT" | "ENHANCED_KEY"
@@ -224,6 +233,8 @@ local Palette = {
 ---@alias FreeTypeLoadFlags "DEFAUlT" | "NO_HINTING" | "NO_BITMAP" | "FORCE_AUTOHINT" | "MONOCHROME" | "NO_AUTOHINT"
 
 --TODO: = add harfbuzz_features enum
+--
+---@alias Fonts {fonts: FontAttributes[]}
 
 ---@class FontAttributes
 ---@field is_fallback boolean
@@ -341,3 +352,128 @@ local FontAttributes = {
 
 ---@class LeaderKey :KeyNoAction
 ---@field timeout_milliseconds u64
+
+---@class HyperLinkRule
+---@field regex string The regular expression to match
+---@field format string Controls which parts of the regex match will be used to form the link. Must have a prefix: signaling the protocol type (e.g., https:/mailto:), which can either come from the regex match or needs to be explicitly added. The format string can use placeholders like $0, $1, $2 etc. that will be replaced with that numbered capture group. So, $0 will take the entire region of text matched by the whole regex, while $1 matches out the first capture group. In the example below, mailto:$0 is used to prefix a protocol to the text to make it into an URL.
+---@field highlight number? Specifies the range of the matched text that should be highlighted/underlined when the mouse hovers over the link. The value is a number that corresponds to a capture group in the regex. The default is 0, highlighting the entire region of text matched by the regex. 1 would be the first capture group, and so on.
+
+---@class BatteryInfo
+---@field state_of_charge number The battery level expressed as a number between 0.0 (empty) and 1.0 (full)
+---@field vendor string Battery manufacturer name, or "unknown" if not known.
+---@field model string The battery model string, or "unknown" if not known.
+---@field serial string The battery serial number, or "unknown" if not known.
+---@field time_to_full number? If charging, how long until the battery is full (in seconds). May be nil.
+---@field time_to_empty number? If discharing, how long until the battery is empty (in seconds). May be nil.
+---@field state "Charging" | "Discharging" | "Empty" | "Full" | "Unknown"
+
+---@class WeztermPlugin
+---@field require fun(url: string): any
+
+---@class AugmentCommandPaletteReturn
+---@field brief string The brief description for the entry
+---@field doc string? A long description that may be shown after the entry, or that may be used in future versions of wezterm to provide more information about the command.
+---@field action KeyAssignment The action to take when the item is activated. Can be any key assignment action.
+---@field icon NerdFont? optional Nerd Fonts glyph name to use for the icon for the entry. See wezterm.nerdfonts for a list of icon names.
+
+---@alias CallbackWindowPane fun(window: Window, pane: Pane)
+---@alias EventAugmentCommandPalette fun(event: "augment-command-palette", callback: fun(window: Window, pane: Window): AugmentCommandPaletteReturn): nil This event is emitted when the Command Palette is shown. It's purpose is to enable you to add additional entries to the list of commands shown in the palette. This hook is synchronous; calling asynchronous functions will not succeed.
+---@alias EventBell fun(event: "augment-command-palette", callback: CallbackWindowPane) The bell event is emitted when the ASCII BEL sequence is emitted to a pane in the window. Defining an event handler doesn't alter wezterm's handling of the bell; the event supplements it and allows you to take additional action over the configured behavior.
+---@alias EventFormatTabTitle fun(event: "format-tab-title", callback: fun(tab: MuxTabObj, tabs: MuxTabObj[], panes: Pane[], config: Config, hover: boolean, max_width: number): string) TODO
+---@alias EventFormatWindowTitle fun(event: "format-window-title", callback: fun(window: Window, pane: Pane, tabs: MuxTabObj[], panes: Pane[], config: Config)) TODO
+---@alias EventNewTabButtonClick fun(event: "new-tab-button-click", callback: fun(window: Window, pane: Pane, button: "Left" | "Middle" | "Right", default_action: KeyAssignment): nil) TODO
+---@alias EventOpenUri fun(event: "open-uri", callback: fun(window: Window, pane: Pane, uri: string): nil) TODO
+---@alias EventUpdateRightStatus fun(event: "update-right-status", callback: CallbackWindowPane) TODO
+---@alias EventUpdateStatus fun(event: "update-status", callback: CallbackWindowPane) TODO
+---@alias EventUserVarChanged fun(event: "user-var-changed", callback: fun(window: Window, pane: Pane, name: string, value: string): nil) TODO
+---@alias EventWindowConfigReloaded fun(event: "window-config-reloaded", callback: CallbackWindowPane) TODO
+---@alias EventWindowFocusChanged fun(event: "window-focus-changed", callback: CallbackWindowPane) TODO
+---@alias EventWindowResized fun(event: "window-resized", callback: CallbackWindowPane) TODO
+---@alias EventCustom fun(event: string, callback: fun(...: any): nil) A custom declared function
+
+---@alias CursorShape "SteadyBlock" | "BlinkingBlock" | "SteadyUnderline" | "BlinkingUnderline" | "SteadyBar" | "BlinkingBar"
+---@alias CursorVisibility "Visible" | "Hidden"
+
+---@class StableCursorPosition
+---@field x number The horizontal cell index.
+---@field y number the vertical stable row index.
+---@field shape CursorShape The CursorShape enum value.
+---@field visibility CursorVisibility The CursorVisibility enum value.
+
+---@class LinearGradientOrientation
+---@field angle number
+
+---@class RadialGradientOrientation
+---@field radius? number
+---@field cx? number
+---@field cy? number
+
+---@class Gradient
+---@field colors string[]
+---@field orientation? 'Horizontal' | 'Vertical' | { Linear: LinearGradientOrientation } | { Radial: RadialGradientOrientation }
+---@field interpolation? 'Linear' | 'Basis' | 'CatmullRom'
+---@field blend? 'Rgb' | 'LinearRgb' | 'Hsv' | 'Oklab'
+---@field noise? number
+---@field segment_size? number
+---@field segment_smoothness? number
+
+---@class ColorSchemeMetaData
+---@field name? string
+---@field author? string
+---@field origin_url? string
+---@field wezterm_version? string
+---@field aliases? string[]
+
+---@alias ActionCallback fun(win: Window, pane: Pane, ...: any): (nil | false)
+---@alias AnsiColor 'Black' | 'Maroon' | 'Green' | 'Olive' | 'Navy' | 'Purple' | 'Teal' | 'Silver' | 'Grey' | 'Red' | 'Lime' | 'Yellow' | 'Blue' | 'Fuchsia' | 'Aqua' | 'White'
+---@alias Appearance 'Light' | 'Dark' | 'LightHighContrast' | 'DarkHighContrast'
+---@alias Clipboard 'Clipboard' | 'PrimarySelection' | 'ClipboardAndPrimarySelection'
+---@alias CopyMode 'AcceptPattern' | 'ClearPattern' | 'ClearSelectionMode' | 'Close' | 'CycleMatchType' | 'EditPattern' | 'MoveBackwardSemanticZone' | { MoveBackwardSemanticZoneOfType: SemanticZoneType } | 'MoveBackwardWord' | 'MoveDown' | 'MoveForwardSemanticZone' | { MoveForwardSemanticZoneOfType: SemanticZoneType } | 'MoveForwardWord' | 'MoveForwardWordEnd' | 'MoveLeft' | 'MoveRight' | 'MoveToEndOfLineContent' | 'MoveToScrollbackBottom' | 'MoveToScrollbackTop' | 'MoveToSelectionOtherEnd' | 'MoveToSelectionOtherEndHoriz' | 'MoveToStartOfLine' | 'MoveToStartOfLineContent' | 'MoveToStartOfNextLine' | 'MoveToViewportBottom' | 'MoveToViewportMiddle' | 'MoveToViewportTop' | 'MoveUp' | 'NextMatch' | 'NextMatchPage' | 'PriorMatch' | 'PriorMatchPage' | { SetSelectionMode: SelectionMode | 'SemanticZone' }
+---@alias CursorStyle 'BlinkingBlock' | 'SteadyBlock' | 'BlinkingUnderline' | 'SteadyUnderline' | 'BlinkingBar' | 'SteadyBar'
+---@alias Direction 'Left' | 'Right' | 'Up' | 'Down' | 'Next' | 'Prev'
+---@alias EasingFunction 'Linear' | 'Ease' | 'EaseIn' | 'EaseInOut' | 'EaseOut' | { CubicBezier: number[] } | 'Constant'
+---@alias FreetypeLoadTarget 'Normal' | 'Light' | 'Mono' | 'HorizontalLcd'
+---@alias SelectionMode 'Cell' | 'Word' | 'Line' | 'Block'
+---@alias SemanticZoneType 'Prompt' | 'Input' | 'Output'
+---@alias Stretch 'UltraCondensed' | 'ExtraCondensed' | 'Condensed' | 'SemiCondensed' | 'Normal' | 'SemiExpanded' | 'Expanded' | 'ExtraExpanded' | 'UltraExpanded'
+---@alias Style 'Normal' | 'Italic' | 'Oblique'
+---@alias Weight 'Thin' | 'ExtraLight' | 'Light' | 'DemiLight' | 'Book' | 'Regular' | 'Medium' | 'DemiBold' | 'Bold' | 'ExtraBold' | 'Black' | 'ExtraBlack'
+
+---@class ScreenInformation
+---@field name string
+---@field x number
+---@field y number
+---@field height number
+---@field width number
+---@field max_fps? number
+
+---@class KeyBindingBase
+---@field key string
+---@field action Action
+
+---@class KeyBinding: KeyBindingBase
+---@field mods string
+
+---@class MouseEventInfo
+---@field streak number
+---@field button 'Left' | 'Right' | 'Middle' | { WheelDown: number } | { WheelUp: number }
+
+---@class MouseDownEvent
+---@field Down MouseEventInfo
+
+---@class MouseUpEvent
+---@field Up MouseEventInfo
+
+---@class MouseDragEvent
+---@field Drag MouseEventInfo
+
+---@alias MouseEvent MouseDownEvent | MouseUpEvent | MouseDragEvent
+
+---@class MouseBindingBase
+---@field event MouseEvent
+---@field action Action
+---@field mouse_reporting? boolean
+---@field alt_screen? boolean | 'Any'
+
+---@class MouseBinding: MouseBindingBase
+---@field mods string
