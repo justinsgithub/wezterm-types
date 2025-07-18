@@ -42,22 +42,16 @@ table.insert(mykeys, { key = "f", mods = "LEADER", action = "ToggleFullScreen" }
 table.insert(mykeys, { key = "[", mods = "LEADER", action = act.MoveTabRelative(-1) })
 table.insert(mykeys, { key = "]", mods = "LEADER", action = act.MoveTabRelative(1) })
 
-table.insert(
-    mykeys,
-    {
-        key = "H",
-        mods = "LEADER",
-        action = act({ SplitVertical = { domain = "CurrentPaneDomain" } }),
-    }
-)
-table.insert(
-    mykeys,
-    {
-        key = "V",
-        mods = "LEADER",
-        action = act({ SplitHorizontal = { domain = "CurrentPaneDomain" } }),
-    }
-)
+table.insert(mykeys, {
+    key = "H",
+    mods = "LEADER",
+    action = act({ SplitVertical = { domain = "CurrentPaneDomain" } }),
+})
+table.insert(mykeys, {
+    key = "V",
+    mods = "LEADER",
+    action = act({ SplitHorizontal = { domain = "CurrentPaneDomain" } }),
+})
 
 table.insert(
     mykeys,
