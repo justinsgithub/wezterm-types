@@ -1,3 +1,5 @@
+---@module 'types'
+
 ---@type Wezterm
 local wezterm = require("wezterm")
 
