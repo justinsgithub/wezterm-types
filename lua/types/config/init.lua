@@ -5,6 +5,13 @@
 ---@module 'types.objects'
 ---@module 'types.wezterm'
 
+---@alias DroppedFileQuoting
+---|"None"
+---|"SpacesOnly"
+---|"Posix"
+---|"Windows"
+---|"WindowsAlwaysQuoted"
+
 ---@alias DefaultCursorStyle
 ---|"SteadyBlock"
 ---|"BlinkingBlock"
@@ -12,6 +19,17 @@
 ---|"BlinkingUnderline"
 ---|"SteadyBar"
 ---|"BlinkingBar"
+
+---@class HsbTransform
+---@field hue? number
+---@field saturation? number
+---@field brightness? number
+
+---@class WindowPadding
+---@field left? integer|string
+---@field right? integer|string
+---@field top? integer|string
+---@field bottom? integer|string
 
 ---@class DaemonOptions
 ---@field stdout? string
@@ -24,6 +42,22 @@
 ---@field fade_in_function? EasingFunction
 ---@field fade_out_function? EasingFunction
 ---@field target? "BackgroundColor" | "CursorColor"
+
+---@class BackgroundLayer
+---@field style? { ["File"]: string, ["speed"]: number? } | { ["Gradient"]: Gradient } | { ["Color"]: string }
+---@field attachment? "Fixed" | "Scroll" | { ["Parallax"]: number }
+---@field repeat_x? "Repeat" | "Mirror" | "NoRepeat"
+---@field repeat_x_size? number | string
+---@field repeat_y? "Repeat" | "Mirror" | "NoRepeat"
+---@field repeat_y_size? number | string
+---@field vertical_align? "Top" | "Middle" | "Bottom"
+---@field vertical_offset? number | string
+---@field horizontal_align? "Left" | "Center" | "Right"
+---@field horizontal_offset? number | string
+---@field opacity? number
+---@field hsb? HsbTransform
+---@field height? "Cover" | "Contain" | number | string
+---@field widtht? "Cover" | "Contain" | number | string
 
 ---@class Config
 ---@field font? FontAttributes The baseline font to use
@@ -227,6 +261,7 @@
 --     -- EGL on Windows has jankier resize behavior than WGL (which
 --     -- is used if EGL is unavailable), but EGL survives graphics
 ---@field prefer_egl? bool
+---@field prefer_to_spawn_tabs? bool
 ---@field custom_block_glyphs? bool
 ---@field anti_alias_custom_block_glyphs? bool
 ---@field window_padding? WindowPadding
