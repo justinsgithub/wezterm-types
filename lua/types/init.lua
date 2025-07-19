@@ -243,30 +243,20 @@ local Palette = {
 ---@alias Fonts {fonts: FontAttributes[]}
 
 ---@class FontAttributes
+-- Whether the font should be a bold variant
+---@field weight? FontWeight
+---@field stretch? FontStretch
+-- Whether the font should be an italic variant
+---@field style? FontStyle
+---@field freetype_load_target? FreeTypeLoadTarget
+---@field freetype_render_target? FreeTypeLoadTarget
+-- you can combine the flags like 'NO_HINTING|MONOCHROME' -- probably would not want to
+---@field freetype_load_flags? FreeTypeLoadFlags
 ---@field is_fallback? boolean
 ---@field is_synthetic? boolean
 ---@field harfbuzz_features? string[]
 ---@field assume_emoji_presentation? boolean
 ---@field scale? number
-local FontAttributes = {
-    -- The font family name
-    family = "JetBrains Mono",
-    ---@type FontWeight
-    -- Whether the font should be a bold variant
-    weight = "Regular",
-    ---@type FontStretch
-    stretch = "Normal",
-    ---@type FontStyle
-    -- Whether the font should be an italic variant
-    style = "Normal",
-    ---@type FreeTypeLoadTarget
-    freetype_load_target = "Normal",
-    ---@type FreeTypeLoadTarget
-    freetype_render_target = "Normal",
-    ---@type FreeTypeLoadFlags
-    -- you can combine the flags like 'NO_HINTING|MONOCHROME' -- probably would not want to
-    freetype_load_flags = "DEFAUlT",
-}
 
 ---@class WindowFrameConfig
 ---@field inactive_titlebar_bg? RgbColor
