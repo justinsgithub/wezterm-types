@@ -113,7 +113,7 @@
 
 ---@alias IntegratedTitleButtonStyle "Windows"|"Gnome"|"MacOsNative"
 
----@alias WindowDecorations "NONE"|"TITLE"|"RESIZE"|"TITLE|RESIZE"
+---@alias WindowDecorations "NONE"|"TITLE"|"RESIZE"|"TITLE | RESIZE"
 
 -- A value expressed in points, where 72 points == 1 inch
 ---@alias Points string
@@ -125,7 +125,7 @@
 -- value in the same direction.  For example, left padding
 -- of 10% depends on the pixel width of that element.
 -- The value is 1.0 == 100%.  It is possible to express
--- eg: 2.0 for 200%.
+-- eg: 2.0 for 200%
 ---@alias Percent string
 
 -- A value expressed in terms of a fraction of the cell
