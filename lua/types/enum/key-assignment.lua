@@ -1,8 +1,6 @@
 ---@meta
 
----@diagnostic disable:missing-fields
-
---TODO:? make key and mods more specific
+-- TODO: Make key and mods more specific
 
 ---@alias KeyAssignment
 ---|"ActivateCommandPalette"
@@ -95,7 +93,8 @@
 
 ---@generic param : any
 
----@class ActionFuncClass can also be called as function like older versions of wezterm did
+-- Can also be called as function like older versions of wezterm did
+---@class ActionFuncClass
 ---@field ActivateCommandPalette fun(param): KeyAssignment
 ---@field ActivateCopyMode fun(param): KeyAssignment
 ---@field ActivateKeyTable fun(param): KeyAssignment
@@ -177,7 +176,7 @@
 ---@field ToggleFullScreen fun(param): KeyAssignment
 ---@field TogglePaneZoomState fun(param): KeyAssignment
 
----@class ActionTableClass
+---@class ActionClass
 ---@field ActivateCommandPalette any
 ---@field ActivateCopyMode any
 ---@field ActivateKeyTable any
@@ -259,4 +258,4 @@
 ---@field ToggleFullScreen any
 ---@field TogglePaneZoomState any
 
----@alias Action ActionFuncClass|fun(action: ActionTableClass)
+---@alias Action ActionFuncClass|fun(action: ActionClass)
