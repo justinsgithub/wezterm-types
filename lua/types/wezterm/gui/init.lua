@@ -1,12 +1,47 @@
 ---@meta
 
---TODO: finish
+---@class KeyDefault
+---@field copy_mode Key[]
 
----@class GuiMod
----@field default_key_tables any
----@field default_keys any
----@field enumerate_gpus any
----@field get_appearance any
----@field gui_window_for_mux_window any
----@field gui_windows any
----@field screens any
+---@alias KeyDefaultTables Key[]|KeyDefault
+
+-- The `wezterm.gui` module exposes functions that operate on the gui layer.
+--
+-- The multiplexer may not be connected to a GUI, so attempting to
+-- resolve this module from the mux server will return `nil`
+---@class Wezterm.Gui
+-- Returns a table holding the effective default set of key_tables.
+-- That is the set of keys that is used as a base if there was no configuration file.
+--
+-- This is useful in cases where you want to override a key table assignment
+-- without replacing the entire set of key tables
+---@field default_key_tables fun(): KeyDefaultTables
+-- Returns a table holding the effective default values for key assignments.
+-- That is the set of keys that is used as a base if there was no configuration file
+---@field default_keys fun(): Key[]
+-- Returns the list of available GPUs supported by WebGpu.
+-- This is useful in conjunction with `webgpu_preferred_adapter`
+---@field enumerate_gpus fun(): GpuInfo[]
+-- This function returns the appearance of the window environment.
+-- The appearance can be one of the following 4 values:
+--
+--   - `"Dark"`: Dark mode with predominantly dark colors and probably a lighter,
+--   - `"Light"`: The normal appearance, with dark text on a light background
+--               lower contrasting, text color on a dark background
+--   - `"DarkHighContrast"`: Dark mode but with high contrast colors (not reported on all systems)
+--   - `"LightHighContrast"`: Light mode but with high contrast colors (not reported on all systems)
+--
+-- wezterm is able to detect when the appearance has changed and
+-- will reload the configuration when that happens
+---@field get_appearance fun(): Appearance
+-- Attempts to resolve a mux window to its corresponding Gui Window.
+--
+-- This may not succeed for a couple of reasons:
+--
+--   - If called by the multiplexer daemon, there is no gui, so this will never succeed
+--   - If the mux window is part of a workspace that is not the active workspace
+---@field gui_window_for_mux_window fun(window_id: number): userdata
+-- Returns an array table listing all `GUI Window` objects in a stable/consistent order
+---@field gui_windows fun(): Window[]
+-- Returns information about the screens connected to the system
+---@field screens fun(): ScreenInformation
