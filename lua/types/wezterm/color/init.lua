@@ -2,50 +2,32 @@
 
 --TODO: finish
 
----@class ColorMod
+---@alias StrNum string|number
+
+---@alias PaletteDict table<string, Palette>
+
+---@class ImageExtractorParams
+---@field fuzziness? number
+---@field num_colors? number
+---@field max_width? number
+---@field max_height? number
+---@field min_brightness? number
+---@field max_brightness? number
+---@field threshold? number
+---@field min_contrast? number
+
+-- The `wezterm.color` module exposes functions that work with colors
+---@class Wezterm.Color
+-- Parses the passed color and returns a Color object.
+-- Color objects evaluate as strings but have a number of methods
+-- that allow transforming and comparing colors
 ---@field parse fun(color: string): Color?
-local color = {}
-
----@param filename string
----@param params? { fuzziness: number, num_colors: number, max_width: number, max_height: number, min_brightness: number, max_brightness: number, threshold: number, min_contrast: number }
-function color.extract_colors_from_image(filename, params) end
-
----@param h string | number
----@param s string | number
----@param l string | number
----@param a string | number
----@return ColorMod
-function color.from_hsla(h, s, l, a) end
-
----@return table<string, Palette>
-function color.get_builtin_schemes() end
-
----@return Palette
-function color.get_default_colors() end
-
----@param gradient Gradient
----@param num_colors number
----@return Color[]
-function color.gradient(gradient, num_colors) end
-
----@param file_name string
----@return Palette, ColorSchemeMetaData
-function color.load_base16_scheme(file_name) end
-
----@param file_name string
----@return Palette, ColorSchemeMetaData
-function color.load_scheme(file_name) end
-
----@param file_name string
----@return Palette, ColorSchemeMetaData
-function color.load_terminal_sexy_scheme(file_name) end
-
----@param string string
----@return Color
--- Parses the passed color and returns a Color object. Color objects evaluate as strings but have a number of methods that allow transforming and comparing colors.
-function color.parse(string) end
-
----@param colors Palette
----@param metadata ColorSchemeMetaData
----@param file_name string
-function color.save_scheme(colors, metadata, file_name) end
+---@field extract_colors_from_image fun(filename: string, params: ImageExtractorParams?)
+---@field from_hsla fun(h: StrNum, s: StrNum, l: StrNum, a: StrNum): Wezterm.Color
+---@field get_builtin_schemes fun(): PaletteDict
+---@field get_default_colors fun(): Palette
+---@field gradient fun(gradient: Gradient, num_colors: number): Color[]
+---@field load_base16_scheme fun(file_name: string): Palette,ColorSchemeMetaData
+---@field load_scheme fun(file_name: string): Palette,ColorSchemeMetaData
+---@field load_terminal_sexy_scheme fun(file_name: string): Palette,ColorSchemeMetaData
+---@field load_terminal_sexy_scheme fun(colors: Palette, metadata: ColorSchemeMetaData, file_name: string)

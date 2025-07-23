@@ -60,9 +60,17 @@
 ---@field widtht? "Cover"|"Contain"|number|string
 
 ---@class Config
----@field font? FontAttributes The baseline font to use
+-- When combined with `window_background_opacity`, enables background blur
+-- using the KDE Wayland blur protocol.
+--
+-- This can be used to produce a translucent window effect rather than
+-- a crystal clear transparent window effect
+---@field kde_window_background_blur? bool
+-- The baseline font to use
+---@field font? FontAttributes
 ---@field dpi_by_screen? { [string]: f64 }
----@field colors? Palette The color palette
+-- The color palette
+---@field colors? Palette
 ---@field switch_to_last_active_tab_when_closing_tab? bool
 ---@field window_frame? WindowFrameConfig
 ---@field char_select_font_size? f64
@@ -261,6 +269,11 @@
 -- EGL on Windows has jankier resize behavior than WGL (which
 -- is used if EGL is unavailable), but EGL survives graphics
 ---@field prefer_egl? bool
+-- If set to `true`, launching a new instance of wezterm will prefer to spawn
+-- a new tab when it is able to connect to your already-running GUI instance.
+-- Otherwise, it will spawn a new window.
+--
+-- The default value for this option is `false`
 ---@field prefer_to_spawn_tabs? bool
 ---@field custom_block_glyphs? bool
 ---@field anti_alias_custom_block_glyphs? bool

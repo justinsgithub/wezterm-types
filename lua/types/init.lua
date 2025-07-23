@@ -441,9 +441,6 @@
 ---@field time_to_empty? number
 ---@field state "Charging"|"Discharging"|"Empty"|"Full"|"Unknown"
 
----@class WeztermPlugin
----@field require fun(url: string): any
-
 ---@class AugmentCommandPaletteReturn
 -- The brief description for the entry
 ---@field brief string
@@ -455,8 +452,8 @@
 ---@field action KeyAssignment
 -- optional Nerd Fonts glyph name to use for the icon for the entry.
 --
----@see wezterm.nerdfonts for a list of icon names
----@field icon? NerdFont
+---@see Wezterm.NerdFont for a list of icon names
+---@field icon? Wezterm.NerdFont
 
 ---@alias CallbackWindowPane fun(window: Window, pane: Pane)
 
@@ -563,6 +560,11 @@
 ---|"Aqua"
 ---|"White"
 
+-- - `"Light"`: The normal appearance, with dark text on a light background
+-- - `"Dark"`: Dark mode with predominantly dark colors and probably a lighter,
+--             lower contrasting, text color on a dark background
+-- - `"LightHighContrast"`: Light mode but with high contrast colors (not reported on all systems)
+-- - `"DarkHighContrast"`: Dark mode but with high contrast colors (not reported on all systems)
 ---@alias Appearance
 ---|"Dark"
 ---|"DarkHighContrast"
