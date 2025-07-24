@@ -22,3 +22,20 @@ as a package manager, install this together with
   },
 }
 ```
+
+## Usage
+
+After installing the types, add the type annotation when requiring wezterm in your configuration:
+
+```lua
+local wezterm = require("wezterm") --[[@as Wezterm]]
+
+local config = wezterm.config_builder()
+
+-- Your configuration here with full type support
+config.window_decorations = "RESIZE | MACOS_FORCE_DISABLE_SHADOW"
+
+return config
+```
+
+This annotation enables the Lua Language Server to provide proper type checking and autocompletion for WezTerm configuration options.
