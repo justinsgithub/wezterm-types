@@ -13,7 +13,7 @@ as a package manager, install this together with
   'folke/lazydev.nvim',
   ft = 'lua',
   dependencies = {
-    {'gonstoll/wezterm-types', lazy = true},
+    {'justinsgithub/wezterm-types', lazy = true},
   },
   opts = {
     library = {
