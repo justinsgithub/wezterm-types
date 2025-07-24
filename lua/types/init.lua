@@ -9,10 +9,23 @@
 -- Alias to help identify types that should actually be any
 ---@alias ANY any
 
+---@alias FormatItem.UnderlineStyle
+---|"None"
+---|"Single"
+---|"Double"
+---|"Curly"
+---|"Dotted"
+---|"Dashed"
+
+---@alias FormatItem.Intensity
+---|"Normal"
+---|"Bold"
+---|"Half"
+
 ---@alias FormatItemAttribute
----|{ Underline: "None"|"Single"|"Double"|"Curly"|"Dotted"|"Dashed" }
----|{ Intensity: "Normal"|"Bold"|"Half" }
----|{ Italic: boolean }
+---|{ Underline: FormatItem.UnderlineStyle }
+---|{ Intensity: FormatItem.Intensity }
+---|{ Italic: bool }
 
 -- Reset all attributes to default
 ---@alias FormatItemReset "ResetAttributes"
@@ -97,23 +110,45 @@
 --
 ---@alias RgbaColor string
 
----@alias bool boolean
+---@alias bool bool
 
----@alias BoldBrightening "No"|"BrightAndBold"|"BrightOnly"
+---@alias BoldBrightening
+---|"No"
+---|"BrightAndBold"
+---|"BrightOnly"
 
 -- TODO: describe
----@alias ExitBehavior "Close"|"CloseOnCleanExit"|"Hold"
+---@alias ExitBehavior
+---|"Close"
+---|"CloseOnCleanExit"
+---|"Hold"
 
 -- TODO: describe
----@alias ExitBehaviorMessaging "Verbose"|"Brief"|"Terse"|"None"
+---@alias ExitBehaviorMessaging
+---|"Verbose"
+---|"Brief"
+---|"Terse"
+---|"None"
 
----@alias IntegratedTitleButton "Hide"|"Maximize"|"Close"
+---@alias IntegratedTitleButton
+---|"Hide"
+---|"Maximize"
+---|"Close"
 
----@alias IntegratedTitleButtonAlignment "Right"|"Left"
+---@alias IntegratedTitleButtonAlignment
+---|"Right"
+---|"Left"
 
----@alias IntegratedTitleButtonStyle "Windows"|"Gnome"|"MacOsNative"
+---@alias IntegratedTitleButtonStyle
+---|"Windows"
+---|"Gnome"
+---|"MacOsNative"
 
----@alias WindowDecorations "NONE"|"TITLE"|"RESIZE"|"TITLE | RESIZE"
+---@alias WindowDecorations
+---|"NONE"
+---|"TITLE"
+---|"RESIZE"
+---|"TITLE | RESIZE"
 
 -- A value expressed in points, where 72 points == 1 inch
 ---@alias Points string
@@ -133,7 +168,11 @@
 -- 1.0 == the cell size
 ---@alias Cells string
 
----@alias Dimension Points|Pixels|Percent|Cells
+---@alias Dimension
+---|Points
+---|Pixels
+---|Percent
+---|Cells
 
 ---@class TabBarColor
 -- The color of the background area for the tab
@@ -144,7 +183,7 @@
 -- label shown for this tab.
 --
 -- The default is `"Normal"`
----@field intensity? "Half"|"Normal"|"Bold"
+---@field intensity? "Normal"|"Half"|"Bold"
 -- Specify whether you want `"None"`, `"Single"` or `"Double"` underline for
 -- label shown for this tab.
 --
@@ -153,12 +192,12 @@
 -- Specify whether you want the text to be italic for this tab.
 --
 -- The default is `false`
----@field italic? boolean
+---@field italic? bool
 -- Specify whether you want the text to be rendered with strikethrough (true)
 -- or not for this tab.
 --
 -- The default is `false`
----@field strikethrough? boolean
+---@field strikethrough? bool
 
 ---@class TabBarColors
 -- The text color to use when the attributes are reset to default
@@ -300,10 +339,10 @@
 ---@field freetype_render_target? FreeTypeLoadTarget
 -- you can combine the flags like "NO_HINTING|MONOCHROME" -- probably would not want to
 ---@field freetype_load_flags? FreeTypeLoadFlags
----@field is_fallback? boolean
----@field is_synthetic? boolean
+---@field is_fallback? bool
+---@field is_synthetic? bool
 ---@field harfbuzz_features? string[]
----@field assume_emoji_presentation? boolean
+---@field assume_emoji_presentation? bool
 ---@field scale? number
 
 ---@class WindowFrameConfig
@@ -350,8 +389,9 @@
 -- On posix systems this will be something like `/dev/ttyUSB0`.
 -- If omitted, the name will be interpreted as the port
 ---@field port String
--- Set the baud rate.  The default is 9600 baud
----@field baud usize
+-- Set the baud rate.
+-- The default is `9600` baud
+---@field baud usize|9600
 
 ---@class GpuInfo
 ---@field name String
@@ -426,10 +466,17 @@
 -- `1` would be the first capture group, and so on...
 ---@field highlight? number
 
+---@alias BatteryState
+---|"Charging"
+---|"Discharging"
+---|"Empty"
+---|"Full"
+---|"Unknown"
+
 ---@class BatteryInfo
 -- The battery level expressed as a number between `0.0` (empty) and `1.0` (full)
 ---@field state_of_charge number
--- If known, shows battery manufacturer name or "unknown" otherwise
+-- If known, shows battery manufacturer name or `"unknown"` otherwise
 ---@field vendor string
 -- If known, shows the battery model string or `"unknown"` otherwise
 ---@field model string
@@ -439,10 +486,7 @@
 ---@field time_to_full? number
 -- If discharing, how long until the battery is empty (in seconds)
 ---@field time_to_empty? number
----@field state "Charging"|"Discharging"|"Empty"|"Full"|"Unknown"
-
----@class WeztermPlugin
----@field require fun(url: string): any
+---@field state BatteryState
 
 ---@class AugmentCommandPaletteReturn
 -- The brief description for the entry
@@ -453,40 +497,50 @@
 -- The action to take when the item is activated.
 -- Can be any key assignment action
 ---@field action KeyAssignment
--- optional Nerd Fonts glyph name to use for the icon for the entry.
---
----@see wezterm.nerdfonts for a list of icon names
----@field icon? NerdFont
+-- (Optional) Nerd Fonts glyph name to use for the icon for the entry.
+---@see Wezterm.NerdFont for a list of icon names
+---@field icon? Wezterm.NerdFont
 
 ---@alias CallbackWindowPane fun(window: Window, pane: Pane)
+---@alias AugmentCallbackWindowPane fun(window: Window, pane: Pane): AugmentCommandPaletteReturn
 
 -- This event is emitted when the Command Palette is shown.
 -- Its purpose is to enable you to add additional entries to the list of commands shown in the palette.
 -- This hook is synchronous; calling asynchronous functions will not succeed
----@alias EventAugmentCommandPalette fun(event: "augment-command-palette", callback: fun(window: Window, pane: Window): AugmentCommandPaletteReturn): nil
+---@alias EventAugmentCommandPalette fun(event: "augment-command-palette", callback: AugmentCallbackWindowPane): AugmentCommandPaletteReturn): nil
 
 -- The bell event is emitted when the ASCII BEL sequence is emitted to a pane in the window.
 -- Defining an event handler doesn"t alter wezterm's handling of the bell;
 -- the event supplements it and allows you to take additional action over the configured behavior
 ---@alias EventBell fun(event: "augment-command-palette", callback: CallbackWindowPane)
+
 -- TODO: Description
----@alias EventFormatTabTitle fun(event: "format-tab-title", callback: fun(tab: MuxTabObj, tabs: MuxTabObj[], panes: Pane[], config: Config, hover: boolean, max_width: number): string)
+---@alias EventFormatTabTitle fun(event: "format-tab-title", callback: fun(tab: MuxTabObj, tabs: MuxTabObj[], panes: Pane[], config: Config, hover: bool, max_width: number): string)
+
 -- TODO: Description
 ---@alias EventFormatWindowTitle fun(event: "format-window-title", callback: fun(window: Window, pane: Pane, tabs: MuxTabObj[], panes: Pane[], config: Config))
+
 -- TODO: Description
 ---@alias EventNewTabButtonClick fun(event: "new-tab-button-click", callback: fun(window: Window, pane: Pane, button: "Left"|"Middle"|"Right", default_action: KeyAssignment): nil)
+
 -- TODO: Description
 ---@alias EventOpenUri fun(event: "open-uri", callback: fun(window: Window, pane: Pane, uri: string): nil)
+
 -- TODO: Description
 ---@alias EventUpdateRightStatus fun(event: "update-right-status", callback: CallbackWindowPane)
+
 -- TODO: Description
 ---@alias EventUpdateStatus fun(event: "update-status", callback: CallbackWindowPane)
+
 -- TODO: Description
 ---@alias EventUserVarChanged fun(event: "user-var-changed", callback: fun(window: Window, pane: Pane, name: string, value: string): nil)
+
 -- TODO: Description
 ---@alias EventWindowConfigReloaded fun(event: "window-config-reloaded", callback: CallbackWindowPane)
+
 -- TODO: Description
 ---@alias EventWindowFocusChanged fun(event: "window-focus-changed", callback: CallbackWindowPane)
+
 -- TODO: Description
 ---@alias EventWindowResized fun(event: "window-resized", callback: CallbackWindowPane)
 
@@ -501,7 +555,9 @@
 ---|"SteadyBlock"
 ---|"SteadyUnderline"
 
----@alias CursorVisibility "Visible"|"Hidden"
+---@alias CursorVisibility
+---|"Visible"
+---|"Hidden"
 
 ---@class StableCursorPosition
 -- The horizontal cell index
@@ -563,6 +619,11 @@
 ---|"Aqua"
 ---|"White"
 
+-- - `"Light"`: The normal appearance, with dark text on a light background
+-- - `"Dark"`: Dark mode with predominantly dark colors and probably a lighter,
+--             lower contrasting, text color on a dark background
+-- - `"LightHighContrast"`: Light mode but with high contrast colors (not reported on all systems)
+-- - `"DarkHighContrast"`: Dark mode but with high contrast colors (not reported on all systems)
 ---@alias Appearance
 ---|"Dark"
 ---|"DarkHighContrast"
@@ -717,8 +778,8 @@
 ---@class MouseBindingBase
 ---@field event MouseEvent
 ---@field action Action
----@field mouse_reporting? boolean
----@field alt_screen? boolean|"Any"
+---@field mouse_reporting? bool
+---@field alt_screen? bool|"Any"
 
 ---@class MouseBinding: MouseBindingBase
 ---@field mods string

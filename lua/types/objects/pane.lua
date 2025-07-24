@@ -1,16 +1,50 @@
 ---@meta
 
+---@class PaneMetadata
+-- A boolean value that is populated only for local panes.
+-- It is set to `true` if it appears as though the local PTY is configured
+-- for password entry (local echo disabled, canonical input mode enabled)
+---@field password_input bool
+-- A boolean value that is populated only for multiplexer client panes.
+-- It is set to `true` if wezterm is waiting for a response from the multiplexer server.
+--
+-- This can be used in conjunction with `since_last_response_ms`
+---@field is_tardy bool
+-- An integer value that is populated only for multiplexer client panes.
+-- It is set to the number of elapsed milliseconds since the most recent
+-- response from the multiplexer server
+---@field since_last_response_ms integer
+
+---@class RenderableDimensions
+-- The number of columns
+---@field cols number
+-- The number of vertical cells in the visible portion of the window
+---@field viewport_rows number
+-- The total number of lines in the scrollback and viewport
+---@field scrollback_rows number
+-- The top of the physical non-scrollback screen expressed as a stable index
+---@field physical_top integer
+-- The top of the scrollback; the earliest row remembered by wezterm
+---@field scrollback_top integer
+
 ---@class Pane
 ---@field activate fun(self: Pane): nil Activates (focuses) the pane and its containing tab.
 ---@field get_current_working_dir fun(self: Pane): string Returns the current working directory of the pane, if known. The current directory can be specified by an application sending OSC 7.
 ---@field get_cursor_position fun(self: Pane): StableCursorPosition Returns a lua representation of the StableCursorPosition struct that identifies the cursor position, visibility and shape.
----@field get_dimensions fun(self: Pane): RenderableDimensions Returns a lua representation of the RenderableDimensions struct that identifies the dimensions and position of the viewport as well as the scrollback for the pane.
+-- Returns a Lua representation of the `RenderableDimensions` struct
+-- that identifies the dimensions and position of the viewport
+-- as well as the scrollback for the pane
+---@field get_dimensions fun(self: Pane): RenderableDimensions
 ---@field get_domain_name fun(self: Pane): string Returns the name of the domain with which the pane is associated.
 ---@field get_foreground_process_info fun(self: Pane): LocalProcessInfo Returns a LocalProcessInfo object corresponding to the current foreground process that is running in the pane.
 ---@field get_foreground_process_name fun(self: Pane): string Returns the path to the executable image for the pane.
 ---@field get_lines_as_text fun(self: Pane, lines: number?): string Returns the textual representation (not including color or other attributes) of the physical lines of text in the viewport as a string. A physical line is a possibly-wrapped line that composes a row in the terminal display matrix. If you'd rather operate on logical lines, see pane:get_logical_lines_as_text. If the optional nlines argument is specified then it is used to determine how many lines of text should be retrieved. The default (if nlines is not specified) is to retrieve the number of lines in the viewport (the height of the pane). The lines have trailing space removed from each line. The lines will be joined together in the returned string separated by a \n character. Trailing blank lines are stripped, which may result in fewer lines being returned than you might expect if the pane only had a couple of lines of output.
 ---@field get_logical_lines_as_text fun(self: Pane, lines: number?): string Returns the textual representation (not including color or other attributes) of the logical lines of text in the viewport as a string. A logical line is an original input line prior to being wrapped into physical lines to composes rows in the terminal display matrix. WezTerm doesn't store logical lines, but can recompute them from metadata stored in physical lines. Excessively long logical lines are force-wrapped to constrain the cost of rewrapping on resize and selection operations. If you'd rather operate on physical lines, see pane:get_lines_as_text. If the optional nlines argument is specified then it is used to determine how many lines of text should be retrieved. The default (if nlines is not specified) is to retrieve the number of lines in the viewport (the height of the pane). The lines have trailing space removed from each line. The lines will be joined together in the returned string separated by a \n character. Trailing blank lines are stripped, which may result in fewer lines being returned than you might expect if the pane only had a couple of lines of output.
----@field get_metadata fun(self: Pane): PaneMetadata? Returns metadata about a pane. The return value depends on the instance of the underlying pane. If the pane doesn't support this method, nil will be returned. Otherwise, the value is a lua table with the metadata contained in table fields.
+-- Returns metadata about a pane.
+-- The return value depends on the instance of the underlying pane.
+-- If the pane doesn't support this method, `nil` will be returned.
+-- Otherwise, the value is a Lua table with the metadata contained in table fields
+---@field get_metadata fun(self: Pane): PaneMetadata|nil
 ---@field get_semantic_zone_at fun(self: Pane): any TODO
 ---@field get_semantic_zones fun(self: Pane): any TODO
 ---@field get_text_from_region fun(self: Pane, start_x: number, start_y: number, end_x: number, end_y: number): string Returns the text from the specified region.

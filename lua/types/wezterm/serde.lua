@@ -1,0 +1,18 @@
+---@meta
+
+-- The `wezterm.serde` module provides functions for parsing the given string as
+-- JSON, YAML, or TOML, returning the corresponding Lua values, and vice versa
+---@class Wezterm.Serde
+-- Parses the supplied string as JSON and returns the equivalent lua values
+---@field json_decode fun(value: string): table
+-- Encodes the supplied lua value as JSON
+---@field json_encode fun(value: table): string
+-- Encodes the supplied lua value as a pretty-printed string of JSON
+---@field json_encode_pretty fun(value: table): string
+-- Parses the supplied string as TOML and returns the equivalent lua values
+---@field toml_decode fun(value: string): table
+-- Encodes the supplied lua value as TOML
+---@field toml_encode fun(value: table): string
+---@field toml_encode_pretty fun(value: table): string
+---@field yaml_decode fun(value: string): table
+---@field yaml_encode fun(value: table): string

@@ -5,12 +5,19 @@
 ---@module "types.objects"
 ---@module "types.wezterm"
 
+---@alias IntStr integer|string
+---@alias NumStr number|string
+
 ---@alias DroppedFileQuoting
 ---|"None"
 ---|"SpacesOnly"
 ---|"Posix"
 ---|"Windows"
 ---|"WindowsAlwaysQuoted"
+
+---@alias ImePreeditRendering
+---|"Builtin"
+---|"System"
 
 ---@alias DefaultCursorStyle
 ---|"SteadyBlock"
@@ -25,11 +32,22 @@
 ---@field saturation? number
 ---@field brightness? number
 
+---@alias SystemBackdrop
+---|"Auto"
+---|"Disable"
+---|"Acrylic"
+---|"Mica"
+---|"Tabbed"
+
 ---@class WindowPadding
----@field left? integer|string
----@field right? integer|string
----@field top? integer|string
----@field bottom? integer|string
+---@field left? IntStr
+---@field right? IntStr
+---@field top? IntStr
+---@field bottom? IntStr
+
+---@alias WindowCloseConfirmation
+---|"AlwaysPrompt"
+---|"NeverPrompt"
 
 ---@class DaemonOptions
 ---@field stdout? string
@@ -43,26 +61,60 @@
 ---@field fade_out_function? EasingFunction
 ---@field target? "BackgroundColor"|"CursorColor"
 
+---@class BackgroundLayer.Style1
+---@field File string
+---@field speed? number
+
+---@class BackgroundLayer.Style2
+---@field Gradient Gradient
+---@field Color string
+
 ---@class BackgroundLayer
----@field style? { ["File"]: string, ["speed"]: number? }|{ ["Gradient"]: Gradient }|{ ["Color"]: string }
+---@field style? BackgroundLayer.Style1|BackgroundLayer.Style2
 ---@field attachment? "Fixed"|"Scroll"|{ ["Parallax"]: number }
 ---@field repeat_x? "Repeat"|"Mirror"|"NoRepeat"
----@field repeat_x_size? number|string
+---@field repeat_x_size? NumStr
 ---@field repeat_y? "Repeat"|"Mirror"|"NoRepeat"
----@field repeat_y_size? number|string
+---@field repeat_y_size? NumStr
 ---@field vertical_align? "Top"|"Middle"|"Bottom"
----@field vertical_offset? number|string
+---@field vertical_offset? NumStr
 ---@field horizontal_align? "Left"|"Center"|"Right"
----@field horizontal_offset? number|string
+---@field horizontal_offset? NumStr
 ---@field opacity? number
 ---@field hsb? HsbTransform
 ---@field height? "Cover"|"Contain"|number|string
 ---@field widtht? "Cover"|"Contain"|number|string
 
+---@alias NewlineCanon
+---|bool
+---|"None"
+---|"LineFeed"
+---|"CarriageReturn"
+---|"CarriageReturnAndLineFeed"
+
+---@alias KeyMapPreference
+---|"Mapped"
+---|"Physical"
+
+---@alias UIKeyCapRendering
+---|"UnixLong" Super, Meta, Ctrl, Shift.
+---|"Emacs" Super, M, C, S.
+---|"AppleSymbols" use macOS style symbols for Command, Option and so on
+---|"WindowsLong" Win, Alt, Ctrl, Shift
+---|"WindowsSymbols" like WindowsLong but using a logo for the Win key
+
 ---@class Config
----@field font? FontAttributes The baseline font to use
+-- When combined with `window_background_opacity`, enables background blur
+-- using the KDE Wayland blur protocol.
+--
+-- This can be used to produce a translucent window effect rather than
+-- a crystal clear transparent window effect
+---@field kde_window_background_blur? bool
+-- The baseline font to use
+---@field font? FontAttributes
 ---@field dpi_by_screen? { [string]: f64 }
----@field colors? Palette The color palette
+-- The color palette
+---@field colors? Palette
 ---@field switch_to_last_active_tab_when_closing_tab? bool
 ---@field window_frame? WindowFrameConfig
 ---@field char_select_font_size? f64
@@ -79,7 +131,7 @@
 ---@field color_scheme? String
 -- Use a named color scheme rather than the palette specified
 -- by the colors setting.
----@field color_schemes? {[String]: Palette}
+---@field color_schemes? { [String]: Palette }
 -- Named color schemes
 ---@field scrollback_lines? usize
 -- How many lines of scrollback you want to retain
@@ -216,7 +268,7 @@
 ---@field disable_default_quick_select_patterns? bool
 ---@field quick_select_patterns? String[]
 ---@field quick_select_alphabet? String
----@field mouse_bindings? Mouse[]
+---@field mouse_bindings? MouseBindingBase[]
 ---@field disable_default_mouse_bindings? bool
 ---@field daemon_options? DaemonOptions
 ---@field send_composed_key_when_left_alt_is_pressed? bool
@@ -261,6 +313,11 @@
 -- EGL on Windows has jankier resize behavior than WGL (which
 -- is used if EGL is unavailable), but EGL survives graphics
 ---@field prefer_egl? bool
+-- If set to `true`, launching a new instance of wezterm will prefer to spawn
+-- a new tab when it is able to connect to your already-running GUI instance.
+-- Otherwise, it will spawn a new window.
+--
+-- The default value for this option is `false`
 ---@field prefer_to_spawn_tabs? bool
 ---@field custom_block_glyphs? bool
 ---@field anti_alias_custom_block_glyphs? bool
@@ -402,8 +459,6 @@
 ---@field alternate_buffer_wheel_scroll_speed? u8
 ---@field status_update_interval? u64
 ---@field experimental_pixel_positioning? bool
----@field bidi_enabled? bool
----@field bidi_direction? ParagraphDirectionHint
 ---@field skip_close_confirmation_for_processes_named? String[]
 ---@field quit_when_all_windows_are_closed? bool
 ---@field warn_about_missing_glyphs? bool
