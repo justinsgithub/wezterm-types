@@ -1,4 +1,4 @@
 * @justinsgithub
-/lua/types/serde.lua @DrKJeff16
+/lua/types/serde/init.lua @DrKJeff16
 /lua/types/plugin/init.lua @DrKJeff16
 /lua/types/url/init.lua @DrKJeff16
