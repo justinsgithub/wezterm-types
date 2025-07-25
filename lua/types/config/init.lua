@@ -506,6 +506,29 @@
 ---@field underline_position? Dimension
 ---@field strikethrough_position? Dimension
 ---@field allow_square_glyphs_to_overflow_width? "Allow"|"Never"|"WhenFollowedBySpace"
+-- Configures whether the window has a title bar and/or resizable border.
+--
+-- The value is a set of flags:
+--
+--   - `"NONE"`: disables titlebar and border (borderless mode),
+--               but causes problems with resizing and minimizing the window,
+--               so you probably want to use `"RESIZE"` instead of `"NONE"`
+--               if you just want to remove the title bar
+--   - `"TITLE"`: disable the resizable border and enable only the title bar
+--   - `"RESIZE"`: disable the title bar but enable the resizable border
+--   - `"TITLE|RESIZE"`: Enable titlebar and border. This is the default
+--   - `"INTEGRATED_BUTTONS|RESIZE"`: place window management buttons (minimize, maximize, close)
+--                                      into the tab bar instead of showing a title bar
+--   - `"MACOS_FORCE_DISABLE_SHADOW"`: (macOS only) disable the window shadow effect
+--   - `"MACOS_FORCE_ENABLE_SHADOW"`: (macOS only) enable the window shadow effect
+--   - `"MACOS_FORCE_SQUARE_CORNERS"`: (macOS only) force the window to have square rather than rounded corners.
+--                                     It is not compatible with `"TITLE"` or `"INTEGRATED_BUTTONS"`
+--   - `"MACOS_USE_BACKGROUND_COLOR_AS_TITLEBAR_COLOR"`: (macOS only) change the system titlebar background color
+--                                                       to match the terminal background color defined
+--                                                       by your configuration.
+--                                                       This option doesn't make sense to use without
+--                                                       also including `"TITLE|RESIZE"` in the set of decorations
+--
 ---@field window_decorations? WindowDecorations
 ---@field integrated_title_buttons? IntegratedTitleButton[]
 ---@field integrated_title_button_alignment? IntegratedTitleButtonAlignment
