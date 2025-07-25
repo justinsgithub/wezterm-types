@@ -217,6 +217,54 @@
 ---|Percent
 ---|Cells
 
+---@alias TabBarIntensity
+---|"Normal"
+---|"Half"
+---|"Bold"
+
+---@alias TabBarUnderline
+---|"None"
+---|"Single"
+---|"Double"
+
+---@alias PaletteAnsi
+---|"black"
+---|"maroon"
+---|"green"
+---|"olive"
+---|"navy"
+---|"purple"
+---|"teal"
+---|"silver"
+
+---@alias PaletteBrights
+---|"grey"
+---|"red"
+---|"lime"
+---|"yellow"
+---|"blue"
+---|"fuchsia"
+---|"aqua"
+---|"white"
+
+---@alias AnsiColor
+---|"Black"
+---|"Maroon"
+---|"Green"
+---|"Olive"
+---|"Navy"
+---|"Purple"
+---|"Teal"
+---|"Silver"
+---|"Grey"
+---|"Red"
+---|"Lime"
+---|"Yellow"
+---|"Blue"
+---|"Fuchsia"
+---|"Aqua"
+---|"White"
+
 ---@class TabBarColor
 -- The color of the background area for the tab
 ---@field bg_color? string
@@ -226,12 +274,12 @@
 -- label shown for this tab.
 --
 -- The default is `"Normal"`
----@field intensity? "Normal"|"Half"|"Bold"
+---@field intensity? TabBarIntensity
 -- Specify whether you want `"None"`, `"Single"` or `"Double"` underline for
 -- label shown for this tab.
 --
 -- The default is `"None"`
----@field underline? "None"|"Single"|"Double"
+---@field underline? TabBarUnderline
 -- Specify whether you want the text to be italic for this tab.
 --
 -- The default is `false`
@@ -266,66 +314,101 @@
 -- moves over the new tab button
 ---@field new_tab_hover TabBarColor
 
----@alias AnsiColors
----|"Aqua"
----|"Black"
----|"Blue"
----|"Fuchsia"
----|"Green"
----|"Grey"
----|"Lime"
----|"Maroon"
----|"Navy"
----|"Olive"
----|"Purple"
----|"Red"
----|"Silver"
----|"Teal"
----|"White"
----|"Yellow"
-
 ---@alias AC "AnsiColor"
 
 ---@alias CO "Color"
 
----@alias ColorSpec table<AC, AnsiColors>|table<CO, string>
+---@alias ColorSpec table<AC, AnsiColor>|table<CO, string>
 
 ---@class Palette
 -- The text color to use when the attributes are reset to default
----@field foreground string
+---@field foreground? string
 --  The background color to use when the attributes are reset to default
----@field background string
--- The color of the cursor
----@field cursor_fg string
----@field cursor_bg string
+---@field background? string
+-- The foreground color of the cursor
+---@field cursor_fg? string
+-- The background color of the cursor
+---@field cursor_bg? string
 -- The border of the cursor
----@field cursor_border string
--- The color of selected text
----@field selection_fg string
----@field selection_bg string
+---@field cursor_border? string
+-- The foreground color of selected text
+---@field selection_fg? string
+-- The background color of selected text
+---@field selection_bg? string
 -- A list of 8 colors corresponding to the basic ANSI palette
----@field ansi string[]
--- TODO: Description
----@field brights string[]
+---@field ansi? table<integer, PaletteAnsi>
+-- A list of 8 colors corresponding to the brights
+---@field brights? table<integer, PaletteBrights>
 -- A map for setting arbitrary colors ranging from 16 to 256 in the color palette
----@field indexed { [number]: string }
+---@field indexed? string[]|table
 -- The color of the "thumb" of the scrollbar; the segment that represents the current viewable area
----@field scrollbar_thumb string
+---@field scrollbar_thumb? string
 -- The color of the split line between panes
----@field split string
--- The color of the visual bell. If unspecified, the foreground color is used instead
----@field visual_bell string
+---@field split? string
+-- The color of the visual bell.
+-- If unspecified, the foreground color is used instead
+---@field visual_bell? string
 -- The color to use for the cursor when a dead key or leader state is active
----@field compose_cursor string
----@field copy_mode_active_highlight_fg ColorSpec
----@field copy_mode_active_highlight_bg ColorSpec
----@field copy_mode_inactive_highlight_fg ColorSpec
----@field copy_mode_inactive_highlight_bg ColorSpec
----@field quick_select_label_fg ColorSpec
----@field quick_select_label_bg ColorSpec
----@field quick_select_match_fg ColorSpec
----@field quick_select_match_bg ColorSpec
----@field tab_bar TabBar
+---@field compose_cursor? string
+-- Use `AnsiColor` to specify one of the ansi color palette values
+-- (index 0-15) using one of the names:
+-- - `"Black"`
+-- - `"Maroon"`
+-- - `"Green"`
+-- - `"Olive"`
+-- - `"Navy"`
+-- - `"Purple"`
+-- - `"Teal"`
+-- - `"Silver"`
+-- - `"Grey"`
+-- - `"Red"`
+-- - `"Lime"`
+-- - `"Yellow"`
+-- - `"Blue"`
+-- - `"Fuchsia"`
+-- - `"Aqua"`
+-- - `"White"`
+---@field copy_mode_active_highlight_fg? ColorSpec
+-- Colors for copy_mode and quick_select.
+--
+-- In copy_mode, the color of the active text is:
+-- 1. `copy_mode_active_highlight` if additional text was selected using the mouse
+-- 2. `selection` otherwise
+---@field copy_mode_active_highlight_bg? ColorSpec
+-- Use `AnsiColor` to specify one of the ansi color palette values
+-- (index 0-15) using one of the names:
+-- - `"Black"`
+-- - `"Maroon"`
+-- - `"Green"`
+-- - `"Olive"`
+-- - `"Navy"`
+-- - `"Purple"`
+-- - `"Teal"`
+-- - `"Silver"`
+-- - `"Grey"`
+-- - `"Red"`
+-- - `"Lime"`
+-- - `"Yellow"`
+-- - `"Blue"`
+-- - `"Fuchsia"`
+-- - `"Aqua"`
+-- - `"White"`
+---@field copy_mode_inactive_highlight_fg? ColorSpec
+-- Colors for copy_mode and quick_select.
+--
+-- In copy_mode, the color of the active text is:
+-- 1. `copy_mode_active_highlight` if additional text was selected using the mouse
+-- 2. `selection` otherwise
+---@field copy_mode_inactive_highlight_bg? ColorSpec
+---@field quick_select_label_fg? ColorSpec
+---@field quick_select_label_bg? ColorSpec
+---@field quick_select_match_fg? ColorSpec
+---@field quick_select_match_bg? ColorSpec
+---@field input_selector_label_fg? ColorSpec
+---@field input_selector_label_bg? ColorSpec
+---@field launcher_label_bg? ColorSpec
+---@field launcher_label_fg? ColorSpec
+---@field tab_bar? TabBar
 
 ---@alias FontWeight
 ---|"Regular"
@@ -643,24 +726,6 @@
 ---@field aliases? string[]
 
 ---@alias ActionCallback fun(win: Window, pane: Pane, ...: any): (nil|false)
-
----@alias AnsiColor
----|"Black"
----|"Maroon"
----|"Green"
----|"Olive"
----|"Navy"
----|"Purple"
----|"Teal"
----|"Silver"
----|"Grey"
----|"Red"
----|"Lime"
----|"Yellow"
----|"Blue"
----|"Fuchsia"
----|"Aqua"
----|"White"
 
 -- - `"Light"`: The normal appearance, with dark text on a light background
 -- - `"Dark"`: Dark mode with predominantly dark colors and probably a lighter,
