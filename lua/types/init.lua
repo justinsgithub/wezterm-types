@@ -42,7 +42,9 @@
 ---|"PrimarySelection"
 ---|"ClipboardAndPrimarySelection"
 
----@alias SshBackend "Ssh2"|"LibSsh"
+---@alias SshBackend
+---|"Ssh2"
+---|"LibSsh"
 
 -- This is a virtual modifier used by wezterm
 ---@alias Modifiers
@@ -60,7 +62,9 @@
 ---|"SHIFT"
 ---|"SUPER"
 
----@alias WebGpuPowerPreference "LowPower"|"HighPerformance"
+---@alias WebGpuPowerPreference
+---|"LowPower"
+---|"HighPerformance"
 
 -- Only Option
 ---@alias FontRasterizerSelection "FreeType"
@@ -84,18 +88,28 @@
 ---|"RGB" default
 ---|"BGR"
 
----@alias f32 number
+---@alias BatteryState
+---|"Charging"
+---|"Discharging"
+---|"Empty"
+---|"Full"
+---|"Unknown"
 
+-- 32-bit floating point number
+---@alias f32 number
+-- 64-bit floating point number
 ---@alias f64 number
 
+-- 8-bit unsigned integer
 ---@alias u8 integer
-
+-- 16-bit unsigned integer
 ---@alias u16 integer
-
+-- 32-bit unsigned integer
 ---@alias u32 integer
-
+-- 64-bit unsigned integer
 ---@alias u64 integer
 
+-- 64-bit signed integer
 ---@alias i64 integer
 
 ---@alias Duration u64
@@ -110,7 +124,7 @@
 --
 ---@alias RgbaColor string
 
----@alias bool bool
+---@alias bool boolean
 
 ---@alias BoldBrightening
 ---|"No"
@@ -200,10 +214,11 @@
 ---@alias Pixels string|number
 
 -- A value expressed in terms of a fraction of the maximum
--- value in the same direction.  For example, left padding
--- of 10% depends on the pixel width of that element.
--- The value is 1.0 == 100%.  It is possible to express
--- eg: 2.0 for 200%
+-- value in the same direction.
+-- For example, left padding of 10% depends on
+-- the pixel width of that element.
+-- The value is 1.0 == 100%.
+-- It is possible to express e.g. 2.0 for 200%
 ---@alias Percent string
 
 -- A value expressed in terms of a fraction of the cell
@@ -351,7 +366,8 @@
 -- The color to use for the cursor when a dead key or leader state is active
 ---@field compose_cursor? string
 -- Use `AnsiColor` to specify one of the ansi color palette values
--- (index 0-15) using one of the names:
+-- (index 0-15) using one of the following values:
+--
 -- - `"Black"`
 -- - `"Maroon"`
 -- - `"Green"`
@@ -376,7 +392,8 @@
 -- 2. `selection` otherwise
 ---@field copy_mode_active_highlight_bg? ColorSpec
 -- Use `AnsiColor` to specify one of the ansi color palette values
--- (index 0-15) using one of the names:
+-- (index 0-15) using one of the following values:
+--
 -- - `"Black"`
 -- - `"Maroon"`
 -- - `"Green"`
@@ -435,7 +452,10 @@
 ---|"UltraCondensed"
 ---|"UltraExpanded"
 
----@alias FontStyle "Normal"|"Italic"|"Oblique"
+---@alias FontStyle
+---|"Normal"
+---|"Italic"
+---|"Oblique"
 
 ---@alias FreeTypeLoadTarget
 ---|"Normal"
@@ -444,14 +464,15 @@
 ---|"Mono"
 ---|"VerticalLcd"
 
----@alias FreeTypeLoadFlags "DEFAUlT"
+---@alias FreeTypeLoadFlags
+---|"DEFAUlT"
 ---|"NO_HINTING"
 ---|"NO_BITMAP"
 ---|"FORCE_AUTOHINT"
 ---|"MONOCHROME"
 ---|"NO_AUTOHINT"
 
---TODO: = add harfbuzz_features enum
+-- TODO: Add harfbuzz_features enum
 --
 ---@alias Fonts { fonts: FontAttributes[] }
 
@@ -463,7 +484,8 @@
 ---@field style? FontStyle
 ---@field freetype_load_target? FreeTypeLoadTarget
 ---@field freetype_render_target? FreeTypeLoadTarget
--- you can combine the flags like "NO_HINTING|MONOCHROME" -- probably would not want to
+-- you can combine the flags like `"NO_HINTING|MONOCHROME"`
+-- **(you probably wouldn't want to do this)**
 ---@field freetype_load_flags? FreeTypeLoadFlags
 ---@field is_fallback? bool
 ---@field is_synthetic? bool
@@ -507,15 +529,17 @@
 ---@field highlight? usize
 
 ---@class SerialDomain
--- The name of this specific domain.  Must be unique amongst
--- all types of domain in the configuration file
+-- The name of this specific domain.
+-- Must be unique amongst all types of domain in the configuration file
 ---@field name String
 -- Specifies the serial device name.
--- On Windows systems this can be a name like `COM0`.
--- On posix systems this will be something like `/dev/ttyUSB0`.
--- If omitted, the name will be interpreted as the port
+--
+-- - On Windows systems this can be a name like `COM0`
+-- - On POSIX systems this will be something like `/dev/ttyUSB0`
+-- - If omitted, the name will be interpreted as the port
 ---@field port String
 -- Set the baud rate.
+--
 -- The default is `9600` baud
 ---@field baud usize|9600
 
@@ -529,19 +553,21 @@
 ---@field device u32
 
 ---@class UnixDomain
--- The name of this specific domain. Must be unique amongst
--- all types of domain in the configuration file.
+-- The name of this specific domain.
+-- Must be unique amongst all types of domain in the configuration file
 ---@field name String
--- The path to the socket. If unspecified, a resonable default
--- value will be computed
+-- The path to the socket.
+-- If unspecified, a resonable default value will be computed
 ---@field socket_path PathBuf
--- If true, connect to this domain automatically at startup
+-- If `true`, connect to this domain automatically at startup
 ---@field connect_automatically bool
--- If true, do not attempt to start this server if we try and fail to
+-- If `true`, do not attempt to start this server if we try and fail to
 -- connect to it.
 ---@field no_serve_automatically bool
 -- If we decide that we need to start the server, the command to run
--- to set that up. The default is to spawn:
+-- to set that up.
+--
+-- The default is to spawn:
 --
 -- ```sh
 -- wezterm-mux-server --daemonize
@@ -557,14 +583,20 @@
 -- spawn this command and use its stdin/stdout in place of
 -- the socket
 ---@field proxy_command String[]
--- If true, bypass checking for secure ownership of the socket_path.  This is not recommended on a multi-user system, but is useful for example when running the server inside a WSL container but with the socket on the host NTFS volume.
+-- If `true`, bypass checking for secure ownership of the socket_path.
+--
+-- This is not recommended on a multi-user system,
+-- but is useful, for example, when running the server inside a WSL container
+-- but with the socket on the host NTFS volume
 ---@field skip_permissions_check bool
 ---@field read_timeout Duration
--- Don"t use default_local_echo_threshold_ms() here to disable the predictive echo for Unix domains by default
+-- Don"t use `default_local_echo_threshold_ms()` here to disable
+-- the predictive echo for UNIX domains by default
 ---@field write_timeout Duration
 -- Show time since last response when waiting for a response.
--- It is recommended to use <https://wezfurlong.org/wezterm/config/lua/pane/get_metadata.html#since_last_response_ms>
--- instead
+--
+-- Recommended to look at this:
+-- `https://wezfurlong.org/wezterm/config/lua/pane/get_metadata.html#since_last_response_ms`
 ---@field local_echo_threshold_ms u64
 ---@field overlay_lag_indicator bool
 
@@ -575,29 +607,23 @@
 -- The regular expression to match
 ---@field regex string
 -- Controls which parts of the regex match will be used to form the link.
+--
 -- Must have a prefix: signaling the protocol type (e.g., `https:/mailto:`),
 -- which can either come from the regex match or needs to be explicitly added.
+--
 -- The format string can use placeholders like `$0`, `$1`, `$2` etc.
 -- that will be replaced with that numbered capture group.
 -- So, `$0` will take the entire region of text matched by the whole regex,
 -- while `$1` matches out the first capture group.
---
--- In the example below: mailto:$0 is used to prefix a protocol to the text to make it into an URL
 ---@field format string
 -- Specifies the range of the matched text that should be highlighted/underlined
 -- when the mouse hovers over the link.
+--
 -- The value is a number that corresponds to a capture group in the regex.
 --
 -- The default is `0`, highlighting the entire region of text matched by the regex.
 -- `1` would be the first capture group, and so on...
 ---@field highlight? number
-
----@alias BatteryState
----|"Charging"
----|"Discharging"
----|"Empty"
----|"Full"
----|"Unknown"
 
 ---@class BatteryInfo
 -- The battery level expressed as a number between `0.0` (empty) and `1.0` (full)
