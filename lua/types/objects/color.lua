@@ -1,23 +1,82 @@
 ---@meta
 
+-- Color objects can be created by calling `wezterm.color.parse()`
+-- and may also be returned by various wezterm functions and methods.
+--
+-- They represent a color that is internally stored in `SRGBA` format
 ---@class Color
----@field adjust_hue_fixed fun(self: Color, degrees: number): Color Adjust the hue angle by the specified number of degrees.
----@field adjust_hue_fixed_ryb fun(self: Color, degrees: number): Color Adjust the hue angle by the specified number of degrees.
----@field complement fun(self: Color): Color Returns the complement of the color. The complement is computed by converting to HSL, rotating by 180 degrees and converting back to RGBA.
----@field complement_ryb fun(self: Color): Color Returns the complement of the color using the RYB color model, which more closely matches how artists think of mixing colors.
----@field contrast_ratio fun(self: Color, other: Color): number Computes the contrast ratio between the two colors.
----@field darken fun(self: Color, amount: number): Color Scales the color towards the minimum lightness by the provided factor, which should be in the range 0.0 through 1.0.
----@field darken_fixed fun(self: Color, amount: number): Color Decrease the lightness by amount, a value ranging from 0.0 to 1.0.
----@field delta_e fun(self: Color, other: Color): number Computes the CIEDE2000 DeltaE value representing the difference between the two colors.
----@field desaturate fun(self: Color, amount: number): Color Scales the color towards the minimum saturation by the provided factor, which should be in the range 0.0 through 1.0.
----@field desaturate_fixed fun(self: Color, amount: number): Color Decrease the saturation by amount, a value ranging from 0.0 to 1.0.
----@field hsla fun(self: Color): { h: number, s: number, l: number, a: number } Converts the color to the HSL colorspace and returns those values + alpha.
----@field laba fun(self: Color): { l: number, a: number, b: number, a: number } Converts the color to the LAB colorspace and returns those values + alpha.
----@field lighten fun(self: Color, amount: number): Color Scales the color towards the maximum lightness by the provided factor, which should be in the range 0.0 through 1.0.
----@field lighten_fixed fun(self: Color, amount: number): Color Increase the lightness by amount, a value ranging from 0.0 to 1.0.
----@field linear_rgba fun(self: Color): { r: number, g: number, b: number, a: number } Returns a tuple of the colors converted to linear RGBA and expressed as floating point numbers in the range 0.0-1.0.
----@field saturate fun(self: Color, amount: number): Color Scales the color towards the maximum saturation by the provided factor, which should be in the range 0.0 through 1.0.
----@field saturate_fixed fun(self: Color, amount: number): Color Increase the saturation by amount, a value ranging from 0.0 to 1.0.
----@field square fun(self: Color): { a: Color, b: Color, c: Color } Returns the other three colors that form a square. The other colors are 90 degrees apart on the HSL color wheel.
----@field srgb_u8 fun(self: Color): { r: number, g: number, b: number, a: number } Returns a tuple of the internal SRGBA colors expressed as unsigned 8-bit integers in the range 0-255.
----@field triad fun(self: Color): { a: Color, b: Color } Returns the other two colors that form a triad. The other colors are at +/- 120 degrees in the HSL color wheel.
+-- Adjust the hue angle by the specified number of degrees.
+--
+-- 180 degrees gives the complementary color.
+-- Three colors separated by 120 degrees form the triad.
+-- Four colors separated by 90 degrees form the square.
+---@field adjust_hue_fixed fun(self: Color, degrees: number): Color
+-- Adjust the hue angle by the specified number of degrees.
+--
+-- This method uses the `RYB` color model, which more closely matches
+-- how artists think of mixing colors and which is sometimes referred to as
+-- the _"artist's color wheel"_.
+--
+-- 180 degrees gives the complementary color.
+-- Three colors separated by 120 degrees form the triad.
+-- Four colors separated by 90 degrees form the square.
+---@field adjust_hue_fixed_ryb fun(self: Color, degrees: number): Color
+-- Returns the complement of the color.
+-- The complement is computed by converting to `HSL`,
+-- rotating by 180 degrees and converting back to `RGBA`
+---@field complement fun(self: Color): Color
+-- Returns the complement of the color using the `RYB` color model,
+-- which more closely matches how artists think of mixing colors
+--
+-- The complement is computed by converting to `HSL`,
+-- converting the hue angle to the equivalent `RYB` angle,
+-- rotating by 180 degrees and and then converting back to `RGBA`
+---@field complement_ryb fun(self: Color): Color
+-- Computes the contrast ratio between the two colors
+--
+-- The contrast ratio is computed by first converting to `HSL`,
+-- taking the `L` components, and diving the lighter one by the darker one.
+--
+-- A contrast ratio of `1` means _no contrast_.
+--
+-- NOTE: The maximum possible contrast ratio is `21`
+---@field contrast_ratio fun(self: Color, other: Color): number
+-- Scales the color towards the minimum lightness by the provided factor,
+-- which should be in the range `0.0` through `1.0`
+---@field darken fun(self: Color, amount: number): Color
+-- Decrease the lightness by `amount`, a value ranging from `0.0` to `1.0`
+---@field darken_fixed fun(self: Color, amount: number): Color
+-- Computes the `CIEDE2000` `DeltaE` value representing the difference
+-- between the two colors
+---@field delta_e fun(self: Color, other: Color): number
+-- Scales the color towards the minimum saturation by the provided factor,
+-- which should be in the range `0.0` through `1.0`
+---@field desaturate fun(self: Color, amount: number): Color
+-- Decrease the saturation by `amount`, a value ranging from `0.0` to `1.0`
+---@field desaturate_fixed fun(self: Color, amount: number): Color
+-- Converts the color to the `HSL` colorspace and returns those values + `alpha`
+---@field hsla fun(self: Color): h: number, s: number, l: number, alpha: number
+-- Converts the color to the `LAB` colorspace and returns those values + `alpha`
+---@field laba fun(self: Color): l: number, a: number, b: number, alpha: number
+-- Scales the color towards the maximum lightness by the provided factor,
+-- which should be in the range `0.0` through `1.0`
+---@field lighten fun(self: Color, amount: number): Color
+-- Increase the lightness by amount, a value ranging from `0.0` to `1.0`
+---@field lighten_fixed fun(self: Color, amount: number): Color
+-- Returns a tuple of the colors converted to linear `RGBA` and expressed
+-- as floating point numbers in the range `0.0-1.0`
+---@field linear_rgba fun(self: Color): r: number, g: number, b: number, alpha: number
+-- Scales the color towards the maximum saturation by the provided factor,
+-- which should be in the range `0.0` through `1.0`
+---@field saturate fun(self: Color, amount: number): Color
+-- Increase the saturation by amount, a value ranging from `0.0` to `1.0`
+---@field saturate_fixed fun(self: Color, amount: number): Color
+-- Returns the other three colors that form a square.
+-- The other colors are `90` degrees apart on the `HSL` color wheel
+---@field square fun(self: Color): a: Color, b: Color, c: Color
+-- Returns a tuple of the internal `SRGBA` colors expressed
+-- as unsigned 8-bit integers in the range `0-255`
+---@field srgb_u8 fun(self: Color): r: u8, g: u8, b: u8, alpha: u8
+-- Returns the other two colors that form a triad.
+-- The other colors are at +/- 120 degrees in the `HSL` color wheel
+---@field triad fun(self: Color): a: Color, b: Color
