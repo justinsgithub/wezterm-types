@@ -1,7 +1,7 @@
 ---@meta
 
 ---@class Wezterm.Mux
----@field all_domains fun(): MuxDomainObj[] Returns an array table holding all of the known MuxDomain objects.
+---@field all_domains fun(): MuxDomain[] Returns an array table holding all of the known MuxDomain objects.
 ---@field all_windows fun(): MuxWindow[] Returns an array table holding all of the known MuxWindow objects.
 ---@field get_active_workspace fun(): string Returns the name of the active workspace.
 ---@field get_domain fun(name_or_id: string|number): string Resolves name_or_id to a domain and returns a MuxDomain object representation of it. `name_or_id` can be: A domain name string to resolve the domain by name, A domain id to resolve the domain by id, nil or omitted to return the current default domain, other lua types will generate a lua error
@@ -11,5 +11,5 @@
 ---@field get_workspace_names fun(): string[] Returns a table containing the names of the workspaces known to the mux.
 ---@field rename_workspace fun(old: string, new: string): nil Renames the workspace old to new.
 ---@field set_active_workspace fun(name: string): nil Sets the active workspace name. If the requested name doesn't correspond to an existing workspace, then an error is raised.
----@field set_default_domain fun(domain: MuxDomainObj): nil Assign a new default domain in the mux. The domain that you assign here will override any configured `default_domain` or the implicit assignment of the default domain that may have happened as a result of starting wezterm via `wezterm connect` or `wezterm serial`.
+---@field set_default_domain fun(domain: MuxDomain): nil Assign a new default domain in the mux. The domain that you assign here will override any configured `default_domain` or the implicit assignment of the default domain that may have happened as a result of starting wezterm via `wezterm connect` or `wezterm serial`.
 ---@field spawn_window fun(...: any): { tab: MuxTabObj, pane: Pane, window: MuxWindow } Spawns a program into a new window, returning the MuxTab, Pane and MuxWindow objects associated with it. When no arguments are passed, the default program is spawned. TODO
