@@ -15,18 +15,6 @@
 ---@field pixel_height number
 ---@field dpi number
 
----@class PaneInfo
----@field index number
----@field is_active bool
----@field is_zoomed bool
----@field left number
----@field top number
----@field width number
----@field height number
----@field pixel_width number
----@field pixel_height number
----@field pane Pane
-
 -- `MuxTab` represents a tab that is managed by the multiplexer
 ---@class MuxTab
 -- Activates (focuses) the tab
@@ -44,7 +32,7 @@
 ---@field panes fun(self: MuxTab): Pane[]
 -- Returns an array table containing an extended info entry
 -- for each of the panes contained by this tab
----@field panes_with_info fun(self: MuxTab): PaneInfo[]
+---@field panes_with_info fun(self: MuxTab): PaneInformation[]
 -- Rotates the panes in the clockwise direction
 ---@field rotate_clockwise fun(self: MuxTab)
 -- Rotates the panes in the counter-clockwise direction
