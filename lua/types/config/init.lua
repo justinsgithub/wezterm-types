@@ -234,7 +234,7 @@
 ---@field serial_ports? SerialDomain[]
 ---@field unix_domains? UnixDomain[]
 -- The set of unix domains
----@field ssh_domains? SSHDomainObj[]
+---@field ssh_domains? SshDomain[]
 ---@field ssh_backend? SshBackend
 ---@field tls_servers? TlsDomainServer[]
 -- When running in server mode, defines configuration for
