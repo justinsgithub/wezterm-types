@@ -540,7 +540,6 @@
 ---@field freetype_load_flags? FreeTypeLoadFlags
 ---@field is_fallback? bool
 ---@field is_synthetic? bool
----@field harfbuzz_features? HarfbuzzFeatures[]
 ---@field assume_emoji_presentation? bool
 ---@field scale? number
 
