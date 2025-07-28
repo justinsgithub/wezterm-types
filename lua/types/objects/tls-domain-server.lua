@@ -1,5 +1,5 @@
 ---@class TlsDomainServer
----@field bind_address String
+---@field bind_address string
 -- The address:port combination on which the server will listen
 -- for client connections
 ---@field pem_private_key PathBuf
