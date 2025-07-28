@@ -477,6 +477,7 @@
 ---@alias Fonts { fonts: FontAttributes[] }
 
 ---@class FontAttributes
+---@field family? string
 -- Whether the font should be a bold variant
 ---@field weight? FontWeight
 ---@field stretch? FontStretch
@@ -489,7 +490,6 @@
 ---@field freetype_load_flags? FreeTypeLoadFlags
 ---@field is_fallback? bool
 ---@field is_synthetic? bool
----@field harfbuzz_features? string[]
 ---@field assume_emoji_presentation? bool
 ---@field scale? number
 
