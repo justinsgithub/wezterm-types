@@ -12,7 +12,7 @@ config.check_for_updates = false
 
 config.launcher_alphabet = "1234567890abcdefghilmnopqrstuvwxyz"
 
-config.font_size = 18
+config.font_size = 19
 config.font = wezterm.font("FiraCode Nerd Font Mono", {})
 config.anti_alias_custom_block_glyphs = true
 
