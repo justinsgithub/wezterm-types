@@ -1,4 +1,39 @@
----@class TimeObj
----@field format fun(self: TimeObj, format: string): string Formats the time object as a string, using the local date/time representation of the time.
----@field format_utc fun(self: TimeObj, format: string): string Formats the time object as a string, using the UTC date/time representation of the time.
----@field sun_times fun(self: TimeObj, lat: number, lon: number): { rise: TimeObj, set: TimeObj, progression: number, up: boolean } For the date component of the time object, compute the times of the sun rise and sun set for the given latitude and longitude.
+---@meta
+
+---@class Time.SunTimes
+---@field rise Time|nil
+---@field progression number
+---@field set Time|nil
+---@field up bool
+
+-- Represents a date and time that is tracked internally as UTC.
+--
+-- Using `tostring()` on a Time object will show
+-- the internally tracked UTC time information
+---@class Time
+-- Formats the time object as a string, using the local date/time representation of the time.
+--
+-- The format string supports the [set of formatting placeholders described here](https://docs.rs/chrono/latest/chrono/format/strftime/index.html)
+---@field format fun(self: Time, format: string): string
+-- Formats the time object as a string, using UTC date/time representation of the time.
+--
+-- The format string supports the [set of formatting placeholders described here](https://docs.rs/chrono/latest/chrono/format/strftime/index.html)
+---@field format_utc fun(self: Time, format: string): string
+-- For the date component of the time object,
+-- compute the times of the sun rise and sun set for the given latitude and longitude.
+--
+-- For the time component of the time object,
+-- compute whether the sun is currently up,
+-- and the progression of the sun through either the day or night.
+--
+-- Returns that information as a `Time.SunTimes` table.
+--
+-- This information is potentially useful if you want to vary
+-- color scheme or other configuration based on the time of day.
+--
+-- If the provided `latitude` and `longitude` specify a location
+-- at one of the poles, then the day or night may be longer than 24 hours.
+-- In that case the `rise` and `set` values will be `nil`,
+-- `progression` will be `0` and `up` will indicate either
+-- if it is polar daytime (`true`) or polar night time (`false`)
+---@field sun_times fun(self: Time, lat: number, lon: number): Time.SunTimes
