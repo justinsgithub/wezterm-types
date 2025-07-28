@@ -30,7 +30,7 @@
 -- that are not visible to the mux layer of the API
 ---@field active_pane fun(self: Window): Pane
 -- A convenience accessor for returning the active tab within the window
----@field active_tab fun(self: Window): MuxTabObj
+---@field active_tab fun(self: Window): MuxTab
 -- Returns the name of the active workspace.
 -- This example demonstrates using the launcher menu to select and create workspaces,
 -- and how the workspace can be shown in the right status area

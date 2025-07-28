@@ -1,0 +1,38 @@
+---@meta
+
+-- Describes a pane.
+--
+-- Unlike the `Pane` object, `PaneInformation` is a snapshot of
+-- some of the key characteristics of the pane,
+-- intended for use in synchronous, fast, event callbacks
+-- that format GUI elements such as the window and tab title bars
+---@class PaneInformation
+-- The pane identifier number
+---@field pane_id integer
+-- The logical position of the pane within its containing layout
+---@field pane_index number
+-- is `true` if the pane is the active pane within its containing tab
+---@field is_active bool
+-- Is `true` if the pane is in the zoomed state
+---@field is_zoomed bool
+-- The cell `x` coordinate of the left edge of the pane
+---@field left number
+-- The cell `y` coordinate of the top edge of the pane
+---@field top number
+-- The width of the pane in cells
+---@field width number
+-- The height of the pane in cells
+---@field height number
+-- The width of the pane in pixels
+---@field pixel_width number
+-- The height of the pane in pixels
+---@field pixel_height number
+-- The title of the pane,
+-- per `pane:get_title()` at the time the pane information was captured
+---@field title string
+-- The user variables defined for the pane,
+-- per `pane:get_user_vars()` at the time the pane information was captured
+---@field user_vars table<string, string>
+-- The progress state,
+-- per `pane:get_progress()` at the time the pane information was captured
+---@field progress string

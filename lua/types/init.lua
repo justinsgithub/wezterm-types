@@ -667,10 +667,10 @@
 ---@alias EventBell fun(event: "augment-command-palette", callback: CallbackWindowPane)
 
 -- TODO: Description
----@alias EventFormatTabTitle fun(event: "format-tab-title", callback: fun(tab: MuxTabObj, tabs: MuxTabObj[], panes: Pane[], config: Config, hover: bool, max_width: number): string)
+---@alias EventFormatTabTitle fun(event: "format-tab-title", callback: fun(tab: MuxTab, tabs: MuxTab[], panes: Pane[], config: Config, hover: bool, max_width: number): string)
 
 -- TODO: Description
----@alias EventFormatWindowTitle fun(event: "format-window-title", callback: fun(window: Window, pane: Pane, tabs: MuxTabObj[], panes: Pane[], config: Config))
+---@alias EventFormatWindowTitle fun(event: "format-window-title", callback: fun(window: Window, pane: Pane, tabs: MuxTab[], panes: Pane[], config: Config))
 
 -- TODO: Description
 ---@alias EventNewTabButtonClick fun(event: "new-tab-button-click", callback: fun(window: Window, pane: Pane, button: "Left"|"Middle"|"Right", default_action: KeyAssignment): nil)
