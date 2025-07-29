@@ -115,6 +115,7 @@
 ---@field dpi_by_screen? { [string]: f64 }
 -- The color palette
 ---@field colors? Palette
+---@field launcher_alphabet? string
 ---@field switch_to_last_active_tab_when_closing_tab? bool
 ---@field window_frame? WindowFrameConfig
 ---@field char_select_font_size? f64
