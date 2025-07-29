@@ -188,7 +188,7 @@
 -- characteristics with respective to subpixel hinting.
 -- See https://freetype.org/freetype2/docs/subpixel-hinting.html
 ---@field freetype_pcf_long_family_names? bool
----@field harfbuzz_features? String[]
+---@field harfbuzz_features? HarfbuzzFeatures[]
 -- Specify the features to enable when using harfbuzz for font shaping.
 -- There is some light documentation here:
 -- <https://harfbuzz.github.io/shaping-opentype-features.html>
