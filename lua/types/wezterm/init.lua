@@ -61,7 +61,7 @@
 ---@field permute_any_mods (fun(tbl: MouseBindingBase): MouseBinding)|(fun(tbl: KeyBindingBase): KeyBinding)
 ---@field read_dir fun(path: string): string Returns an array containing the absolute file names of the directory specified. Due to limitations in the lua bindings, all of the paths must be able to be represented as UTF-8 or this function will generate an error.
 ---@field reload_configuration fun(): nil Immediately causes the configuration to be reloaded and re-applied.
----@field run_child_process fun(args: string[]): { success: boolean, stdout: string, stderr: string } Will attempt to spawn that command and will return a tuple consisting of the boolean success of the invocation, the stdout data and the stderr data.
+---@field run_child_process fun(args: string[]): success: boolean, stdout: string, stderr: string  Will attempt to spawn that command and will return a tuple consisting of the boolean success of the invocation, the stdout data and the stderr data.
 ---@field running_under_wsl fun(): boolean Returns a boolean indicating whether we believe that we are running in a Windows Services for Linux (WSL) container.
 ---@field shell_join_args fun(args: string[]): string Joins together its array arguments by applying posix style shell quoting on each argument and then adding a space.
 ---@field shell_quote_arg fun(string: string): string Quotes its single argument using posix shell quoting rules.
