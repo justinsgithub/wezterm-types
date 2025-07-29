@@ -32,6 +32,32 @@ require('lazy').setup({
 })
 ```
 
+**NOTE If you assign a custom `name` field for the plugin:**
+
+```lua
+{
+  {
+    'folke/lazydev.nvim',
+    ft = 'lua',
+    dependencies = {
+      {
+        'justinsgithub/wezterm-types',
+        name = '<my_custom_name>', -- CUSTOM DIRECTORY NAME
+        lazy = true,
+      },
+    },
+    opts = {
+      library = {
+        -- Other library configs...
+
+        -- MAKE SURE TO MATCH THE PLUGIN DIRECTORY'S NAME
+        { path = '<my_custom_name>', mods = { 'wezterm' } },
+      },
+    },
+  },
+}
+```
+
 </details>
 
 ---

@@ -1,38 +1,53 @@
 ---@meta
 
--- TODO: This section is incomplete
+---@alias SelectionMode
+---|"Block" Selection expands to define a rectangular block using the starting point and current cursor position as the corners
+---|"Cell" Selection expands a single cell at a time
+---|"Line" Selection expands by a line at a time
+---|"Word" Selection expands by a word at a time
+---|"SemanticZone" Selection expands to the current semantic zone
 
+---@alias SemanticZoneType
+---|"Input"
+---|"Output"
+---|"Prompt"
+
+-- Represents a pre-defined function that can be applied to control `CopyMode`
+-- and [Search Mode](https://wezterm.org/scrollback.html#enabledisable-scrollbar)
 ---@alias CopyModeAssignment
----|"AcceptPattern"
----|"ClearPattern"
----|"ClearSelectionMode"
----|"Close"
----|"CycleMatchType"
----|"EditPattern"
----|"MoveBackwardSemanticZone"
----|"MoveBackwardSemanticZoneOfType"
----|"MoveBackwardWord"
----|"MoveDown"
----|"MoveForwardSemanticZone"
----|"MoveForwardSemanticZoneOfType"
----|"MoveForwardWord"
----|"MoveForwardWordEnd"
----|"MoveLeft"
----|"MoveRight"
----|"MoveToEndOfLineContent"
----|"MoveToScrollbackBottom"
----|"MoveToScrollbackTop"
----|"MoveToSelectionOtherEnd"
----|"MoveToSelectionOtherEndHoriz"
----|"MoveToStartOfLine"
----|"MoveToStartOfLineContent"
----|"MoveToStartOfNextLine"
----|"MoveToViewportBottom"
----|"MoveToViewportMiddle"
----|"MoveToViewportTop"
----|"MoveUp"
----|"NextMatch"
----|"NextMatchPage"
----|"PriorMatch"
----|"PriorMatchPage"
----|"SetSelectionMode"
+---|"AcceptPattern" Takes `CopyMode` / `SearchMode` out of editing mode: keyboard input will no longer be directed to the search pattern editor
+---|"ClearPattern" Clear the `CopyMode` / `SearchMode` search pattern
+---|"ClearSelectionMode" Clears the current `CopyMode` selection mode without leaving `CopyMode`
+---|"Close" Closes the copy mode
+---|"CycleMatchType" Move the `CopyMode` / `SearchMode` cycle between `case-sensitive`, `case-insensitive` and `regular expression match types`
+---|"EditPattern" Put `CopyMode` / `SearchMode` into editing mode: keyboard input will be directed to the search pattern editor
+---|"MoveBackwardSemanticZone" Moves the `CopyMode` cursor position one semantic zone to the left
+---|"MoveBackwardSemanticZoneOfType" Moves the `CopyMode` cursor position to the first semantic zone of the specified type that precedes the current zone
+---|"MoveBackwardWord" Moves the `CopyMode` cursor position one word to the left
+---|"MoveDown" Moves the `CopyMode` cursor position one cell down
+---|"MoveForwardSemanticZone" Moves the `CopyMode` cursor position one semantic zone to the right
+---|"MoveForwardSemanticZoneOfType" Moves the `CopyMode` cursor position to the next semantic zone of the specified type that follows the current zone
+---|"MoveForwardWord" Moves the `CopyMode` cursor position one word to the right
+---|"MoveForwardWordEnd" Moves the `CopyMode` cursor position forward to the end of word
+---|"MoveLeft" Moves the `CopyMode` cursor position one cell to the left
+---|"MoveRight" Moves the `CopyMode` cursor position one cell to the right
+---|"MoveToEndOfLineContent" Moves the `CopyMode` cursor position to the last non-space cell in the current line
+---|"MoveToScrollbackBottom" Moves the `CopyMode` cursor position to the bottom of the scrollback
+---|"MoveToScrollbackTop" Moves the `CopyMode` cursor position to the top of the scrollback
+---|"MoveToSelectionOtherEnd" Moves the `CopyMode` cursor position to the other end of the selection; if the cursor is at the top left corner and the starting point is the bottom right corner, then the cursor and starting point are swapped, with the cursor now positioned at the bottom right corner
+---|"MoveToSelectionOtherEndHoriz" Moves the `CopyMode` cursor position to the other horizontal end of the selection without changing the y-coordinate; if the cursor at the left end and the starting point at the right end, then the cursor and starting point are swapped, with the cursor now positioned at the right end
+---|"MoveToStartOfLine" Moves the `CopyMode` cursor position to the first cell in the current line
+---|"MoveToStartOfLineContent" Moves the `CopyMode` cursor position to the first non-space cell in the current line
+---|"MoveToStartOfNextLine" Moves the `CopyMode` cursor position to the first cell in the next line
+---|"MoveToViewportBottom" Moves the `CopyMode` cursor position to the bottom of the viewport
+---|"MoveToViewportMiddle" Moves the `CopyMode` cursor position to the middle of the viewport
+---|"MoveToViewportTop" Moves the `CopyMode` cursor position to the top of the viewport
+---|"MoveUp" Moves the `CopyMode` cursor position one cell up
+---|"NextMatch" Move the `CopyMode` / `SearchMode` selection to the next matching text, if any
+---|"NextMatchPage" Move the `CopyMode` / `SearchMode` selection to the next matching text on the next page of the screen, if any
+---|"PriorMatch" Move the `CopyMode` / `SearchMode` selection to the previous matching text, if any
+---|"PriorMatchPage" Move the `CopyMode` / `SearchMode` selection to the previous matching text on the previous page of the screen, if any
+---|"SetSelectionMode" Sets the `CopyMode` selection mode
+---|{ MoveBackwardSemanticZoneOfType: SemanticZoneType }
+---|{ MoveForwardSemanticZoneOfType: SemanticZoneType }
+---|{ SetSelectionMode: SelectionMode }

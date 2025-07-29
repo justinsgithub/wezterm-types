@@ -116,8 +116,6 @@
 
 ---@alias usize number
 
----@alias String string
-
 ---@alias Regex string
 
 ---@alias RgbColor string
@@ -564,48 +562,48 @@
 ---@field border_bottom_color? RgbaColor
 
 ---@class TabBarStyle
----@field new_tab? String
----@field new_tab_hover? String
----@field window_hide? String
----@field window_hide_hover? String
----@field window_maximize? String
----@field window_maximize_hover? String
----@field window_close? String
----@field window_close_hover? String
+---@field new_tab? string
+---@field new_tab_hover? string
+---@field window_hide? string
+---@field window_hide_hover? string
+---@field window_maximize? string
+---@field window_maximize_hover? string
+---@field window_close? string
+---@field window_close_hover? string
 
 ---@class HyperlinkRule
 ---@field regex? Regex
----@field format? String
+---@field format? string
 ---@field highlight? usize
 
 ---@class SerialDomain
 -- The name of this specific domain.
 -- Must be unique amongst all types of domain in the configuration file
----@field name String
+---@field name string
 -- Specifies the serial device name.
 --
 -- - On Windows systems this can be a name like `COM0`
 -- - On POSIX systems this will be something like `/dev/ttyUSB0`
 -- - If omitted, the name will be interpreted as the port
----@field port String
+---@field port string
 -- Set the baud rate.
 --
 -- The default is `9600` baud
 ---@field baud usize|9600
 
 ---@class GpuInfo
----@field name String
----@field device_type String
----@field backend String
----@field driver String
----@field driver_info String
+---@field name string
+---@field device_type string
+---@field backend string
+---@field driver string
+---@field driver_info string
 ---@field vendor u32
 ---@field device u32
 
 ---@class UnixDomain
 -- The name of this specific domain.
 -- Must be unique amongst all types of domain in the configuration file
----@field name String
+---@field name string
 -- The path to the socket.
 -- If unspecified, a resonable default value will be computed
 ---@field socket_path PathBuf
@@ -628,11 +626,11 @@
 -- ```sh
 -- wsl -e wezterm-mux-server --daemonize
 -- ```
----@field serve_command String[]
+---@field serve_command string[]
 -- Instead of directly connecting to `socket_path`
 -- spawn this command and use its stdin/stdout in place of
 -- the socket
----@field proxy_command String[]
+---@field proxy_command string[]
 -- If `true`, bypass checking for secure ownership of the socket_path.
 --
 -- This is not recommended on a multi-user system,
@@ -884,17 +882,6 @@
 ---|"HorizontalLcd"
 ---|"Light"
 ---|"Mono"
-
----@alias SelectionMode
----|"Block"
----|"Cell"
----|"Line"
----|"Word"
-
----@alias SemanticZoneType
----|"Input"
----|"Output"
----|"Prompt"
 
 ---@alias Stretch
 ---|"Normal"

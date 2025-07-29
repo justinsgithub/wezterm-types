@@ -115,6 +115,7 @@
 ---@field dpi_by_screen? { [string]: f64 }
 -- The color palette
 ---@field colors? Palette
+---@field launcher_alphabet? string
 ---@field switch_to_last_active_tab_when_closing_tab? bool
 ---@field window_frame? WindowFrameConfig
 ---@field char_select_font_size? f64
@@ -128,14 +129,14 @@
 ---@field pane_select_bg_color? RgbaColor
 ---@field tab_bar_style? TabBarStyle
 ---@field resolved_palette? Palette
----@field color_scheme? String
+---@field color_scheme? string
 -- Use a named color scheme rather than the palette specified
 -- by the colors setting.
----@field color_schemes? { [String]: Palette }
+---@field color_schemes? { [string]: Palette }
 -- Named color schemes
 ---@field scrollback_lines? usize
 -- How many lines of scrollback you want to retain
----@field default_prog? String[]
+---@field default_prog? string[]
 -- If no `prog` is specified on the command line, use this
 -- instead of running the user's shell.
 -- For example, to have `wezterm` always run `top` by default
@@ -147,7 +148,7 @@
 -- `default_prog` is implemented as an array where the 0th element
 -- is the command to run and the rest of the elements are passed
 -- as the positional arguments to that command.
----@field default_gui_startup_args? String[]
+---@field default_gui_startup_args? string[]
 ---@field default_cwd? PathBuf
 -- Specifies the default current working directory if none is specified
 -- through configuration or OSC 7 (see docs for `default_cwd` for more
@@ -156,7 +157,7 @@
 ---@field exit_behavior_messaging? ExitBehaviorMessaging
 ---@field clean_exit_codes? u32[]
 ---@field detect_password_input? bool
----@field set_environment_variables? {[String]: String}
+---@field set_environment_variables? {[string]: string}
 -- Specifies a map of environment variables that should be set
 -- when spawning commands in the local domain.
 -- This is not used when working with remote domains.
@@ -173,7 +174,7 @@
 ---@field initial_cols? u16
 -- Specifies the width of a new window, expressed in character cells
 ---@field hyperlink_rules? HyperlinkRule[]
----@field term? String
+---@field term? string
 -- What to set the TERM variable to
 ---@field font_locator? FontLocatorSelection
 ---@field font_rasterizer? FontRasterizerSelection
@@ -198,30 +199,26 @@
 -- The OpenType spec lists a number of features here:
 -- <https://docs.microsoft.com/en-us/typography/opentype/spec/featurelist>
 --
--- Options of likely interest will be:
+-- This option used to have more scope in earlier versions of wezterm,
+-- but today it allows three possible values:
 --
--- * `calt` - <https://docs.microsoft.com/en-us/typography/opentype/spec/features_ae#tag-calt>
--- * `clig` - <https://docs.microsoft.com/en-us/typography/opentype/spec/features_ae#tag-clig>
+-- - `"OpenGL"`: use GPU accelerated rasterization
+-- - `"Software"`: use CPU-based rasterization
+-- - `"WebGpu"`: use GPU accelerated rasterization
 --
--- If you want to disable ligatures in most fonts, then you may want to
--- use a setting like this:
+-- You may wish (or need!) to select Software if there are issues with your GPU/OpenGL drivers.
 --
--- ```toml
--- harfbuzz_features ["calt=0", "clig=0", "liga=0"]
--- ```
+-- WezTerm will automatically select Software if it detects that
+-- it is being started in a Remote Desktop environment on Windows
 --
--- Some fonts make available extended options via stylistic sets.
--- If you use the [Fira Code font](https://github.com/tonsky/FiraCode)
--- it lists available stylistic sets here:
--- <https://github.com/tonsky/FiraCode/wiki/How-to-enable-stylistic-sets>
+-- ## WebGpu
 --
--- and you can set them in wezterm:
+-- The `WebGpu` front end allows wezterm to use GPU acceleration
+-- provided by a number of platform-specific backends:
 --
--- ```toml
--- # Use this for a zero with a dot rather than a line through it
--- # when using the Fira Code font
--- harfbuzz_features ["zero"]
--- ```
+-- - Metal (on macOS)
+-- - Vulkan
+-- - DirectX 12 (on Windows)
 ---@field front_end? FrontEndSelection
 ---@field webgpu_power_preference? WebGpuPowerPreference
 -- Whether to select the higher powered discrete GPU when
@@ -257,17 +254,17 @@
 -- in order to try to coalesce fragmented writes into
 -- a single bigger chunk of output and reduce the chances
 -- observing "screen tearing" with un-synchronized output
----@field mux_env_remove? String[]
+---@field mux_env_remove? string[]
 ---@field keys? Key[]
----@field key_tables? {[String]: Key[]}
+---@field key_tables? {[string]: Key[]}
 ---@field bypass_mouse_reporting_modifiers? Modifiers
 ---@field debug_key_events? bool
 ---@field normalize_output_to_unicode_nfc? bool
 ---@field disable_default_key_bindings? bool
 ---@field leader? LeaderKey
 ---@field disable_default_quick_select_patterns? bool
----@field quick_select_patterns? String[]
----@field quick_select_alphabet? String
+---@field quick_select_patterns? string[]
+---@field quick_select_alphabet? string
 ---@field mouse_bindings? MouseBindingBase[]
 ---@field disable_default_mouse_bindings? bool
 ---@field daemon_options? DaemonOptions
@@ -433,7 +430,7 @@
 -- The default is to scroll to the bottom when you send input
 -- to the terminal.
 ---@field use_ime? bool
----@field xim_im_name? String
+---@field xim_im_name? string
 ---@field ime_preedit_rendering? ImePreeditRendering
 ---@field use_dead_keys? bool
 ---@field launch_menu? SpawnCommand[]
@@ -444,22 +441,22 @@
 ---@field check_for_updates? bool
 ---@field show_update_window? bool
 ---@field check_for_updates_interval_seconds? u64
----@field enable_csi_u_key_encoding? bool
 -- When set to true, use the CSI-U encoding scheme as described
 -- in http://www.leonerd.org.uk/hacks/fixterms/
 -- This is off by default because @wez and @jsgf find the shift-space
 -- mapping annoying in vim :-p
+---@field enable_csi_u_key_encoding? bool
 ---@field window_close_confirmation? WindowCloseConfirmation
 ---@field native_macos_fullscreen_mode? bool
----@field selection_word_boundary? String
----@field enq_answerback? String
+---@field selection_word_boundary? string
+---@field enq_answerback? string
 ---@field adjust_window_size_when_changing_font_size? bool
----@field tiling_desktop_environments? String[]
+---@field tiling_desktop_environments? string[]
 ---@field use_resize_increments? bool
 ---@field alternate_buffer_wheel_scroll_speed? u8
 ---@field status_update_interval? u64
 ---@field experimental_pixel_positioning? bool
----@field skip_close_confirmation_for_processes_named? String[]
+---@field skip_close_confirmation_for_processes_named? string[]
 ---@field quit_when_all_windows_are_closed? bool
 ---@field warn_about_missing_glyphs? bool
 ---@field sort_fallback_fonts_by_coverage? bool
@@ -482,10 +479,10 @@
 ---@field treat_east_asian_ambiguous_width_as_wide? bool
 ---@field allow_download_protocols? bool
 ---@field allow_win32_input_mode? bool
----@field default_domain? String
----@field default_mux_server_domain? String
----@field default_workspace? String
----@field xcursor_theme? String
+---@field default_domain? string
+---@field default_mux_server_domain? string
+---@field default_workspace? string
+---@field xcursor_theme? string
 ---@field xcursor_size? u32
 ---@field key_map_preference? KeyMapPreference
 ---@field quote_dropped_files? DroppedFileQuoting

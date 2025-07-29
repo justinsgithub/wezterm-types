@@ -1,12 +1,12 @@
 ---@class TlsDomainClient
----@field name String
+---@field name string
 -- The name of this specific domain.  Must be unique amongst
 -- all types of domain in the configuration file.
----@field bootstrap_via_ssh String
+---@field bootstrap_via_ssh string
 -- If set, use ssh to connect, start the server, and obtain
 -- a certificate.
 -- The value is "user@host:port", just like "wezterm ssh" accepts.
----@field remote_address String
+---@field remote_address string
 -- identifies the host:port pair of the remote server.
 ---@field pem_private_key PathBuf
 -- the path to an x509 PEM encoded private key file
@@ -26,7 +26,7 @@
 -- available for troubleshooting purposes and should not be used outside
 -- of a controlled environment as it weakens the security of the TLS
 -- channel.
----@field expected_cn String
+---@field expected_cn string
 -- the hostname string that we expect to match against the common name
 -- field in the certificate presented by the server.  This defaults to
 -- the hostname portion of the `remote_address` configuration and you
@@ -37,7 +37,7 @@
 ---@field write_timeout Duration
 ---@field local_echo_threshold_ms u64
 -- The path to the wezterm binary on the remote host
----@field remote_wezterm_path String
+---@field remote_wezterm_path string
 -- Show time since last response when waiting for a response.
 -- It is recommended to use
 -- <https://wezfurlong.org/wezterm/config/lua/pane/get_metadata.html#since_last_response_ms>
