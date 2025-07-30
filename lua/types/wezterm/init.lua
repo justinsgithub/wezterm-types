@@ -54,7 +54,7 @@
 ---@field log_info fun(msg: string, ...: any): nil Logs the provided message string through wezterm's logging layer at 'INFO' level. If you started wezterm from a terminal that text will print to the stdout of that terminal. If running as a daemon for the multiplexer server then it will be logged to the daemon output path.
 ---@field log_warn fun(msg: string, ...: any): nil Logs the provided message string through wezterm's logging layer at 'WARN' level. If you started wezterm from a terminal that text will print to the stdout of that terminal. If running as a daemon for the multiplexer server then it will be logged to the daemon output path.
 ---@field open_with fun(path_or_url: string, application: string?) This function opens the specified path_or_url with either the specified application or uses the default application if application was not passed in.
----@field on EventAugmentCommandPalette|EventBell|EventFormatTabTitle|EventFormatWindowTitle|EventNewTabButtonClick|EventOpenUri|EventUpdateRightStatus|EventUpdateStatus|EventUserVarChanged|EventWindowConfigReloaded|EventWindowFocusChanged|EventWindowResized|EventCustom
+---@field on Events
 ---@field pad_left fun(string: string, min_width: integer): string Returns a copy of string that is at least min_width columns (as measured by wezterm.column_width)
 ---@field pad_right fun(string: string, min_width: integer): string Returns a copy of string that is at least min_width columns (as measured by wezterm.column_width).
 ---@field permute_any_or_no_mods any #TODO
