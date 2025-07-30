@@ -12,4 +12,4 @@
 ---@field rename_workspace fun(old: string, new: string): nil Renames the workspace old to new.
 ---@field set_active_workspace fun(name: string): nil Sets the active workspace name. If the requested name doesn't correspond to an existing workspace, then an error is raised.
 ---@field set_default_domain fun(domain: MuxDomain): nil Assign a new default domain in the mux. The domain that you assign here will override any configured `default_domain` or the implicit assignment of the default domain that may have happened as a result of starting wezterm via `wezterm connect` or `wezterm serial`.
----@field spawn_window fun(...: any): { tab: MuxTab, pane: Pane, window: MuxWindow } Spawns a program into a new window, returning the MuxTab, Pane and MuxWindow objects associated with it. When no arguments are passed, the default program is spawned. TODO
+---@field spawn_window fun(...: any): tab: MuxTab, pane: Pane, window: MuxWindow  Spawns a program into a new window, returning the MuxTab, Pane and MuxWindow objects associated with it. When no arguments are passed, the default program is spawned. TODO
