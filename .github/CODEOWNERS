@@ -2,3 +2,5 @@
 /lua/types/serde/init.lua @DrKJeff16
 /lua/types/plugin/init.lua @DrKJeff16
 /lua/types/url/init.lua @DrKJeff16
+/.github/CODEOWNERS @DrKJeff16
+/.github/workflows/stylua.yml @DrKJeff16
