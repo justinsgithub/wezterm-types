@@ -470,6 +470,7 @@
 ---|"MONOCHROME"
 ---|"NO_AUTOHINT"
 
+-- TODO: Find out what do the undocumented options do
 ---@alias HarfbuzzFeatures
 ---|"calt=0"
 ---|"clig=0"
