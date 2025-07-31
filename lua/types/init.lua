@@ -584,9 +584,9 @@
 ---@field window_close_hover? string
 
 ---@class HyperlinkRule
----@field regex? Regex
----@field format? string
----@field highlight? usize
+---@field regex string
+---@field format string
+---@field highlight? 1
 
 ---@class SerialDomain
 -- The name of this specific domain.

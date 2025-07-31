@@ -286,6 +286,14 @@
 -- otherwise attempt to execute the response.
 -- <https://marc.info/?l=bugtraq&m=104612710031920&w=2>
 ---@field enable_title_reporting? bool
+-- If `false`, do not try to use a Wayland protocol connection
+-- when starting the gui frontend, and instead use X11.
+--
+-- This option is only considered on X11/Wayland systems and
+-- has no effect on macOS or Windows.
+--
+-- The default is `true`
+---@field enable_wayland? bool
 ---@field exec_domains? ExecDomain[]
 ---@field exit_behavior? ExitBehavior
 ---@field exit_behavior_messaging? ExitBehaviorMessaging
@@ -364,7 +372,12 @@
 -- - Vulkan
 -- - DirectX 12 (on Windows)
 ---@field front_end? FrontEndSelection
+-- When `config.font_shaper = "Harfbuzz"`, this setting affects
+-- how font shaping takes place.
+--
+-- See [Font Shaping](https://wezterm.org/config/font-shaping.html) for more information and examples
 ---@field harfbuzz_features? HarfbuzzFeatures[]
+-- Defines rules to match text from the terminal output and generate clickable links
 ---@field hyperlink_rules? HyperlinkRule[]
 -- Specifies the width of a new window, expressed in character cells
 ---@field initial_cols? u16
@@ -376,10 +389,57 @@
 -- This can be used to produce a translucent window effect rather than
 -- a crystal clear transparent window effect
 ---@field kde_window_background_blur? bool
+-- Controls how keys without an explicit phys: or mapped: prefix are treated.
+--
+-- If `config.key_map_preference = "Mapped"` (the default), then `mapped:`
+-- is assumed.
+-- If `config.key_map_preference = "Physical"` then `phys:` is assumed.
+--
+-- Default key assignments also respect `key_map_preference`
+---@field key_map_preference? KeyMapPreference
+-- See the main [Key Tables](https://wezterm.org/config/key-tables.html) docs!
 ---@field key_tables? table<string, Key[]>
 ---@field keys? Key[]
----@field launcher_alphabet? string
----@field leader? LeaderKey
+-- Specify a string of unique characters.
+--
+-- The characters in the string are used to calculate one or two key press
+-- shortcuts that can be used to quickly choose from the Launcher when in the default mode.
+--
+-- Defaults to: `"1234567890abcdefghilmnopqrstuvwxyz"`.
+-- (Without j/k so they can be used for movement up and down)
+---@field launcher_alphabet? string|"1234567890abcdefghilmnopqrstuvwxyz"
+-- You can define your own entries for the [Launcher Menu](https://wezterm.org/config/launch.html#the-launcher-menu)
+-- using this configuration setting.
+--
+-- Each entry in `launch_menu` is an instance of a `SpawnCommand` object
+---@field launch_menu? SpawnCommand[]
+-- Scales the computed line height to adjust the spacing between successive rows of text.
+--
+-- The default line height is controlled by the font_size configuration option.
+-- If you feel that your chosen font feels too vertically cramped then you can set
+-- `config.line_height = 1.2` to increase the vertical spacing by 20%.
+-- Conversely, setting `config.line_height = 0.9` will decrease the vertical spacing by 10%
+---@field line_height? number
+-- When set to `true`, WezTerm will log warnings when it receives escape sequences
+-- which it does not understand.
+-- Those warnings are harmless and are useful primarily by the maintainer
+-- to discover new and interesting escape sequences.
+--
+-- In previous versions, there was no option to control this, and WezTerm would always
+-- log warnings for unknown escape sequences
+---@field log_unknown_escape_sequences? bool
+-- On macOS systems, this option controls whether modified key presses are routed
+-- via the IME when `use_ime = true`.
+--
+-- When processing a key event, if any modifiers are held,
+-- if the modifiers intersect with the value of macos_forward_to_ime_modifier_mask,
+-- then the key event is routed to the IME,
+-- which may choose to swallow the key event as part of its own state management.
+--
+-- Users of a Japanese IME may wish to set this to `"SHIFT|CTRL"`,
+-- but should note that it will prevent certain `CTRL` key combinations
+-- that are commonly used in unix terminal programs from working as expected
+---@field macos_forward_to_ime_modifier_mask? Modifiers
 -- When `true` and in full screen mode,
 -- the window will extend behind the notch on macOS.
 --
@@ -401,8 +461,27 @@
 -- config.macos_fullscreen_extend_behind_notch = true
 -- ```
 ---@field macos_fullscreen_extend_behind_notch? bool
+---@field mouse_bindings? MouseBindingBase[]
 ---@field mux_enable_ssh_agent? bool
 ---@field mux_env_remove? string[]
+-- When set to `true`, contiguous runs codepoints output to the terminal
+-- are normalized to Unicode Normalization Form C (NFC).
+--
+-- This can improve the display of text and in the terminal
+-- when portions of the output are in other normalization forms,
+-- particularly with Korean text where
+-- a given glyph can be comprised of several codepoints.
+--
+-- However, depending on the application running inside the terminal,
+-- enabling this option may introduce discrepancies in the understanding of text positioning:
+-- while it may fix some display glitches for some applications,
+-- it may trade them for other glitches.
+--
+-- As such, you should consider this configuration setting to be an imperfect option!
+--
+-- This option defaults to `false` as it introduces some additional text processing
+-- that is not necessary for most users
+---@field normalize_output_to_unicode_nfc? bool
 -- This option controls how wezterm behaves when a toast notification escape sequence is received.
 --
 -- The following escape sequences will generate a toast notification:
@@ -430,6 +509,42 @@
 -- config.pane_select_font = wezterm.font 'Roboto'
 -- ```
 ---@field pane_select_font? Fonts|FontAttributes|FontFamilyAttributes
+-- Specify the alphabet used to produce labels for the items matched in quick select mode.
+--
+-- The default alphabet is `"asdfqwerzxcvjklmiuopghtybn"` which means that
+-- the first matching item from the bottom is labelled with an `a`,
+-- the second with `s` and so forth;
+-- these are easily accessible characters in a `qwerty` keyboard layout.
+--
+-- |----------|----------------------------------------|
+-- | `qwerty`   | `"asdfqwerzxcvjklmiuopghtybn"` (default) |
+-- | `qwertz`   | `"asdfqweryxcvjkluiopmghtzbn"`           |
+-- | `azerty`   | `"qsdfazerwxcvjklmuiopghtybn"`           |
+-- | `dvorak`   | `"aoeuqjkxpyhtnsgcrlmwvzfidb"`           |
+-- | `colemak`  | `"arstqwfpzxcvneioluymdhgjbk"`           |
+--
+-- The suggested alphabet in the above table uses the left 4 fingers
+-- on the home row, top row, bottom row, then the right 4 fingers
+-- on the home raw, top row, bottom row, followed by the characters
+-- in the middle of the keyboard that may be harder to reach
+---@field quick_select_alphabet? string
+-- Specify additional patterns to match when in quick select mode.
+--
+-- This setting is a table listing out a set of regular expressions.
+--
+-- ```lua
+-- config.quick_select_patterns = {
+--   -- match things that look like sha1 hashes
+--   -- (this is actually one of the default patterns)
+--   '[0-9a-f]{7,40}',
+-- }
+-- ```
+--
+-- The regex syntax now supports backreferences and look around assertions.
+-- See [Fancy Regex Syntax](https://docs.rs/fancy-regex/latest/fancy_regex/#syntax) for the extended syntax,
+-- which builds atop the underlying [Regex syntax](https://docs.rs/regex/latest/regex/#syntax).
+-- In prior versions, only the base Regex syntax was supported
+---@field quick_select_patterns? string[]
 -- When set to `true`, all color and styling is removed from the pane
 -- prior to performing matching and highlighting any matching text
 -- in quick select mode.
@@ -495,8 +610,18 @@
 ---@field text_min_contrast_ratio? number|nil
 ---@field tls_clients? TlsDomainClient[]
 ---@field tls_servers? TlsDomainServer[]
+-- If you are using a layout with an `AltGr` key, you may experience issues
+-- when running inside a VNC session, because VNC emulates the `AltGr` keypresses
+-- by sending plain `Ctrl-Alt` keys, which won't be understood as `AltGr`.
+--
+-- To fix this behavior you can tell WezTerm to treat left `Ctrl-Alt` keys as `AltGr`
+-- with the option `treat_left_ctrlalt_as_altgr`.
+--
+-- Note that the key bindings using separate `Ctrl` and `Alt` won't be triggered anymore
+---@field treat_left_ctrlalt_as_altgr? bool
 -- The set of unix domains
 ---@field unix_domains? UnixDomain[]
+---@field use_ime? bool
 ---@field webgpu_force_fallback_adapter? bool
 -- Whether to select the higher powered discrete GPU when
 -- the system has a choice of integrated or discrete.
@@ -513,46 +638,19 @@
 ---@field window_content_alignment? ContentAlignment
 ---@field window_frame? WindowFrameConfig
 ---@field wsl_domains? WslDomain[]
----@field macos_forward_to_ime_modifier_mask? Modifiers
----@field mouse_bindings? MouseBindingBase[]
----@field normalize_output_to_unicode_nfc? bool
----@field quick_select_alphabet? string
----@field quick_select_patterns? string[]
----@field send_composed_key_when_left_alt_is_pressed? bool
----@field send_composed_key_when_right_alt_is_pressed? bool
----@field treat_left_ctrlalt_as_altgr? bool
--- If true, display the tab bar UI at the top of the window.
--- The tab bar shows the titles of the tabs and which is the
--- active tab.  Clicking on a tab activates it.
+---@field xim_im_name? string
 ---@field enable_tab_bar? bool
 ---@field use_fancy_tab_bar? bool
 ---@field tab_bar_at_bottom? bool
 ---@field mouse_wheel_scrolls_tabs? bool
--- If true, tab bar titles are prefixed with the tab index
 ---@field show_tab_index_in_tab_bar? bool
 ---@field show_tabs_in_tab_bar? bool
 ---@field show_new_tab_button_in_tab_bar? bool
--- If true, show_tab_index_in_tab_bar uses a zero-based index.
---
--- The default is false and the tab shows a one-based index
 ---@field tab_and_split_indices_are_zero_based? bool
--- Specifies the maximum width that a tab can have in the
--- tab bar.
---
--- Defaults to 16 glyphs in width
 ---@field tab_max_width? usize
--- If true, hide the tab bar if the window only has a single tab.
 ---@field hide_tab_bar_if_only_one_tab? bool
 ---@field enable_scroll_bar? bool
 ---@field min_scroll_bar_height? Dimension
--- If `false`, do not try to use a Wayland protocol connection
--- when starting the gui frontend, and instead use X11.
---
--- This option is only considered on X11/Wayland systems and
--- has no effect on macOS or Windows.
---
--- The default is `true`
----@field enable_wayland? bool
 ---@field enable_zwlr_output_manager? bool
 ---@field prefer_egl? bool
 -- If set to `true`, launching a new instance of wezterm will prefer to spawn
@@ -652,11 +750,8 @@
 -- The default is to scroll to the bottom when you send input
 -- to the terminal
 ---@field scroll_to_bottom_on_input? bool
----@field use_ime? bool
----@field xim_im_name? string
 ---@field ime_preedit_rendering? ImePreeditRendering
 ---@field use_dead_keys? bool
----@field launch_menu? SpawnCommand[]
 ---@field use_box_model_render? bool
 ---@field check_for_updates? bool
 ---@field show_update_window? bool
@@ -700,14 +795,12 @@
 ---@field default_workspace? string
 ---@field xcursor_theme? string
 ---@field xcursor_size? u32
----@field key_map_preference? KeyMapPreference
 ---@field quote_dropped_files? DroppedFileQuoting
 ---@field ui_key_cap_rendering? UIKeyCapRendering
 ---@field palette_max_key_assigments_for_action? usize
 ---@field ulimit_nofile? u64
 ---@field ulimit_nproc? u64
 ---@field font_size? number
----@field line_height? number
 ---@field cell_width? any
 ---@field cursor_thickess? Dimension
 ---@field underline_thickness? Dimension
@@ -742,7 +835,6 @@
 ---@field integrated_title_button_alignment? IntegratedTitleButtonAlignment
 ---@field integrated_title_button_style? IntegratedTitleButtonStyle
 ---@field integrated_title_button_color? "Auto"|AnsiColor
----@field log_unknown_escape_sequences? bool
 ---@field dpi? integer
 ---@field bold_brightens_ansi_colors? BoldBrightening
 ---@field font_dirs? table|string[]
