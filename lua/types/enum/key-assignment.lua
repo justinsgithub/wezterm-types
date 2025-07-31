@@ -256,4 +256,8 @@
 ---@field ToggleFullScreen any
 ---@field TogglePaneZoomState any
 
+-- Helper for defining key assignment actions in your configuration file.
+-- This is really just sugar for the underlying Lua -> Rust deserialation mapping
+-- that makes it a bit easier to identify where syntax errors may exist
+-- in your configuration file
 ---@alias Action ActionFuncClass|fun(action: ActionClass)

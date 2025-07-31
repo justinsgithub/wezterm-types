@@ -111,7 +111,7 @@
 -- a crystal clear transparent window effect
 ---@field kde_window_background_blur? bool
 -- The baseline font to use
----@field font? FontAttributes
+---@field font? FontAttributes|FontFamilyAttributes
 ---@field dpi_by_screen? { [string]: f64 }
 -- The color palette
 ---@field colors? Palette

@@ -15,36 +15,144 @@
 ---@alias PathBuf string
 
 ---@class Wezterm: ExecDomain
----@field GLOBAL table<string, ANY>
+-- Provides global, in-process, in-memory, data storage for JSON-like variables
+-- that persists across config reloads.
+--
+-- WezTerm's Lua files may be re-loaded and re-evaluated multiple times in different contexts
+-- or in different threads.
+-- If you'd like to keep track of state that lasts for the lifetime
+-- of your wezterm process then you cannot simply use
+-- global variables in the Lua script.
+--
+-- `wezterm.GLOBAL` is a special `userdata` value that acts like a table.
+-- Writing to keys will copy the data that you assign into a global in-memory table
+-- and allow it to be read back later.
+--
+-- Reads and writes from/to `wezterm.GLOBAL` are thread-safe but don't currently provide
+-- synchronization primitives for managing read-modify-write operations.
+--
+-- You may store values with the following types:
+--
+-- -  `string`
+-- -  `number`
+-- -  `table`
+-- -  `boolean`
+--
+-- **Attempting to assign other types will raise an error**
+---@field GLOBAL userdata
+-- The `wezterm.color` module exposes functions that work with colors
 ---@field color Wezterm.Color
+-- The `wezterm.gui` module exposes functions that operate on the GUI layer.
+--
+-- The multiplexer may not be connected to a GUI, so attempting to
+-- resolve this module from the mux server will return `nil`
 ---@field gui? Wezterm.Gui
 ---@field mux Wezterm.Mux
 ---@field nerdfonts Wezterm.NerdFont
+-- The `wezterm.plugin` module provides functions to manage Wezterm plugins
 ---@field plugin Wezterm.Plugin
+-- The `wezterm.procinfo` module exposes functions that allow querying information
+-- about processes that are running on the local system
 ---@field procinfo Wezterm.ProcInfo
+-- The `wezterm.serde` module provides functions for parsing the given string as
+-- JSON, YAML, or TOML, returning the corresponding Lua values, and vice versa
 ---@field serde Wezterm.Serde
+-- The `wezterm.time` module exposes functions that allow working with time
 ---@field time Wezterm.Time
+-- The `wezterm.url` module exposes functions that allow working with URLs
 ---@field url Wezterm.Url
+-- Helper for defining key assignment actions in your configuration file.
+-- This is really just sugar for the underlying Lua -> Rust deserialation mapping
+-- that makes it a bit easier to identify where syntax errors may exist
+-- in your configuration file
 ---@field action Action
----@field action_callback (fun(win: Window, pane: Pane, ...: any): (nil|false))|(fun(callback: ActionCallback):Action)
----@field add_to_config_reload_watch_list fun(path: string): nil Adds path to the list of files that are watched for config changes. If `automatically_reload_config` is enabled, then the config will be reloaded when any of the files that have been added to the watch list have changed.
----@field background_child_process fun(args: string[]): nil Accepts an argument list; it will attempt to spawn that command in the background.
----@field battery_info fun(): BatteryInfo[] Returns battery information for each of the installed batteries on the system. This is useful for example to assemble status information for the status bar.
----@field column_width fun(string): number Given a string parameter, returns the number of columns that that text occupies in the terminal, which is useful together with format-tab-title and update-right-status to compute/layout tabs and status information.
----@field config_builder fun(): Config Returns a config builder object that can be used to define your configuration.
----@field config_dir string This constant is set to the path to the directory in which your wezterm.lua configuration file was found.
----@field config_file string This constant is set to the path to the wezterm.lua that is in use.
+-- This function is a helper to register a custom event
+-- and return an action triggering it.
+--
+-- It is helpful to write custom key bindings directly,
+-- without having to declare the event and use it in a different place.
+--
+-- The implementation is essentially the same as:
+--
+-- ```lua
+-- function wezterm.action_callback(callback)
+--   local event_id = '...' -- the function generates a unique event id
+--   wezterm.on(event_id, callback)
+--   return wezterm.action.EmitEvent(event_id)
+-- end
+-- ```
+---@field action_callback fun(callback: ActionCallback): Action
+-- Adds path to the list of files that are watched for config changes.
+--
+-- If `automatically_reload_config` is enabled, then the config will be reloaded
+-- when any of the files that have been added to the watch list have changed
+---@field add_to_config_reload_watch_list fun(path: string)
+-- Accepts an argument list; it will attempt to spawn that command in the background
+---@field background_child_process fun(args: string[])
+-- Returns the battery information for each of the installed batteries on the system.
+--
+-- This is useful for example to assemble status information for the status bar
+---@field battery_info fun(): BatteryInfo[]
+-- Given a `string` parameter, returns the number of columns
+-- that text occupies in the terminal,
+-- which is useful together with `format-tab-title` and `update-right-status`
+-- to compute/layout tabs and status information
+---@field column_width fun(value: string): number
+-- Returns a `Config` object that can be used to define your configuration
+---@field config_builder fun(): Config
+-- This constant is set to the path to the directory
+-- in which your `wezterm.lua` configuration file was found
+---@field config_dir string
+-- This constant is set to the path to the `wezterm.lua` that is in use
+---@field config_file string
 ---@field default_hyperlink_rules fun(): HyperLinkRule[] Returns the compiled-in default values for hyperlink_rules.
----@field default_ssh_domains fun(): SshDomain[] Computes a list of SshDomain objects based on the set of hosts discovered in your ~/.ssh/config. Each host will have both a plain SSH and a multiplexing SSH domain generated and returned in the list of domains. The former don't require wezterm to be installed on the remote host, while the latter do require it. The intended purpose of this function is to allow you the opportunity to edit/adjust the returned information before assigning it to your config.
----@field default_wsl_domains fun(): { name: string, distribution: string }[] Computes a list of WslDomain objects, each one representing an installed WSL distribution on your system. This list is the same as the default value for the wsl_domains configuration option, which is to make a WslDomain with the distribution field set to the name of WSL distro and the name field set to name of the distro but with "WSL:" prefixed to it.
----@field emit fun(event: string, ...)
----@field enumerate_ssh_hosts fun(ssh_config_file_name: string?): { [string] : { hostname: string, identityagent: string, identityfile: string, port: string, user: string, userknownhostsfile: string } } This function will parse your ssh configuration file(s) and extract from them the set of literal (non-pattern, non-negated) host names that are specified in Host and Match stanzas contained in those configuration files and return a mapping from the hostname to the effective ssh config options for that host.  You may optionally pass a list of ssh configuration files that should be read, in case you have a special configuration.
----@field executable_dir string This constant is set to the directory containing the wezterm executable file.
----@field font (fun(font_attributes: FontAttributes): Fonts)|(fun(name: string, font_attributes: FontAttributes?): Fonts) https://wezfurlong.org/wezterm/config/lua/wezterm/font.html
----@field font_with_fallback fun(fonts: string[]|FontAttributes[]): Fonts https://wezfurlong.org/wezterm/config/lua/wezterm/font_with_fallback.html
----@field format fun(...: FormatItem[]): string Can be used to produce a formatted string with terminal graphic attributes such as bold, italic and colors. The resultant string is rendered into a string with wezterm compatible escape sequences embedded.
----@field get_builtin_color_schemes any #TODO
----@field glob fun(pattern: string, relative_to: string?): string[] This function evalutes the glob pattern and returns an array containing the absolute file names of the matching results. Due to limitations in the lua bindings, all of the paths must be able to be represented as UTF-8 or this function will generate an error.
+-- Computes a list of `SshDomain` objects based on the set of hosts
+-- discovered in `~/.ssh/config`.
+--
+-- Each host will have both a plain SSH and a multiplexing SSH domain
+-- generated and returned in the list of domains.
+-- The former don't require wezterm to be installed on the remote host,
+-- while the latter do require it.
+--
+-- The intended purpose of this function is to give you the opportunity
+-- to edit/adjust the returned information before assigning it to your config
+---@field default_ssh_domains fun(): SshDomain[]
+-- Computes a list of `WslDomain` objects, each one representing
+-- an installed WSL distribution on your system.
+--
+-- This list is the same as the default value for the `wsl_domains` configuration option,
+-- which is to make a `WslDomain` with the `distribution` field set to the name
+-- of the WSL distro and the `name` field set to name of the distro
+-- but with `"WSL:"` prefixed to it
+---@field default_wsl_domains fun(): WslDomain[]
+---@field emit fun(event: string, ...: any)
+-- This function will parse your ssh configuration file(s) and extract from them
+-- the set of literal (non-pattern, non-negated) host names that are specified
+-- in `Host` and `Match` stanzas contained in those configuration files
+-- and return a mapping from the hostname to the effective ssh config options for that host.
+--
+-- You may optionally pass a list of ssh configuration files that should be read
+-- in case you have a special configuration
+---@field enumerate_ssh_hosts fun(ssh_config_file_name: (string[]|string)?): table<string, SshHost>
+-- This constant is set to the directory containing the wezterm executable file
+---@field executable_dir string
+-- [Info](https://wezfurlong.org/wezterm/config/lua/wezterm/font.html)
+---@field font (fun(attributes: FontFamilyAttributes|FontFamilyExtendedAttributes): FontFamilyAttributes)|(fun(name: string, attributes: FontAttributes?): FontFamilyAttributes)
+-- [Info](https://wezfurlong.org/wezterm/config/lua/wezterm/font_with_fallback.html)
+---@field font_with_fallback fun(fonts: (string|FontAttributes)[]): Fonts
+--- Can be used to produce a formatted string with terminal graphic attributes
+--- such as `bold`, `italic` and `colors`.
+---
+--- The result is a string with wezterm-compatible escape sequences embedded
+---@field format fun(...: FormatItem[]): string
+---@field get_builtin_color_schemes any
+-- This function evalutes the glob pattern and returns an array
+-- containing the absolute file names of the matching results.
+--
+-- Due to limitations in the Lua bindings,
+-- all of the paths must be able to be represented as `UTF-8`
+-- or this function will generate an error
+---@field glob fun(pattern: string, relative_to: string?): string[]
 ---@field has_action fun(action: string): boolean
 ---@field home_dir string This constant is set to the home directory of the user running wezterm.
 ---@field hostname fun(): string This function returns the current hostname of the system that is running wezterm. This can be useful to adjust configuration based on the host.
@@ -74,5 +182,9 @@
 ---@field truncate_left fun(string: string, max_width: number): string Returns a copy of string that is no longer than max_width columns (as measured by wezterm.column_width). Truncation occurs by reemoving excess characters from the left end of the string.
 ---@field truncate_right fun(string: string, max_width: number): string Returns a copy of string that is no longer than max_width columns (as measured by wezterm.column_width). Truncation occurs by reemoving excess characters from the right end of the string.
 ---@field utf16_to_utf8 fun(string: string): string Overly specific and exists primarily to workaround this wsl.exe issue. It takes as input a string and attempts to convert it from utf16 to utf8.
----@field version string This constant is set to the wezterm version string that is also reported by running wezterm -V. This can potentially be used to adjust configuration according to the installed version.
+-- This constant is set to the wezterm version string that is also reported
+-- by running `wezterm -V`.
+--
+-- This can potentially be used to adjust configuration according to the installed version
+---@field version string
 ---@field gradient_colors fun(gradient: Gradient, num_colors: number): Color[]

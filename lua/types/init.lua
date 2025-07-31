@@ -523,24 +523,31 @@
 ---|"ss09" -- `>>=`, `<<=`, `||=`, `|=`
 ---|"ss10"
 
----@alias Fonts { fonts: FontAttributes[] }
-
 ---@class FontAttributes
----@field family? string
 -- Whether the font should be a bold variant
 ---@field weight? FontWeight
 ---@field stretch? FontStretch
 -- Whether the font should be an italic variant
 ---@field style? FontStyle
+---@field is_fallback? bool
+---@field is_synthetic? bool
+---@field scale? number
+
+-- `FontAttributes`-like class but with font family specified
+---@class FontFamilyAttributes: FontAttributes
+---@field family string
+
+---@class FontFamilyExtendedAttributes: FontFamilyAttributes
+---@field harfbuzz_features? HarfbuzzFeatures[]
 ---@field freetype_load_target? FreeTypeLoadTarget
 ---@field freetype_render_target? FreeTypeLoadTarget
 -- you can combine the flags like `"NO_HINTING|MONOCHROME"`
 -- **(you probably wouldn't want to do this)**
 ---@field freetype_load_flags? FreeTypeLoadFlags
----@field is_fallback? bool
----@field is_synthetic? bool
 ---@field assume_emoji_presentation? bool
----@field scale? number
+
+---@class Fonts
+---@field fonts FontAttributes[]
 
 ---@class WindowFrameConfig
 ---@field inactive_titlebar_bg? RgbColor
@@ -800,7 +807,7 @@
 ---@field wezterm_version? string
 ---@field aliases? string[]
 
----@alias ActionCallback fun(win: Window, pane: Pane, ...: any): (nil|false)
+---@alias ActionCallback fun(win: Window, pane: Pane, ...: any): false?
 
 -- - `"Light"`: The normal appearance, with dark text on a light background
 -- - `"Dark"`: Dark mode with predominantly dark colors and probably a lighter,
