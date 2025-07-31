@@ -104,6 +104,25 @@
 ---|"WindowsSymbols" like WindowsLong but using a logo for the Win key
 
 ---@class Config
+-- TODO: Finish
+---@field cell_widths? table
+---@field char_select_font? FontAttributes|FontFamilyAttributes
+---@field command_palette_font? any
+---@field command_palette_rows? any
+---@field cursor_thickness? any
+---@field default_ssh_auth_sock? any
+---@field font_antialias? any
+---@field font_hinting? any
+---@field font_rules? any
+---@field macos_fullscreen_extend_behind_notch? any
+---@field mux_enable_ssh_agent? any
+---@field notification_handling? any
+---@field pane_select_font? any
+---@field quick_select_remove_styling? any
+---@field reverse_video_cursor_min_contrast? any
+---@field show_close_tab_button_in_tabs? any
+---@field text_min_contrast_ratio? any
+---@field window_content_alignment? any
 -- When combined with `window_background_opacity`, enables background blur
 -- using the KDE Wayland blur protocol.
 --
