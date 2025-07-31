@@ -1,5 +1,13 @@
 ---@meta
 
+---@class SshHost
+---@field hostname string
+---@field identityagent string
+---@field identityfile string
+---@field port string
+---@field user string
+---@field userknownhostsfile string
+
 -- The `SshDomain` struct specifies information
 -- about an individual [SSH Domain](https://wezterm.org/multiplexing.html#ssh-domains)
 ---@class SshDomain

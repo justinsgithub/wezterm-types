@@ -1,6 +1,12 @@
+<div align="center">
+
 # wezterm-types
 
-Wezterm config types for Lua Language Server
+[Wezterm](https://github.com/wezterm/wezterm) config types for Lua Language Server
+
+</div>
+
+---
 
 ## Installation
 
@@ -74,7 +80,7 @@ local wezterm = require("wezterm")
 local config = wezterm.config_builder()
 
 -- Your configuration here with full type support
-config.window_decorations = "RESIZE | MACOS_FORCE_DISABLE_SHADOW"
+config.window_decorations = "RESIZE|MACOS_FORCE_DISABLE_SHADOW"
 
 return config
 ```

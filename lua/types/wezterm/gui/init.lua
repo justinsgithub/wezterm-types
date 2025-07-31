@@ -5,7 +5,7 @@
 
 ---@alias KeyDefaultTables Key[]|KeyDefault
 
--- The `wezterm.gui` module exposes functions that operate on the gui layer.
+-- The `wezterm.gui` module exposes functions that operate on the GUI layer.
 --
 -- The multiplexer may not be connected to a GUI, so attempting to
 -- resolve this module from the mux server will return `nil`
