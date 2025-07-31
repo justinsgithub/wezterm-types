@@ -701,51 +701,188 @@
 ---@see Wezterm.NerdFont for a list of icon names
 ---@field icon? Wezterm.NerdFont
 
+-- - The first event parameter is a `Window` object that represents the GUI window
+-- - The second event parameter is a `Pane` object that represents the pane in which
+--   the bell was rung, which may not be active pane;
+--   it could be in an unfocused pane or tab
 ---@alias CallbackWindowPane fun(window: Window, pane: Pane)
+
 ---@alias AugmentCallbackWindowPane fun(window: Window, pane: Pane): AugmentCommandPaletteReturn
 
 -- This event is emitted when the Command Palette is shown.
+--
 -- Its purpose is to enable you to add additional entries to the list of commands shown in the palette.
+--
 -- This hook is synchronous; calling asynchronous functions will not succeed
----@alias EventAugmentCommandPalette fun(event: "augment-command-palette", callback: AugmentCallbackWindowPane): AugmentCommandPaletteReturn): nil
+---@alias Event.AugmentCommandPalette fun(event: AugmentCommandPalette, callback: AugmentCallbackWindowPane): AugmentCommandPaletteReturn): nil
 
--- The bell event is emitted when the ASCII BEL sequence is emitted to a pane in the window.
--- Defining an event handler doesn"t alter wezterm's handling of the bell;
--- the event supplements it and allows you to take additional action over the configured behavior
----@alias EventBell fun(event: "augment-command-palette", callback: CallbackWindowPane)
+-- - The first event parameter is a `Window` object that represents the GUI window
+-- - The second event parameter is a `Pane` object that represents
+--   the pane in which the bell was rung, which may not be active pane;
+--   it could be in an unfocused pane or tab
+---@alias Event.Bell fun(event: Bell, callback: CallbackWindowPane)
 
--- TODO: Description
----@alias EventFormatTabTitle fun(event: "format-tab-title", callback: fun(tab: MuxTab, tabs: MuxTab[], panes: Pane[], config: Config, hover: bool, max_width: number): string)
+-- The parameters to the event are:
+--
+-- - `tab`: The `TabInformation` for the active tab
+-- - `tabs`: An array containing `TabInformation` objects
+--         for each of the tabs in the window
+-- - `panes`: An array containing `PaneInformation` objects
+--          for each of the panes in the active tab
+-- - `config`: The effective configuration for the window
+-- - `hover`: `true` if the current tab is in the hover state
+-- - `max_width`: The maximum number of cells available
+--              to draw this tab when using the retro tab bar style
+--
+-- The return value of the event can be:
+--
+-- - A string, holding the text to use for the tab title
+-- - A `FormatItem` object as used in the `wezterm.format()` function.
+--   This allows formatting style and color information
+--   for individual elements within the tab
+--
+-- If the event encounters an error, or returns something that is not one of the types mentioned above,
+-- then the default tab title text will be computed and used instead.
+--
+-- When the tab bar is computed, this event is called twice for each tab;
+-- on the first pass, `hover` will be false and `max_width` will be set to `tab_max_width`.
+-- WezTerm will then compute the tab widths that will fit in the tab bar,
+-- and then call the event again for the set of tabs,
+-- this time with appropriate hover and max_width values.
+--
+-- Only the first `"format-tab-title"` event will be executed;
+-- it doesn't make sense to define multiple instances of the event
+-- with `multiple wezterm.on("format-tab-title", ...)` calls
+---@alias Event.FormatTabTitle fun(event: FormatTabTitle, callback: fun(tab: MuxTab, tabs: MuxTab[], panes: Pane[], config: Config, hover: bool, max_width: number): string|FormatItem)
 
--- TODO: Description
----@alias EventFormatWindowTitle fun(event: "format-window-title", callback: fun(window: Window, pane: Pane, tabs: MuxTab[], panes: Pane[], config: Config))
+-- The parameters to the event are:
+--
+-- - `tab`: The `TabInformation` object for the active tab
+-- - `pane`: The `PaneInformation` object for the active pane
+-- - `tabs`: An array containing TabInformation objects
+--         for each of the tabs in the window
+-- - `panes`: An array containing `PaneInformation` objects
+--          for each of the panes in the active tab
+-- - `config`: The effective configuration for the window
+--
+-- The return value of the event should be a `string`,
+-- and if it is then it will be used as the title text in the window title bar.
+--
+-- If the event encounters an error, or returns something that is not a `string`,
+-- then the default window title text will be computed and used instead.
+--
+-- Only the first `"format-window-title"` event will be executed;
+-- it doesn't make sense to define multiple instances of the event
+-- with multiple `wezterm.on("format-window-title", ...)` calls
+---@alias Event.FormatWindowTitle fun(event: FormatWindowTitle, callback: fun(window: Window, pane: Pane, tabs: MuxTab[], panes: Pane[], config: Config): string)
 
--- TODO: Description
----@alias EventNewTabButtonClick fun(event: "new-tab-button-click", callback: fun(window: Window, pane: Pane, button: "Left"|"Middle"|"Right", default_action: KeyAssignment): nil)
+-- - The first event parameter is a `Window` object that represents the GUI window
+-- - The second event parameter is a `Pane` object that represents the active pane in the window
+---@alias Event.NewTabButtonClick fun(event: NewTabButtonClick, callback: fun(window: Window, pane: Pane, button: "Left"|"Middle"|"Right", default_action: KeyAssignment))
 
--- TODO: Description
----@alias EventOpenUri fun(event: "open-uri", callback: fun(window: Window, pane: Pane, uri: string): nil)
+-- - The first event parameter is a `Window` object that represents the GUI window
+-- - The second event parameter is a `Pane` object that represents the pane
+-- - The third event parameter is the URI string
+---@alias Event.OpenUri fun(event: OpenUri, callback: fun(window: Window, pane: Pane, uri: string))
 
--- TODO: Description
----@alias EventUpdateRightStatus fun(event: "update-right-status", callback: CallbackWindowPane)
+-- ## WARNING
+--
+-- This event is considered to be deprecated and you should migrate to using `"update-status"`,
+-- which behaves the same way, but doesn't overly focus on the right status area.
+--
+-- ---
+--
+-- - The first event parameter is a `Window` object that represents the GUI window
+-- - The second event parameter is a `Pane` object that represents the active pane in that window
+--
+-- There is no defined return value for the event,
+-- but its purpose is to allow you the chance to carry out some activity
+-- and then ultimately call `Window:set_right_status()'
+--
+-- WezTerm will ensure that only a single instance of this event is outstanding;
+-- if the hook takes longer than the `status_update_interval` to complete,
+-- `wezterm` won't schedule another call until `status_update_interval milliseconds`
+-- have elapsed since the last call completed
+---@deprecated
+---@alias Event.UpdateRightStatus fun(event: UpdateRightStatus, callback: CallbackWindowPane)
 
--- TODO: Description
----@alias EventUpdateStatus fun(event: "update-status", callback: CallbackWindowPane)
+-- - The first event parameter is a `Window` object that represents the GUI window
+-- - The second event parameter is a `Pane` object that represents the active pane in that window
+--
+-- There is no defined return value for the event, but its purpose is
+-- to allow you the chance to carry out some activity and then ultimately call either
+-- `Window:set_right_status()` or `Window:set_left_status()`.
+--
+-- WezTerm will ensure that only a single instance of this event is outstanding;
+-- if the hook takes longer than the `status_update_interval` to complete,
+-- `wezterm` won't schedule another call until `status_update_interval milliseconds`
+-- have elapsed since the last call completed
+---@alias Event.UpdateStatus fun(event: UpdateStatus, callback: CallbackWindowPane)
 
--- TODO: Description
----@alias EventUserVarChanged fun(event: "user-var-changed", callback: fun(window: Window, pane: Pane, name: string, value: string): nil)
+-- You can use something like the following from your shell
+-- to set the user var named foo to the value bar:
+--
+-- ```sh
+-- printf "\033]1337;SetUserVar=%s=%s\007" foo `echo -n bar | base64`
+-- ```
+--
+-- Then, if you have this in your config:
+--
+-- ```lua
+-- local wezterm = require 'wezterm'
+--
+-- wezterm.on('user-var-changed', function(window, pane, name, value)
+--   wezterm.log_info('var', name, value)
+-- end)
+--
+-- return {}
+-- ```
+--
+-- your event handler will be called with `name = 'foo'` and `value = 'bar'`.
+--
+-- See `Pane:get_user_vars()`
+---@alias Event.UserVarChanged fun(event: UserVarChanged, callback: fun(window: Window, pane: Pane, name: string, value: string))
 
--- TODO: Description
----@alias EventWindowConfigReloaded fun(event: "window-config-reloaded", callback: CallbackWindowPane)
+-- This event is _fire-and-forget_ from the perspective of wezterm;
+-- it fires the event to advise of the config change, but has no other expectations.
+--
+-- If you call `Window:set_config_overrides()` from inside this event callback
+-- then an additional window-config-reloaded event will be triggered.
+-- You should take care to avoid creating a loop by only calling `Window:set_config_overrides()`
+-- when the actual override values are changed.
+--
+-- - The first event parameter is a `Window` object that represents the GUI window
+-- - The second event parameter is a `Pane` object that represents the active pane in that window
+---@alias Event.WindowConfigReloaded fun(event: WindowConfigReloaded, callback: CallbackWindowPane)
 
--- TODO: Description
----@alias EventWindowFocusChanged fun(event: "window-focus-changed", callback: CallbackWindowPane)
+-- This event is _fire-and-forget_ from the perspective of wezterm;
+-- it fires the event to advise of the config change, but has no other expectations.
+--
+-- - The first event parameter is a `Window` object that represents the GUI window
+-- - The second event parameter is a `Pane` object that represents the active pane in that window
+---@alias Event.WindowFocusChanged fun(event: WindowFocusChanged, callback: CallbackWindowPane)
 
--- TODO: Description
----@alias EventWindowResized fun(event: "window-resized", callback: CallbackWindowPane)
+-- - The first event parameter is a `Window` object that represents the GUI window
+-- - The second event parameter is a `Pane` object that represents the active pane in that window
+---@alias Event.WindowResized fun(event: WindowResized, callback: CallbackWindowPane)
 
 -- A custom declared function
----@alias EventCustom fun(event: string, callback: fun(...: any): nil)
+---@alias Event.Custom fun(event: string, callback: fun(...: any))
+
+---@alias Events
+---|Event.AugmentCommandPalette
+---|Event.Bell
+---|Event.Custom
+---|Event.FormatTabTitle
+---|Event.FormatWindowTitle
+---|Event.NewTabButtonClick
+---|Event.OpenUri
+---|Event.UpdateRightStatus -- DEPRECATED
+---|Event.UpdateStatus
+---|Event.UserVarChanged
+---|Event.WindowConfigReloaded
+---|Event.WindowFocusChanged
+---|Event.WindowResized
 
 ---@alias CursorShape
 ---|"BlinkingBlock"
