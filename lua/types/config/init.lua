@@ -8,6 +8,20 @@
 ---@alias IntStr integer|string
 ---@alias NumStr number|string
 
+---@alias HorizontalAlign
+---|"Left"
+---|"Center"
+---|"Right"
+
+---@alias VerticalAlign
+---|"Top"
+---|"Center"
+---|"Bottom"
+
+---@class ContentAlignment
+---@field horizontal HorizontalAlign
+---@field vertical VerticalAlign
+
 ---@alias DroppedFileQuoting
 ---|"None"
 ---|"SpacesOnly"
@@ -69,21 +83,39 @@
 ---@field Gradient Gradient
 ---@field Color string
 
+---@alias BackgroundLayerRepeat
+---|"Repeat"
+---|"Mirror"
+---|"NoRepeat"
+
+---@alias BackgroundLayerHeightWidth
+---|"Cover"
+---|"Contain"
+---|number
+---|string
+
+---@alias NotifyHandler
+---|"AlwaysShow" Show the notification regardless of the current focus
+---|"NeverShow" Never show the notification
+---|"SuppressFromFocusedPane" Show the notification unless it was generated from the currently focused pane
+---|"SuppressFromFocusedTab" Show the notification unless it was generated from the currently focused tab
+---|"SuppressFromFocusedWindow" Show the notification unless it was generated from the currently focused window
+
 ---@class BackgroundLayer
 ---@field style? BackgroundLayer.Style1|BackgroundLayer.Style2
 ---@field attachment? "Fixed"|"Scroll"|{ ["Parallax"]: number }
----@field repeat_x? "Repeat"|"Mirror"|"NoRepeat"
+---@field repeat_x? BackgroundLayerRepeat
 ---@field repeat_x_size? NumStr
----@field repeat_y? "Repeat"|"Mirror"|"NoRepeat"
+---@field repeat_y? BackgroundLayerRepeat
 ---@field repeat_y_size? NumStr
 ---@field vertical_align? "Top"|"Middle"|"Bottom"
 ---@field vertical_offset? NumStr
----@field horizontal_align? "Left"|"Center"|"Right"
+---@field horizontal_align? HorizontalAlign
 ---@field horizontal_offset? NumStr
 ---@field opacity? number
 ---@field hsb? HsbTransform
----@field height? "Cover"|"Contain"|number|string
----@field widtht? "Cover"|"Contain"|number|string
+---@field height? BackgroundLayerHeightWidth
+---@field widtht? BackgroundLayerHeightWidth
 
 ---@alias NewlineCanon
 ---|bool
@@ -103,112 +135,205 @@
 ---|"WindowsLong" Win, Alt, Ctrl, Shift
 ---|"WindowsSymbols" like WindowsLong but using a logo for the Win key
 
+---@class FontRules
+---@field font? Fonts|FontAttributes|FontFamilyAttributes
+---@field italic? bool
+---@field reverse? bool
+---@field strikethrough? bool
+---@field invisible? bool
+---@field intensity? "Normal"|"Bold"|"Half"
+---@field underline? "None"|"Single"|"Double"
+---@field blink? "None"|"Rapid"|"Slow"
+
 ---@class Config
--- TODO: Finish
----@field cell_widths? table
----@field char_select_font? FontAttributes|FontFamilyAttributes
----@field command_palette_font? any
----@field command_palette_rows? any
----@field cursor_thickness? any
----@field default_ssh_auth_sock? any
----@field font_antialias? any
----@field font_hinting? any
----@field font_rules? any
----@field macos_fullscreen_extend_behind_notch? any
----@field mux_enable_ssh_agent? any
----@field notification_handling? any
----@field pane_select_font? any
----@field quick_select_remove_styling? any
----@field reverse_video_cursor_min_contrast? any
----@field show_close_tab_button_in_tabs? any
----@field text_min_contrast_ratio? any
----@field window_content_alignment? any
--- When combined with `window_background_opacity`, enables background blur
--- using the KDE Wayland blur protocol.
+-- When true, watch the config file and reload it automatically
+-- when it is detected as changing
+---@field automatically_reload_config? bool
+---@field bypass_mouse_reporting_modifiers? Modifiers
+-- The character width recommended by the Unicode standard is occasionally inconsistent
+-- and may not align with linguistic tradition.
 --
--- This can be used to produce a translucent window effect rather than
--- a crystal clear transparent window effect
----@field kde_window_background_blur? bool
--- The baseline font to use
----@field font? FontAttributes|FontFamilyAttributes
----@field dpi_by_screen? { [string]: f64 }
--- The color palette
----@field colors? Palette
----@field launcher_alphabet? string
----@field switch_to_last_active_tab_when_closing_tab? bool
----@field window_frame? WindowFrameConfig
----@field char_select_font_size? f64
----@field char_select_fg_color? RgbaColor
+-- -  circled numbers width: ⓪①..⑳㉑
+-- -  lowercase Roman numerals width: ⅹⅺⅻ
+-- -  Nerd Font (Private Use Area) character width
+-- -  ambiguous character width for CJK text
+-- -  square emojis defined as EAW=Neutral
+--
+-- The `cell_widths` configuration parameter allows users
+-- to override the default character width.
+-- This setting takes priority over the `treat_east_asian_ambiguous_width_as_wide` setting.
+--
+-- Note that changing this setting may have consequences for layout in text UI applications
+-- if their expectation of width differs from your choice of configuration
+---@field cell_widths? table
 ---@field char_select_bg_color? RgbaColor
----@field command_palette_font_size? f64
----@field command_palette_fg_color? RgbaColor
----@field command_palette_bg_color? RgbaColor
----@field pane_select_font_size? f64
----@field pane_select_fg_color? RgbaColor
----@field pane_select_bg_color? RgbaColor
----@field tab_bar_style? TabBarStyle
----@field resolved_palette? Palette
+---@field char_select_fg_color? RgbaColor
+-- Configures the font to use for character selection.
+--
+-- The `char_select_font` setting can specify a set of fallbacks and other options,
+-- and is described in more detail in the Fonts section.
+--
+-- If not specified, the font is same as the font in `window_frame.font`
+--
+-- You will typically use `wezterm.font` or `wezterm.font_with_fallback` to specify the font
+---@field char_select_font? Fonts|FontAttributes|FontFamilyAttributes
+---@field char_select_font_size? f64
+---@field clean_exit_codes? u32[]
 ---@field color_scheme? string
 -- Use a named color scheme rather than the palette specified
 -- by the colors setting.
 ---@field color_schemes? { [string]: Palette }
--- Named color schemes
----@field scrollback_lines? usize
--- How many lines of scrollback you want to retain
----@field default_prog? string[]
+-- The color palette
+---@field colors? Palette
+---@field command_palette_bg_color? RgbaColor
+---@field command_palette_fg_color? RgbaColor
+-- Configures the font to use for command palette.
+--
+-- The command_palette_font setting can specify a set of fallbacks and other options,
+-- and is described in more detail in the [Fonts](https://wezterm.org/config/fonts.html) section.
+--
+-- If not specified, the font is same as the font in `window_frame.font`
+--
+-- You will typically use `wezterm.font()` or `wezterm.font_with_fallback()` to specify the font.
+--
+-- To specify command_palette_font:
+--
+-- ```lua
+-- config.command_palette_font = wezterm.font 'Roboto'
+-- ```
+---@field command_palette_font? Fonts|FontAttributes|FontFamilyAttributes
+---@field command_palette_font_size? f64
+-- Specifies the number of rows displayed by the command palette.
+-- `ActivateCommandPalette`.
+--
+-- If unset or `nil`, a default value based on the terminal display will be used
+---@field command_palette_rows? integer?
+-- If specified, overrides the base thickness of the lines used to render the textual cursor glyph.
+--
+-- The default is to use the underline_thickness.
+--
+-- This config option accepts different units that have slightly different interpretations:
+--
+--  - `2`, `2.0` or `"2px"`: all specify a thickness of 2 pixels
+--  - `"2pt"`: specifies a thickness of 2 points, which scales according to the DPI of the window
+--  - `"200%"`: takes the underline_thickness and multiplies it by 2 to arrive
+--            at a thickness double the normal size
+--  - `"0.1cell"`: takes the cell height, scales it by 0.1 and uses that as the thickness
+--
+---@field cursor_thickness? number|string
+---@field daemon_options? DaemonOptions
+---@field debug_key_events? bool
+-- Specifies the default current working directory if none is specified
+-- through configuration or OSC 7 (see docs for `default_cwd` for more
+-- info!)
+---@field default_cwd? PathBuf
+---@field default_gui_startup_args? string[]
 -- If no `prog` is specified on the command line, use this
 -- instead of running the user's shell.
--- For example, to have `wezterm` always run `top` by default
--- you'd use this:
---
--- ```toml
--- ```
 --
 -- `default_prog` is implemented as an array where the 0th element
 -- is the command to run and the rest of the elements are passed
 -- as the positional arguments to that command.
----@field default_gui_startup_args? string[]
----@field default_cwd? PathBuf
--- Specifies the default current working directory if none is specified
--- through configuration or OSC 7 (see docs for `default_cwd` for more
--- info!)
----@field exit_behavior? ExitBehavior
----@field exit_behavior_messaging? ExitBehaviorMessaging
----@field clean_exit_codes? u32[]
+---@field default_prog? string[]
+-- Setting this value will cause wezterm to replace the the value of the
+-- `SSH_AUTH_SOCK` environment when it first starts up, and to use this value
+-- for the auth socket registered with the multiplexer server
+-- (visible via `wezterm cli list-clients`).
+--
+-- You won't normally need to set this, but if you are running
+-- with an alternative identity agent and want to replace the default on your system,
+-- this gives you that ability.
+--
+-- For example, `@wez` currently uses the 1Password SSH Auth Agent,
+-- but when running on GNOME the system default is GNOME's keyring agent.
+--
+-- While you can fix this up in your shell startup files,
+-- those are not involved when spawning the GUI directly from the desktop environment
+--
+-- The following wezterm configuration snippet shows how to detect when
+-- the GNOME keyring is set and to selectively replace it with the 1Password agent:
+--
+-- ```lua
+-- local config = wezterm.config_builder()
+--
+-- -- Override gnome keyring with 1password's ssh agent
+-- local SSH_AUTH_SOCK = os.getenv 'SSH_AUTH_SOCK'
+-- if
+--   SSH_AUTH_SOCK
+--   == string.format('%s/keyring/ssh', os.getenv 'XDG_RUNTIME_DIR')
+-- then
+--   local onep_auth =
+--     string.format('%s/.1password/agent.sock', wezterm.home_dir)
+--   -- Glob is being used here as an indirect way to check to see if
+--   -- the socket exists or not. If it didn't, the length of the result
+--   -- would be 0
+--   if #wezterm.glob(onep_auth) == 1 then
+--     config.default_ssh_auth_sock = onep_auth
+--   end
+-- end
+-- ```
+---@field default_ssh_auth_sock? string
 ---@field detect_password_input? bool
----@field set_environment_variables? {[string]: string}
--- Specifies a map of environment variables that should be set
--- when spawning commands in the local domain.
--- This is not used when working with remote domains.
----@field initial_rows? u16
--- Specifies the height of a new window, expressed in character cells.
+---@field disable_default_key_bindings? bool
+---@field disable_default_mouse_bindings? bool
+---@field disable_default_quick_select_patterns? bool
+---@field display_pixel_geometry? DisplayPixelGeometry
 ---@field enable_kitty_graphics? bool
 ---@field enable_kitty_keyboard? bool
----@field enable_title_reporting? bool
 -- Whether the terminal should respond to requests to read the
 -- title string.
 -- Disabled by default for security concerns with shells that might
 -- otherwise attempt to execute the response.
 -- <https://marc.info/?l=bugtraq&m=104612710031920&w=2>
----@field initial_cols? u16
--- Specifies the width of a new window, expressed in character cells
----@field hyperlink_rules? HyperlinkRule[]
----@field term? string
--- What to set the TERM variable to
+---@field enable_title_reporting? bool
+---@field exec_domains? ExecDomain[]
+---@field exit_behavior? ExitBehavior
+---@field exit_behavior_messaging? ExitBehaviorMessaging
+-- The baseline font to use
+---@field font? Fonts|FontAttributes|FontFamilyAttributes
+-- DEPRECATED
+---@field font_antialias? Deprecated
+-- DEPRECATED
+---@field font_hinting? Deprecated
 ---@field font_locator? FontLocatorSelection
 ---@field font_rasterizer? FontRasterizerSelection
+-- When textual output in the terminal is styled with `bold`, `italic`
+-- or other attributes, wezterm uses `font_rules`
+-- to decide how to render that text.
+--
+-- Most users won't need to specify any explicit value for `font_rules`,
+-- as the defaults should be sufficient.
+--
+-- By default, unstyled text will use the font specified by the font configuration,
+-- and wezterm will use that as a base,
+-- and then automatically generate appropriate `font_rules`
+-- that use heavier weight fonts for bold text,
+-- lighter weight fonts for dim text and italic fonts for italic text.
+--
+-- If you have some unusual fonts or mixtures of fonts that you'd like to use,
+-- such as using your favourite monospace font for the base and
+-- a fancy italic font from a different font family for italics,
+-- then `font_rules` will allow you to do so.
+--
+-- `font_rules` is comprised of a list of rule entries with fields that are
+-- split into matcher fields and action fields.
+-- Matcher fields specify which textual attributes you want to match on,
+-- while action fields specify how you want to render them
+--
+-- If a matcher field is omitted, then the associated attribute
+-- has no impact on the match: the rule doesn't care about that attribute
+-- and will match based on the attributes that were listed
+---@field font_rules? FontRules
 ---@field font_shaper? FontShaperSelection
----@field display_pixel_geometry? DisplayPixelGeometry
----@field freetype_load_target? FreeTypeLoadTarget
----@field freetype_render_target? FreeTypeLoadTarget
----@field freetype_load_flags? FreeTypeLoadFlags
----@field freetype_interpreter_version? u32
 -- Selects the freetype interpret version to use.
 -- Likely values are 35, 38 and 40 which have different
 -- characteristics with respective to subpixel hinting.
 -- See https://freetype.org/freetype2/docs/subpixel-hinting.html
+---@field freetype_interpreter_version? u32
+---@field freetype_load_flags? FreeTypeLoadFlags
+---@field freetype_load_target? FreeTypeLoadTarget
 ---@field freetype_pcf_long_family_names? bool
----@field harfbuzz_features? HarfbuzzFeatures[]
+---@field freetype_render_target? FreeTypeLoadTarget
 -- Specify the features to enable when using harfbuzz for font shaping.
 -- There is some light documentation here:
 -- <https://harfbuzz.github.io/shaping-opentype-features.html>
@@ -239,95 +364,196 @@
 -- - Vulkan
 -- - DirectX 12 (on Windows)
 ---@field front_end? FrontEndSelection
----@field webgpu_power_preference? WebGpuPowerPreference
--- Whether to select the higher powered discrete GPU when
--- the system has a choice of integrated or discrete.
--- Defaults to low power.
----@field webgpu_force_fallback_adapter? bool
----@field webgpu_preferred_adapter? GpuInfo
----@field wsl_domains? WslDomain[]
----@field exec_domains? ExecDomain[]
----@field serial_ports? SerialDomain[]
----@field unix_domains? UnixDomain[]
--- The set of unix domains
----@field ssh_domains? SshDomain[]
----@field ssh_backend? SshBackend
----@field tls_servers? TlsDomainServer[]
--- When running in server mode, defines configuration for
--- each of the endpoints that we'll listen for connections
----@field tls_clients? TlsDomainClient[]
--- The set of tls domains that we can connect to as a client
----@field ratelimit_mux_line_prefetches_per_second? u32
--- Constrains the rate at which the multiplexer client will
--- speculatively fetch line data.
--- This helps to avoid saturating the link between the client
--- and server if the server is dumping a large amount of output
--- to the client.
----@field mux_output_parser_buffer_size? usize
--- The buffer size used by parse_buffered_data in the mux module.
--- This should not be too large, otherwise the processing cost
--- of applying a batch of actions to the terminal will be too
--- high and the user experience will be laggy and less responsive.
----@field mux_output_parser_coalesce_delay_ms? u64
--- How many ms to delay after reading a chunk of output
--- in order to try to coalesce fragmented writes into
--- a single bigger chunk of output and reduce the chances
--- observing "screen tearing" with un-synchronized output
----@field mux_env_remove? string[]
+---@field harfbuzz_features? HarfbuzzFeatures[]
+---@field hyperlink_rules? HyperlinkRule[]
+-- Specifies the width of a new window, expressed in character cells
+---@field initial_cols? u16
+-- Specifies the height of a new window, expressed in character cells.
+---@field initial_rows? u16
+-- When combined with `window_background_opacity`, enables background blur
+-- using the KDE Wayland blur protocol.
+--
+-- This can be used to produce a translucent window effect rather than
+-- a crystal clear transparent window effect
+---@field kde_window_background_blur? bool
+---@field key_tables? table<string, Key[]>
 ---@field keys? Key[]
----@field key_tables? {[string]: Key[]}
----@field bypass_mouse_reporting_modifiers? Modifiers
----@field debug_key_events? bool
----@field normalize_output_to_unicode_nfc? bool
----@field disable_default_key_bindings? bool
+---@field launcher_alphabet? string
 ---@field leader? LeaderKey
----@field disable_default_quick_select_patterns? bool
----@field quick_select_patterns? string[]
----@field quick_select_alphabet? string
----@field mouse_bindings? MouseBindingBase[]
----@field disable_default_mouse_bindings? bool
----@field daemon_options? DaemonOptions
----@field send_composed_key_when_left_alt_is_pressed? bool
----@field send_composed_key_when_right_alt_is_pressed? bool
----@field macos_forward_to_ime_modifier_mask? Modifiers
----@field treat_left_ctrlalt_as_altgr? bool
----@field swap_backspace_and_delete? bool
+-- When `true` and in full screen mode,
+-- the window will extend behind the notch on macOS.
+--
+-- This option only has an effect when running on macOS
+--
+-- The default value for macos_fullscreen_extend_behind_notch is `false`.
+--
+-- Must be used with `native_macos_fullscreen_mode` set to `false`.
+--
+-- Toggling full screen with the native macOS full screen button
+-- or a window manager command won't have any effect and you must use the
+-- "Toggle full screen mode" button in `View > Toggle` full screen mode
+-- or configure your own key, see `ToggleFullScreen`.
+--
+-- Example config:
+--
+-- ```lua
+-- config.native_macos_fullscreen_mode = false
+-- config.macos_fullscreen_extend_behind_notch = true
+-- ```
+---@field macos_fullscreen_extend_behind_notch? bool
+---@field mux_enable_ssh_agent? bool
+---@field mux_env_remove? string[]
+-- This option controls how wezterm behaves when a toast notification escape sequence is received.
+--
+-- The following escape sequences will generate a toast notification:
+--
+-- ```sh
+-- printf "\e]777;notify;%s;%s\e\\" "title" "body"
+-- ```
+--
+-- ```sh
+-- printf "\e]9;%s\e\\" "hello there"
+-- ```
+---@field notification_handling? NotifyHandler
+-- Configures the font to use for pane selection mode.
+--
+-- The `pane_select_font` setting can specify a set of fallbacks and other options,
+-- and is described in more detail in the [Fonts](https://wezterm.org/config/fonts.html) section.
+--
+-- If not specified, the font is same as the font in `window_frame.font`
+--
+-- You will typically use `wezterm.font` or `wezterm.font_with_fallback` to specify the font.
+--
+-- To specify pane_select_font:
+--
+-- ```lua
+-- config.pane_select_font = wezterm.font 'Roboto'
+-- ```
+---@field pane_select_font? Fonts|FontAttributes|FontFamilyAttributes
+-- When set to `true`, all color and styling is removed from the pane
+-- prior to performing matching and highlighting any matching text
+-- in quick select mode.
+--
+-- This can make it easier to focus on the matches, particularly when the pane
+-- already had a lot of styling and colors.
+--
+-- Defaults to `false`
+---@field quick_select_remove_styling? bool
+-- The minimum contrast ratio required to use the reverse video cursor.
+--
+-- When the contrast ratio between the reverse video cursor foreground and background
+-- is below this threshold then the default cursor foreground and background
+-- will be used instead
+---@field reverse_video_cursor_min_contrast? number
+-- How many lines of scrollback you want to retain
+---@field scrollback_lines? usize
+-- Specifies a map of environment variables that should be set
+-- when spawning commands in the local domain.
+-- This is not used when working with remote domains.
+---@field set_environment_variables? table<string, string>
+---@field serial_ports? SerialDomain[]
+-- When set to `false`, the close-tab button will not be drawn in tabs
+-- when the fancy tab bar is in use.
+--
+-- Default is `true`
+---@field show_close_tab_button_in_tabs? bool
+---@field ssh_backend? SshBackend
+---@field ssh_domains? SshDomain[]
 -- If true, the `Backspace` and `Delete` keys generate `Delete` and `Backspace`
 -- keypresses, respectively, rather than their normal keycodes.
 -- On macOS the default for this is true because its Backspace key
 -- is labeled as Delete and things are backwards.
----@field enable_tab_bar? bool
+---@field swap_backspace_and_delete? bool
+---@field switch_to_last_active_tab_when_closing_tab? bool
+---@field tab_bar_style? TabBarStyle
+-- What to set the `$TERM` variable to
+---@field term? string
+-- An optional floating point value that defaults to `nil`.
+--
+-- When set, it defines the minimum contrast ratio between
+-- the foreground and background color of a textual cell,
+-- when the cell has differing foreground and background colors.
+--
+-- If the color attributes of a cell fall below the minimum contrast ratio,
+-- then the foreground color will have its luminance (perceived brightness) adjusted
+-- to try to boost the contrast ratio to meet the specified minimum.
+--
+-- This may cause the foreground color to either increase or decrease in luminance,
+-- typically making it either more white or more black.
+--
+-- It may not be possible to achieve the requested minimum ratio,
+-- in which case a slightly better or the original color
+-- (if no better color can be computed) will be used.
+--
+-- If the foreground and background colors in a cell are identical,
+-- then that is assumed to be deliberate and the colors will remain unchanged by this setting.
+--
+-- WCAG 2.0 level AA requires a contrast ratio of at least 4.5:1 for normal text,
+-- so setting `config.text_min_contrast_ratio = 4.5` is a reasonable value
+-- if you find that your selected color scheme has poor contrast
+-- in the applications that you run in your terminal
+---@field text_min_contrast_ratio? number|nil
+---@field tls_clients? TlsDomainClient[]
+---@field tls_servers? TlsDomainServer[]
+-- The set of unix domains
+---@field unix_domains? UnixDomain[]
+---@field webgpu_force_fallback_adapter? bool
+-- Whether to select the higher powered discrete GPU when
+-- the system has a choice of integrated or discrete.
+-- Defaults to low power.
+---@field webgpu_power_preference? WebGpuPowerPreference
+---@field webgpu_preferred_adapter? GpuInfo
+-- Controls the alignment of the terminal cells inside the window.
+--
+-- When window size is not a multiple of terminal cell size,
+-- terminal cells will be slightly smaller than the window,
+-- and leave a small gap between the two.
+--
+-- You can use this option to control where the additional gap will be
+---@field window_content_alignment? ContentAlignment
+---@field window_frame? WindowFrameConfig
+---@field wsl_domains? WslDomain[]
+---@field macos_forward_to_ime_modifier_mask? Modifiers
+---@field mouse_bindings? MouseBindingBase[]
+---@field normalize_output_to_unicode_nfc? bool
+---@field quick_select_alphabet? string
+---@field quick_select_patterns? string[]
+---@field send_composed_key_when_left_alt_is_pressed? bool
+---@field send_composed_key_when_right_alt_is_pressed? bool
+---@field treat_left_ctrlalt_as_altgr? bool
 -- If true, display the tab bar UI at the top of the window.
 -- The tab bar shows the titles of the tabs and which is the
 -- active tab.  Clicking on a tab activates it.
+---@field enable_tab_bar? bool
 ---@field use_fancy_tab_bar? bool
 ---@field tab_bar_at_bottom? bool
 ---@field mouse_wheel_scrolls_tabs? bool
----@field show_tab_index_in_tab_bar? bool
 -- If true, tab bar titles are prefixed with the tab index
+---@field show_tab_index_in_tab_bar? bool
 ---@field show_tabs_in_tab_bar? bool
 ---@field show_new_tab_button_in_tab_bar? bool
----@field tab_and_split_indices_are_zero_based? bool
 -- If true, show_tab_index_in_tab_bar uses a zero-based index.
--- The default is false and the tab shows a one-based index.
----@field tab_max_width? usize
+--
+-- The default is false and the tab shows a one-based index
+---@field tab_and_split_indices_are_zero_based? bool
 -- Specifies the maximum width that a tab can have in the
--- tab bar.  Defaults to 16 glyphs in width.
----@field hide_tab_bar_if_only_one_tab? bool
+-- tab bar.
+--
+-- Defaults to 16 glyphs in width
+---@field tab_max_width? usize
 -- If true, hide the tab bar if the window only has a single tab.
+---@field hide_tab_bar_if_only_one_tab? bool
 ---@field enable_scroll_bar? bool
 ---@field min_scroll_bar_height? Dimension
----@field enable_wayland? bool
--- If false, do not try to use a Wayland protocol connection
+-- If `false`, do not try to use a Wayland protocol connection
 -- when starting the gui frontend, and instead use X11.
+--
 -- This option is only considered on X11/Wayland systems and
 -- has no effect on macOS or Windows.
--- The default is true.
+--
+-- The default is `true`
+---@field enable_wayland? bool
 ---@field enable_zwlr_output_manager? bool
--- driver updates without breaking and losing your work.
--- Whether to prefer EGL over other GL implementations.
--- EGL on Windows has jankier resize behavior than WGL (which
--- is used if EGL is unavailable), but EGL survives graphics
 ---@field prefer_egl? bool
 -- If set to `true`, launching a new instance of wezterm will prefer to spawn
 -- a new tab when it is able to connect to your already-running GUI instance.
@@ -337,9 +563,8 @@
 ---@field prefer_to_spawn_tabs? bool
 ---@field custom_block_glyphs? bool
 ---@field anti_alias_custom_block_glyphs? bool
----@field window_padding? WindowPadding
 -- Controls the amount of padding to use around the terminal cell area
----@field window_background_image? PathBuf
+---@field window_padding? WindowPadding
 -- Specifies the path to a background image attachment file.
 -- The file can be any image format that the rust `image`
 -- crate is able to identify and load.
@@ -347,69 +572,46 @@
 -- of the window before any other content.
 --
 -- The image will be scaled to fit the window.
+---@field window_background_image? PathBuf
 ---@field window_background_gradient? Gradient
 ---@field window_background_image_hsb? HsbTransform
 ---@field foreground_text_hsb? HsbTransform
 ---@field background? BackgroundLayer[]
----@field macos_window_background_blur? i64
 -- Only works on MacOS
+---@field macos_window_background_blur? i64
+-- Only works on Windows
 ---@field win32_system_backdrop? SystemBackdrop
 -- Only works on Windows
 ---@field win32_acrylic_accent_color? RgbaColor
----@field window_background_opacity? f32
 -- Specifies the alpha value to use when rendering the background
--- of the window.  The background is taken either from the
--- window_background_image, or if there is none, the background
--- color of the cell in the current position.
--- The default is 1.0 which is 100% opaque.  Setting it to a number
--- between 0.0 and 1.0 will allow for the screen behind the window
+-- of the window.
+--
+-- The background is taken either from `window_background_image`,
+-- or if there is none, the background color of the cell
+-- in the current position.
+--
+-- The default is `1.0` which is 100% opaque.
+-- Setting it to a number between `0.0` and `1.0` will allow for the screen behind the window
 -- to "shine through" to varying degrees.
+--
 -- This only works on systems with a compositing window manager.
--- Setting opacity to a value other than 1.0 can impact render
--- performance.
+--
+-- Setting opacity to a value other than `1.0` can impact render
+-- performance
+---@field window_background_opacity? f32
 ---@field inactive_pane_hsb? HsbTransform
--- inactive_pane_hue, inactive_pane_saturation and
--- inactive_pane_brightness allow for transforming the color
--- of inactive panes.
--- The pane colors are converted to HSV values and multiplied
--- by these values before being converted back to RGB to
--- use in the display.
---
--- The default is 1.0 which leaves the values as-is.
---
--- Modifying the hue changes the hue of the color by rotating
--- it through the color wheel.  It is not as useful as the
--- other components, but is available "for free" as part of
--- the colorspace conversion.
---
--- Modifying the saturation can add or reduce the amount of
--- "colorfulness".  Making the value smaller can make it appear
--- more washed out.
---
--- Modifying the brightness can be used to dim or increase
--- the perceived amount of light.
---
--- The range of these values is 0.0 and up; they are used to
--- multiply the existing values, so the default of 1.0
--- preserves the existing component, whilst 0.5 will reduce
--- it by half, and 2.0 will double the value.
---
--- A subtle dimming effect can be achieved by setting:
--- inactive_pane_saturation 0.9
--- inactive_pane_brightness 0.8
 ---@field text_background_opacity? f32
----@field cursor_blink_rate? u64
 -- Specifies how often a blinking cursor transitions between visible
 -- and invisible, expressed in milliseconds.
 -- Setting this to 0 disables blinking.
 -- Note that this value is approximate due to the way that the system
 -- event loop schedulers manage timers; non-zero values will be at
 -- least the interval specified with some degree of slop.
+---@field cursor_blink_rate? u64
 ---@field cursor_blink_ease_in? EasingFunction
 ---@field cursor_blink_ease_out? EasingFunction
 ---@field animation_fps? u8
 ---@field force_reverse_video_cursor? bool
----@field default_cursor_style? DefaultCursorStyle
 -- Specifies the default cursor style.  various escape sequences
 -- can override the default style in different situations (eg:
 -- an editor can change it depending on the mode), but this value
@@ -418,13 +620,14 @@
 -- Acceptable values are `SteadyBlock`, `BlinkingBlock`
 -- `SteadyUnderline`, `BlinkingUnderline`, `SteadyBar`
 -- and `BlinkingBar`.
----@field text_blink_rate? u64
+---@field default_cursor_style? DefaultCursorStyle
 -- Specifies how often blinking text (normal speed) transitions
 -- between visible and invisible, expressed in milliseconds.
 -- Setting this to 0 disables slow text blinking.  Note that this
 -- value is approximate due to the way that the system event loop
 -- schedulers manage timers; non-zero values will be at least the
 -- interval specified with some degree of slop.
+---@field text_blink_rate? u64
 ---@field text_blink_ease_in? EasingFunction
 ---@field text_blink_ease_out? EasingFunction
 ---@field text_blink_rate_rapid? u64
@@ -436,34 +639,28 @@
 -- interval specified with some degree of slop.
 ---@field text_blink_rapid_ease_in? EasingFunction
 ---@field text_blink_rapid_ease_out? EasingFunction
----@field hide_mouse_cursor_when_typing? bool
 -- If true, the mouse cursor will be hidden while typing.
 -- This option is true by default.
----@field periodic_stat_logging? u64
+---@field hide_mouse_cursor_when_typing? bool
 -- If non-zero, specifies the period (in seconds) at which various
 -- statistics are logged.  Note that there is a minimum period of
 -- 10 seconds.
----@field scroll_to_bottom_on_input? bool
+---@field periodic_stat_logging? u64
 -- If false, do not scroll to the bottom of the terminal when
 -- you send input to the terminal.
+--
 -- The default is to scroll to the bottom when you send input
--- to the terminal.
+-- to the terminal
+---@field scroll_to_bottom_on_input? bool
 ---@field use_ime? bool
 ---@field xim_im_name? string
 ---@field ime_preedit_rendering? ImePreeditRendering
 ---@field use_dead_keys? bool
 ---@field launch_menu? SpawnCommand[]
 ---@field use_box_model_render? bool
----@field automatically_reload_config? bool
--- When true, watch the config file and reload it automatically
--- when it is detected as changing.
 ---@field check_for_updates? bool
 ---@field show_update_window? bool
 ---@field check_for_updates_interval_seconds? u64
--- When set to true, use the CSI-U encoding scheme as described
--- in http://www.leonerd.org.uk/hacks/fixterms/
--- This is off by default because @wez and @jsgf find the shift-space
--- mapping annoying in vim :-p
 ---@field enable_csi_u_key_encoding? bool
 ---@field window_close_confirmation? WindowCloseConfirmation
 ---@field native_macos_fullscreen_mode? bool
@@ -509,15 +706,10 @@
 ---@field palette_max_key_assigments_for_action? usize
 ---@field ulimit_nofile? u64
 ---@field ulimit_nproc? u64
--- The font size, measured in points
 ---@field font_size? number
--- must be greater than 0
 ---@field line_height? number
--- default = "default_one_point_oh_f64"
 ---@field cell_width? any
--- specified by underline_thickness
 ---@field cursor_thickess? Dimension
--- specified by font
 ---@field underline_thickness? Dimension
 ---@field underline_position? Dimension
 ---@field strikethrough_position? Dimension
@@ -548,23 +740,11 @@
 ---@field window_decorations? WindowDecorations
 ---@field integrated_title_buttons? IntegratedTitleButton[]
 ---@field integrated_title_button_alignment? IntegratedTitleButtonAlignment
--- default is MacOsNative no Mac, Windows on all others
 ---@field integrated_title_button_style? IntegratedTitleButtonStyle
 ---@field integrated_title_button_color? "Auto"|AnsiColor
 ---@field log_unknown_escape_sequences? bool
--- The DPI to assume
--- Override the detected DPI (dots per inch) for the display.
--- This can be useful if the detected DPI is inaccurate and the text appears either blurry or too small (especially if you are using a 4K display on X11 or Wayland).
--- The default value is system specific:
 ---@field dpi? integer
--- When true ("BrightAndBold"), PaletteIndex 0-7 are shifted to bright when the font intensity is bold.
--- The brightening doesn't apply to text that is the default color.
--- can also use true or false for backwards compatibility
 ---@field bold_brightens_ansi_colors? BoldBrightening
--- When using FontKitXXX font systems, a set of directories to search ahead of the standard font locations for fonts.
--- Relative paths are taken to be relative to the directory from which the config was loaded.
--- This tells wezterm to look first for fonts in the directory named `fonts` that is found alongside your `wezterm.lua` file.
--- As this option is an array, you may list multiple locations if you wish.
 ---@field font_dirs? table|string[]
 ---@field color_scheme_dirs? table|string[]
 

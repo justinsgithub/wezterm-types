@@ -6,6 +6,10 @@
 ---@module "types.objects"
 ---@module "types.wezterm"
 
+-- Deprecated data field
+---@class Deprecated
+-- NOTE: THIS IS DELIBERATELY LEFT EMPTY
+
 -- Alias to help identify types that should actually be any
 ---@alias ANY any
 
