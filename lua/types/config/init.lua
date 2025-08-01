@@ -146,18 +146,24 @@
 ---@field blink? "None"|"Rapid"|"Slow"
 
 ---@class Config
+-- Control whether custom_block_glyphs are rendered
+-- using anti-aliasing or not.
+--
+-- Anti-aliasing makes lines look smoother but may not
+-- look so nice at smaller font sizes
+---@field anti_alias_custom_block_glyphs? bool
 -- When true, watch the config file and reload it automatically
 -- when it is detected as changing
 ---@field automatically_reload_config? bool
 ---@field bypass_mouse_reporting_modifiers? Modifiers
--- The character width recommended by the Unicode standard is occasionally inconsistent
--- and may not align with linguistic tradition.
+-- The character width recommended by the Unicode standard is occasionally
+-- inconsistent and may not align with linguistic tradition.
 --
--- -  circled numbers width: ⓪①..⑳㉑
--- -  lowercase Roman numerals width: ⅹⅺⅻ
--- -  Nerd Font (Private Use Area) character width
--- -  ambiguous character width for CJK text
--- -  square emojis defined as EAW=Neutral
+-- - circled numbers width: ⓪①..⑳㉑
+-- - lowercase Roman numerals width: ⅹⅺⅻ
+-- - Nerd Font (Private Use Area) character width
+-- - ambiguous character width for CJK text
+-- - square emojis defined as EAW=Neutral
 --
 -- The `cell_widths` configuration parameter allows users
 -- to override the default character width.
@@ -166,7 +172,9 @@
 -- Note that changing this setting may have consequences for layout in text UI applications
 -- if their expectation of width differs from your choice of configuration
 ---@field cell_widths? table
+-- Specifies the background color used by [`CharSelect`](https://wezterm.org/config/lua/keyassignment/CharSelect.html)
 ---@field char_select_bg_color? RgbaColor
+-- Specifies the text color used by [`CharSelect`](https://wezterm.org/config/lua/keyassignment/CharSelect.html)
 ---@field char_select_fg_color? RgbaColor
 -- Configures the font to use for character selection.
 --
@@ -177,13 +185,38 @@
 --
 -- You will typically use `wezterm.font` or `wezterm.font_with_fallback` to specify the font
 ---@field char_select_font? Fonts|FontAttributes|FontFamilyAttributes
----@field char_select_font_size? f64
+-- Specifies the size of the font used with [`CharSelect`](https://wezterm.org/config/lua/keyassignment/CharSelect.html)
+---@field char_select_font_size? number
+-- Defines the set of exit codes that are considered to be a "clean" exit
+-- by exit_behavior when the program running in the terminal completes.
+--
+-- Acceptable values are an array of integer exit codes that you wish
+-- to treat as successful.
+--
+-- For example, if you often `CTRL-C` a program and then `CTRL-D`,
+-- bash will typically exit with status `130` to indicate
+-- that a program was terminated with `SIGINT`,
+-- but that bash itself wasn't.
+-- In that situation you may wish to set this config to treat `130` as OK:
+--
+-- ```lua
+-- config.clean_exit_codes = { 130 }
+-- ```
+--
+-- Note that `0` is always treated as a clean exit code
+-- and can be omitted from the list
 ---@field clean_exit_codes? u32[]
+-- The color scheme to be used.
+--
+-- See [Colors & Appearance](https://wezterm.org/config/appearance.html#defining-a-color-scheme-in-your-weztermlua)
 ---@field color_scheme? string
--- Use a named color scheme rather than the palette specified
--- by the colors setting.
----@field color_schemes? { [string]: Palette }
--- The color palette
+-- Specifies various named color schemes in your configuration file.
+--
+-- Described in more detail in [Colors & Appearance](https://wezterm.org/config/appearance.html#defining-a-color-scheme-in-your-weztermlua)
+---@field color_schemes? table<string, Palette>
+-- Specifies the color palette.
+--
+-- Described in more detail in [Colors & Appearance](https://wezterm.org/config/appearance.html#defining-a-color-scheme-in-your-weztermlua)
 ---@field colors? Palette
 ---@field command_palette_bg_color? RgbaColor
 ---@field command_palette_fg_color? RgbaColor
@@ -202,7 +235,8 @@
 -- config.command_palette_font = wezterm.font 'Roboto'
 -- ```
 ---@field command_palette_font? Fonts|FontAttributes|FontFamilyAttributes
----@field command_palette_font_size? f64
+-- Specifies the size of the font used with [`ActivateCommandPalette`](https://wezterm.org/config/lua/keyassignment/ActivateCommandPalette.html)
+---@field command_palette_font_size? number
 -- Specifies the number of rows displayed by the command palette.
 -- `ActivateCommandPalette`.
 --
@@ -221,13 +255,72 @@
 --  - `"0.1cell"`: takes the cell height, scales it by 0.1 and uses that as the thickness
 --
 ---@field cursor_thickness? number|string
+-- When set to `true` (the default), WezTerm will compute its own idea
+-- of what the glyphs in the following unicode ranges should be,
+-- instead of using glyphs resolved from a font.
+--
+-- Ideally this option wouldn't exist, but it is present to work around a
+-- [hinting issue in freetype](https://gitlab.freedesktop.org/freetype/freetype/-/issues/761).
+--
+-- You can set this to `false` to use the block characters provided by your font selection
+---@field custom_block_glyphs? bool
+-- Allows configuring the multiplexer (mux) server and how it places itself
+-- into the background to run as a daemon process.
+--
+-- You should not normally need to configure this setting;
+-- the defaults should be sufficient in most cases.
+--
+-- There are three fields supported:
+--
+-- - `pid_file`: Specify the location of the PID and lock file.
+--             The default location is `$XDG_RUNTIME_DIR/wezterm/pid` on X11/Wayland systems,
+--             or `$HOME/.local/share/wezterm/pid`
+-- - `stdout`: Specifies where a log of the `stdout` stream from the daemon will be placed.
+--           The default is `$XDG_RUNTIME_DIR/wezterm/stdout` on X11/Wayland systems,
+--           or `$HOME/.local/share/wezterm/stdout`
+-- - `stderr`: Specifies where a log of the `stderr` stream from the daemon will be placed.
+--           The default is `$XDG_RUNTIME_DIR/wezterm/stderr` on X11/Wayland systems,
+--           or `$HOME/.local/share/wezterm/stderr`
 ---@field daemon_options? DaemonOptions
+-- When set to `true`, each key event will be logged by the GUI layer
+-- as an `INFO` level log message on the `stderr` stream from wezterm.
+--
+-- You will typically need to launch wezterm directly from another terminal
+-- to see this logging.
+--
+-- This can be helpful in figuring out how keys are being decoded on your system,
+-- or for discovering the system-dependent "raw" key code values.
 ---@field debug_key_events? bool
 -- Specifies the default current working directory if none is specified
 -- through configuration or OSC 7 (see docs for `default_cwd` for more
 -- info!)
 ---@field default_cwd? PathBuf
----@field default_gui_startup_args? string[]
+-- When launching the GUI using either `wezterm` or `wezterm-gui`
+-- (with no subcommand explicitly specified), WezTerm will use
+-- the value of `config.default_gui_startup_args` to pick
+-- a default mode for running the GUI.
+--
+-- The default for this config is `{ "start" }` which makes `wezterm`
+-- with no additional subcommand arguments equivalent to `wezterm start`.
+--
+-- If you know that you always want to use wezterm's ssh client
+-- to login to a particular host,
+-- then you might consider using this configuration:
+--
+-- ```lua
+-- config.default_gui_startup_args = { 'ssh', 'some-host' }
+-- ```
+--
+-- which will cause `wezterm` with no additional subcommand arguments
+-- to be equivalent to running `wezterm ssh some-host`.
+--
+-- _Specifying subcommand arguments on the command line is NOT additive with this config;_
+-- _the command line arguments always take precedence._
+--
+-- Depending on your desktop environment, you may find it simpler to use
+-- your operating system shortcut or alias function to set up a shortcut
+-- that runs the subcommand you desire
+---@field default_gui_startup_args? string[]|table|{ [1]: "start" }
 -- If no `prog` is specified on the command line, use this
 -- instead of running the user's shell.
 --
@@ -280,6 +373,17 @@
 ---@field display_pixel_geometry? DisplayPixelGeometry
 ---@field enable_kitty_graphics? bool
 ---@field enable_kitty_keyboard? bool
+-- Enable the scrollbar.
+--
+-- **This is currently disabled by default.**
+-- It will occupy the right window padding space.
+--
+-- If right padding is set to `0` then it will be increased to
+-- a single cell width
+---@field enable_scroll_bar? bool
+-- Controls whether the tab bar is enabled.
+-- Set to `false` to disable it
+---@field enable_tab_bar? bool
 -- Whether the terminal should respond to requests to read the
 -- title string.
 -- Disabled by default for security concerns with shells that might
@@ -377,6 +481,10 @@
 --
 -- See [Font Shaping](https://wezterm.org/config/font-shaping.html) for more information and examples
 ---@field harfbuzz_features? HarfbuzzFeatures[]
+-- If set to `true`, when there is only a single tab,
+-- the tab bar is hidden from the display.
+-- If a second tab is created, the tab will be shown
+---@field hide_tab_bar_if_only_one_tab? bool
 -- Defines rules to match text from the terminal output and generate clickable links
 ---@field hyperlink_rules? HyperlinkRule[]
 -- Specifies the width of a new window, expressed in character cells
@@ -461,7 +569,30 @@
 -- config.macos_fullscreen_extend_behind_notch = true
 -- ```
 ---@field macos_fullscreen_extend_behind_notch? bool
+-- Controls the minimum size of the scroll bar "thumb"
+--
+--The value can be a number to specify the number of pixels, or a string with a unit suffix:
+--
+-- - `"1px"`: The `px` suffix indicates pixels, so this represents a 1 pixel value
+-- - `"1pt"`: The `pt` suffix indicates points.
+--          There are 72 points in 1 inch.
+--          The actual size this occupies on screen depends on
+--          the dpi of the display device
+-- - `"1cell"`: The `cell` suffix indicates the height of the terminal cell,
+--            which in turn depends on the font size, font scaling and dpi
+-- - `"1%"`: The `%` suffix indicates the size of the terminal portion of the display,
+--         which is computed based on the number of rows and the size of the cell
+--
+-- You may use a fractional number such as `"0.5cell"`
+-- or numbers larger than one such as `"72pt"`
+---@field min_scroll_bar_height? string
 ---@field mouse_bindings? MouseBindingBase[]
+-- If `true`, the vertical mouse wheel will switch between tabs
+-- when the mouse cursor is over the tab bar.
+--
+-- The default is `true`.
+-- Set to `false` to disable this behavior
+---@field mouse_wheel_scrolls_tabs? bool
 ---@field mux_enable_ssh_agent? bool
 ---@field mux_env_remove? string[]
 -- When set to `true`, contiguous runs codepoints output to the terminal
@@ -509,6 +640,18 @@
 -- config.pane_select_font = wezterm.font 'Roboto'
 -- ```
 ---@field pane_select_font? Fonts|FontAttributes|FontFamilyAttributes
+-- Depending on the OS and windowing environment, there are a number of different ways to access the GPU.
+--
+-- This option controls whether wezterm should attempt to use EGL to configure the GPU.
+--
+-- The default is `true`
+---@field prefer_egl? bool
+-- If set to `true`, launching a new instance of wezterm will prefer to spawn
+-- a new tab when it is able to connect to your already-running GUI instance.
+-- Otherwise, it will spawn a new window.
+--
+-- The default value for this option is `false`
+---@field prefer_to_spawn_tabs? bool
 -- Specify the alphabet used to produce labels for the items matched in quick select mode.
 --
 -- The default alphabet is `"asdfqwerzxcvjklmiuopghtybn"` which means that
@@ -572,6 +715,25 @@
 --
 -- Default is `true`
 ---@field show_close_tab_button_in_tabs? bool
+-- When set to `true` (the default), the tab bar will display the `new-tab` button,
+-- which can be left-clicked to create a new tab,
+-- or right-clicked to display the Launcher Menu.
+--
+-- When set to `false`, the new-tab button will not be drawn into the tab bar
+---@field show_new_tab_button_in_tab_bar? bool
+-- When set to `true` (the default), tab titles show their tab number (tab index)
+-- with a prefix such as `1:`.
+--
+-- When `false`, no numeric prefix is shown.
+--
+-- The tab_and_split_indices_are_zero_based setting controls
+-- whether numbering starts with `0` or `1`
+---@field show_tab_index_in_tab_bar? bool
+-- When set to `true` (the default), the tab bar will display the tabs
+-- associated with the current window.
+--
+-- When set to `false`, the tabs will not be drawn into the tab bar
+---@field show_tabs_in_tab_bar? bool
 ---@field ssh_backend? SshBackend
 ---@field ssh_domains? SshDomain[]
 -- If true, the `Backspace` and `Delete` keys generate `Delete` and `Backspace`
@@ -580,7 +742,22 @@
 -- is labeled as Delete and things are backwards.
 ---@field swap_backspace_and_delete? bool
 ---@field switch_to_last_active_tab_when_closing_tab? bool
+-- If `true`, show_tab_index_in_tab_bar uses a zero-based index.
+--
+-- The default is `false` and the tab shows a one-based index
+---@field tab_and_split_indices_are_zero_based? bool
+-- When `config.tab_bar_at_bottom = true`, the tab bar will be rendered
+-- at the bottom of the window rather than the top of the window.
+--
+-- The default is `false`
+---@field tab_bar_at_bottom? bool
 ---@field tab_bar_style? TabBarStyle
+-- Specifies the maximum width that a tab can have in the tab bar
+-- when using retro tab mode.
+-- It is ignored when using fancy tab mode.
+--
+-- Defaults to `16` glyphs in width
+---@field tab_max_width? number
 -- What to set the `$TERM` variable to
 ---@field term? string
 -- An optional floating point value that defaults to `nil`.
@@ -621,6 +798,12 @@
 ---@field treat_left_ctrlalt_as_altgr? bool
 -- The set of unix domains
 ---@field unix_domains? UnixDomain[]
+-- When set to `true` (the default), the tab bar is rendered
+-- in a native style with proportional fonts.
+--
+-- When set to `false`, the tab bar is rendered using a retro aesthetic
+-- using the main terminal font
+---@field use_fancy_tab_bar? bool
 ---@field use_ime? bool
 ---@field webgpu_force_fallback_adapter? bool
 -- Whether to select the higher powered discrete GPU when
@@ -628,41 +811,7 @@
 -- Defaults to low power.
 ---@field webgpu_power_preference? WebGpuPowerPreference
 ---@field webgpu_preferred_adapter? GpuInfo
--- Controls the alignment of the terminal cells inside the window.
---
--- When window size is not a multiple of terminal cell size,
--- terminal cells will be slightly smaller than the window,
--- and leave a small gap between the two.
---
--- You can use this option to control where the additional gap will be
----@field window_content_alignment? ContentAlignment
----@field window_frame? WindowFrameConfig
----@field wsl_domains? WslDomain[]
----@field xim_im_name? string
----@field enable_tab_bar? bool
----@field use_fancy_tab_bar? bool
----@field tab_bar_at_bottom? bool
----@field mouse_wheel_scrolls_tabs? bool
----@field show_tab_index_in_tab_bar? bool
----@field show_tabs_in_tab_bar? bool
----@field show_new_tab_button_in_tab_bar? bool
----@field tab_and_split_indices_are_zero_based? bool
----@field tab_max_width? usize
----@field hide_tab_bar_if_only_one_tab? bool
----@field enable_scroll_bar? bool
----@field min_scroll_bar_height? Dimension
----@field enable_zwlr_output_manager? bool
----@field prefer_egl? bool
--- If set to `true`, launching a new instance of wezterm will prefer to spawn
--- a new tab when it is able to connect to your already-running GUI instance.
--- Otherwise, it will spawn a new window.
---
--- The default value for this option is `false`
----@field prefer_to_spawn_tabs? bool
----@field custom_block_glyphs? bool
----@field anti_alias_custom_block_glyphs? bool
--- Controls the amount of padding to use around the terminal cell area
----@field window_padding? WindowPadding
+---@field window_background_gradient? Gradient
 -- Specifies the path to a background image attachment file.
 -- The file can be any image format that the rust `image`
 -- crate is able to identify and load.
@@ -671,8 +820,44 @@
 --
 -- The image will be scaled to fit the window.
 ---@field window_background_image? PathBuf
----@field window_background_gradient? Gradient
 ---@field window_background_image_hsb? HsbTransform
+-- Controls the alignment of the terminal cells inside the window.
+--
+-- When window size is not a multiple of terminal cell size,
+-- terminal cells will be slightly smaller than the window,
+-- and leave a small gap between the two.
+--
+-- You can use this option to control where the additional gap will be
+---@field window_content_alignment? ContentAlignment
+-- Configures whether the window has a title bar and/or resizable border.
+--
+-- The value is a set of flags:
+--
+--   - `"NONE"`: disables titlebar and border (borderless mode),
+--               but causes problems with resizing and minimizing the window,
+--               so you probably want to use `"RESIZE"` instead of `"NONE"`
+--               if you just want to remove the title bar
+--   - `"TITLE"`: disable the resizable border and enable only the title bar
+--   - `"RESIZE"`: disable the title bar but enable the resizable border
+--   - `"TITLE|RESIZE"`: Enable titlebar and border. This is the default
+--   - `"INTEGRATED_BUTTONS|RESIZE"`: place window management buttons (minimize, maximize, close)
+--                                      into the tab bar instead of showing a title bar
+--   - `"MACOS_FORCE_DISABLE_SHADOW"`: (macOS only) disable the window shadow effect
+--   - `"MACOS_FORCE_ENABLE_SHADOW"`: (macOS only) enable the window shadow effect
+--   - `"MACOS_FORCE_SQUARE_CORNERS"`: (macOS only) force the window to have square rather than rounded corners.
+--                                     It is not compatible with `"TITLE"` or `"INTEGRATED_BUTTONS"`
+--   - `"MACOS_USE_BACKGROUND_COLOR_AS_TITLEBAR_COLOR"`: (macOS only) change the system titlebar background color
+--                                                       to match the terminal background color defined
+--                                                       by your configuration.
+--                                                       This option doesn't make sense to use without
+--                                                       also including `"TITLE|RESIZE"` in the set of decorations
+--
+---@field window_decorations? WindowDecorations
+---@field window_frame? WindowFrameConfig
+-- Controls the amount of padding to use around the terminal cell area
+---@field window_padding? WindowPadding
+---@field wsl_domains? WslDomain[]
+---@field xim_im_name? string
 ---@field foreground_text_hsb? HsbTransform
 ---@field background? BackgroundLayer[]
 -- Only works on MacOS
@@ -807,30 +992,6 @@
 ---@field underline_position? Dimension
 ---@field strikethrough_position? Dimension
 ---@field allow_square_glyphs_to_overflow_width? "Allow"|"Never"|"WhenFollowedBySpace"
--- Configures whether the window has a title bar and/or resizable border.
---
--- The value is a set of flags:
---
---   - `"NONE"`: disables titlebar and border (borderless mode),
---               but causes problems with resizing and minimizing the window,
---               so you probably want to use `"RESIZE"` instead of `"NONE"`
---               if you just want to remove the title bar
---   - `"TITLE"`: disable the resizable border and enable only the title bar
---   - `"RESIZE"`: disable the title bar but enable the resizable border
---   - `"TITLE|RESIZE"`: Enable titlebar and border. This is the default
---   - `"INTEGRATED_BUTTONS|RESIZE"`: place window management buttons (minimize, maximize, close)
---                                      into the tab bar instead of showing a title bar
---   - `"MACOS_FORCE_DISABLE_SHADOW"`: (macOS only) disable the window shadow effect
---   - `"MACOS_FORCE_ENABLE_SHADOW"`: (macOS only) enable the window shadow effect
---   - `"MACOS_FORCE_SQUARE_CORNERS"`: (macOS only) force the window to have square rather than rounded corners.
---                                     It is not compatible with `"TITLE"` or `"INTEGRATED_BUTTONS"`
---   - `"MACOS_USE_BACKGROUND_COLOR_AS_TITLEBAR_COLOR"`: (macOS only) change the system titlebar background color
---                                                       to match the terminal background color defined
---                                                       by your configuration.
---                                                       This option doesn't make sense to use without
---                                                       also including `"TITLE|RESIZE"` in the set of decorations
---
----@field window_decorations? WindowDecorations
 ---@field integrated_title_buttons? IntegratedTitleButton[]
 ---@field integrated_title_button_alignment? IntegratedTitleButtonAlignment
 ---@field integrated_title_button_style? IntegratedTitleButtonStyle
