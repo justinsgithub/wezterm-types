@@ -1,7 +1,5 @@
 ---@meta
 
---TODO: specify "any" types where possible
-
 ---@module 'types.wezterm.color'
 ---@module 'types.wezterm.gui'
 ---@module 'types.wezterm.mux'
@@ -11,8 +9,6 @@
 ---@module 'types.wezterm.serde'
 ---@module 'types.wezterm.time'
 ---@module 'types.wezterm.url'
-
----@alias PathBuf string
 
 ---@class Wezterm: ExecDomain
 -- Provides global, in-process, in-memory, data storage for JSON-like variables

@@ -9,8 +9,8 @@
 ---@class TabInformation
 ---@field tab_id integer
 ---@field tab_index integer
----@field is_active bool
----@field is_last_active bool
+---@field is_active boolean
+---@field is_last_active boolean
 ---@field active_pane PaneInformation
 -- The ID of the window that contains this tab
 ---@field window_id integer

@@ -49,7 +49,7 @@
 -- - Setting the zoom state to `false` un-zooms the pane if it was zoomed
 --
 -- Returns the prior zoom state
----@field set_zoomed fun(self: MuxTab, state: bool): bool
+---@field set_zoomed fun(self: MuxTab, state: boolean): boolean
 -- Returns the tab id
 ---@field tab_id fun(self: MuxTab): number
 -- Returns the MuxWindow object that contains this tab

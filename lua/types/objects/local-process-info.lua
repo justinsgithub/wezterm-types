@@ -17,16 +17,16 @@
 -- Represents a process running on the local machine
 ---@class LocalProcessInfo
 -- The process identifier (`PID`)
----@field pid u32
+---@field pid integer
 -- The parent process identifier
----@field ppid u32
+---@field ppid integer
 -- A short name for the process.
 --
 -- Due to platform limitations, this may be inaccurate and/or truncated;
 -- you should look at the `executable` or `argv` fields instead of this one
 ---@field name string
 -- the full path to the executable image for the process (may be empty)
----@field executable PathBuf|""
+---@field executable string|""
 -- A table holding the argument array for the process
 ---@field argv string[]|table
 -- The current working directory for the process (may be empty)
@@ -49,4 +49,4 @@
 ---@field status LocalProcessStatus
 -- A table keyed by child process id and whose values are themselves
 -- `LocalProcessInfo` objects that describe the child processes
----@field children table<u32, LocalProcessInfo>
+---@field children table<integer, LocalProcessInfo>
