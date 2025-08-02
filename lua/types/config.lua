@@ -118,7 +118,7 @@
 ---@field widtht? BackgroundLayerHeightWidth
 
 ---@alias NewlineCanon
----|bool
+---|boolean
 ---|"None"
 ---|"LineFeed"
 ---|"CarriageReturn"
@@ -137,10 +137,10 @@
 
 ---@class FontRules
 ---@field font? Fonts|FontAttributes|FontFamilyAttributes
----@field italic? bool
----@field reverse? bool
----@field strikethrough? bool
----@field invisible? bool
+---@field italic? boolean
+---@field reverse? boolean
+---@field strikethrough? boolean
+---@field invisible? boolean
 ---@field intensity? "Normal"|"Bold"|"Half"
 ---@field underline? "None"|"Single"|"Double"
 ---@field blink? "None"|"Rapid"|"Slow"
@@ -151,10 +151,10 @@
 --
 -- Anti-aliasing makes lines look smoother but may not
 -- look so nice at smaller font sizes
----@field anti_alias_custom_block_glyphs? bool
+---@field anti_alias_custom_block_glyphs? boolean
 -- When true, watch the config file and reload it automatically
 -- when it is detected as changing
----@field automatically_reload_config? bool
+---@field automatically_reload_config? boolean
 ---@field bypass_mouse_reporting_modifiers? Modifiers
 -- The character width recommended by the Unicode standard is occasionally
 -- inconsistent and may not align with linguistic tradition.
@@ -173,9 +173,9 @@
 -- if their expectation of width differs from your choice of configuration
 ---@field cell_widths? table
 -- Specifies the background color used by [`CharSelect`](https://wezterm.org/config/lua/keyassignment/CharSelect.html)
----@field char_select_bg_color? RgbaColor
+---@field char_select_bg_color? string
 -- Specifies the text color used by [`CharSelect`](https://wezterm.org/config/lua/keyassignment/CharSelect.html)
----@field char_select_fg_color? RgbaColor
+---@field char_select_fg_color? string
 -- Configures the font to use for character selection.
 --
 -- The `char_select_font` setting can specify a set of fallbacks and other options,
@@ -205,7 +205,7 @@
 --
 -- Note that `0` is always treated as a clean exit code
 -- and can be omitted from the list
----@field clean_exit_codes? u32[]
+---@field clean_exit_codes? integer[]
 -- The color scheme to be used.
 --
 -- See [Colors & Appearance](https://wezterm.org/config/appearance.html#defining-a-color-scheme-in-your-weztermlua)
@@ -218,8 +218,8 @@
 --
 -- Described in more detail in [Colors & Appearance](https://wezterm.org/config/appearance.html#defining-a-color-scheme-in-your-weztermlua)
 ---@field colors? Palette
----@field command_palette_bg_color? RgbaColor
----@field command_palette_fg_color? RgbaColor
+---@field command_palette_bg_color? string
+---@field command_palette_fg_color? string
 -- Configures the font to use for command palette.
 --
 -- The command_palette_font setting can specify a set of fallbacks and other options,
@@ -263,7 +263,7 @@
 -- [hinting issue in freetype](https://gitlab.freedesktop.org/freetype/freetype/-/issues/761).
 --
 -- You can set this to `false` to use the block characters provided by your font selection
----@field custom_block_glyphs? bool
+---@field custom_block_glyphs? boolean
 -- Allows configuring the multiplexer (mux) server and how it places itself
 -- into the background to run as a daemon process.
 --
@@ -290,11 +290,11 @@
 --
 -- This can be helpful in figuring out how keys are being decoded on your system,
 -- or for discovering the system-dependent "raw" key code values.
----@field debug_key_events? bool
+---@field debug_key_events? boolean
 -- Specifies the default current working directory if none is specified
 -- through configuration or OSC 7 (see docs for `default_cwd` for more
 -- info!)
----@field default_cwd? PathBuf
+---@field default_cwd? string
 -- When launching the GUI using either `wezterm` or `wezterm-gui`
 -- (with no subcommand explicitly specified), WezTerm will use
 -- the value of `config.default_gui_startup_args` to pick
@@ -366,13 +366,13 @@
 -- end
 -- ```
 ---@field default_ssh_auth_sock? string
----@field detect_password_input? bool
----@field disable_default_key_bindings? bool
----@field disable_default_mouse_bindings? bool
----@field disable_default_quick_select_patterns? bool
+---@field detect_password_input? boolean
+---@field disable_default_key_bindings? boolean
+---@field disable_default_mouse_bindings? boolean
+---@field disable_default_quick_select_patterns? boolean
 ---@field display_pixel_geometry? DisplayPixelGeometry
----@field enable_kitty_graphics? bool
----@field enable_kitty_keyboard? bool
+---@field enable_kitty_graphics? boolean
+---@field enable_kitty_keyboard? boolean
 -- Enable the scrollbar.
 --
 -- **This is currently disabled by default.**
@@ -380,16 +380,16 @@
 --
 -- If right padding is set to `0` then it will be increased to
 -- a single cell width
----@field enable_scroll_bar? bool
+---@field enable_scroll_bar? boolean
 -- Controls whether the tab bar is enabled.
 -- Set to `false` to disable it
----@field enable_tab_bar? bool
+---@field enable_tab_bar? boolean
 -- Whether the terminal should respond to requests to read the
 -- title string.
 -- Disabled by default for security concerns with shells that might
 -- otherwise attempt to execute the response.
 -- <https://marc.info/?l=bugtraq&m=104612710031920&w=2>
----@field enable_title_reporting? bool
+---@field enable_title_reporting? boolean
 -- If `false`, do not try to use a Wayland protocol connection
 -- when starting the gui frontend, and instead use X11.
 --
@@ -397,7 +397,7 @@
 -- has no effect on macOS or Windows.
 --
 -- The default is `true`
----@field enable_wayland? bool
+---@field enable_wayland? boolean
 ---@field exec_domains? ExecDomain[]
 ---@field exit_behavior? ExitBehavior
 ---@field exit_behavior_messaging? ExitBehaviorMessaging
@@ -408,7 +408,7 @@
 -- DEPRECATED
 ---@field font_hinting? Deprecated
 ---@field font_locator? FontLocatorSelection
----@field font_rasterizer? FontRasterizerSelection
+---@field font_rasterizer? "FreeType"
 -- When textual output in the terminal is styled with `bold`, `italic`
 -- or other attributes, wezterm uses `font_rules`
 -- to decide how to render that text.
@@ -441,10 +441,10 @@
 -- Likely values are 35, 38 and 40 which have different
 -- characteristics with respective to subpixel hinting.
 -- See https://freetype.org/freetype2/docs/subpixel-hinting.html
----@field freetype_interpreter_version? u32
+---@field freetype_interpreter_version? integer
 ---@field freetype_load_flags? FreeTypeLoadFlags
 ---@field freetype_load_target? FreeTypeLoadTarget
----@field freetype_pcf_long_family_names? bool
+---@field freetype_pcf_long_family_names? boolean
 ---@field freetype_render_target? FreeTypeLoadTarget
 -- Specify the features to enable when using harfbuzz for font shaping.
 -- There is some light documentation here:
@@ -484,19 +484,19 @@
 -- If set to `true`, when there is only a single tab,
 -- the tab bar is hidden from the display.
 -- If a second tab is created, the tab will be shown
----@field hide_tab_bar_if_only_one_tab? bool
+---@field hide_tab_bar_if_only_one_tab? boolean
 -- Defines rules to match text from the terminal output and generate clickable links
 ---@field hyperlink_rules? HyperlinkRule[]
 -- Specifies the width of a new window, expressed in character cells
----@field initial_cols? u16
+---@field initial_cols? integer
 -- Specifies the height of a new window, expressed in character cells.
----@field initial_rows? u16
+---@field initial_rows? integer
 -- When combined with `window_background_opacity`, enables background blur
 -- using the KDE Wayland blur protocol.
 --
 -- This can be used to produce a translucent window effect rather than
 -- a crystal clear transparent window effect
----@field kde_window_background_blur? bool
+---@field kde_window_background_blur? boolean
 -- Controls how keys without an explicit phys: or mapped: prefix are treated.
 --
 -- If `config.key_map_preference = "Mapped"` (the default), then `mapped:`
@@ -535,7 +535,7 @@
 --
 -- In previous versions, there was no option to control this, and WezTerm would always
 -- log warnings for unknown escape sequences
----@field log_unknown_escape_sequences? bool
+---@field log_unknown_escape_sequences? boolean
 -- On macOS systems, this option controls whether modified key presses are routed
 -- via the IME when `use_ime = true`.
 --
@@ -568,7 +568,7 @@
 -- config.native_macos_fullscreen_mode = false
 -- config.macos_fullscreen_extend_behind_notch = true
 -- ```
----@field macos_fullscreen_extend_behind_notch? bool
+---@field macos_fullscreen_extend_behind_notch? boolean
 -- Controls the minimum size of the scroll bar "thumb"
 --
 --The value can be a number to specify the number of pixels, or a string with a unit suffix:
@@ -592,8 +592,8 @@
 --
 -- The default is `true`.
 -- Set to `false` to disable this behavior
----@field mouse_wheel_scrolls_tabs? bool
----@field mux_enable_ssh_agent? bool
+---@field mouse_wheel_scrolls_tabs? boolean
+---@field mux_enable_ssh_agent? boolean
 ---@field mux_env_remove? string[]
 -- When set to `true`, contiguous runs codepoints output to the terminal
 -- are normalized to Unicode Normalization Form C (NFC).
@@ -612,7 +612,7 @@
 --
 -- This option defaults to `false` as it introduces some additional text processing
 -- that is not necessary for most users
----@field normalize_output_to_unicode_nfc? bool
+---@field normalize_output_to_unicode_nfc? boolean
 -- This option controls how wezterm behaves when a toast notification escape sequence is received.
 --
 -- The following escape sequences will generate a toast notification:
@@ -645,13 +645,13 @@
 -- This option controls whether wezterm should attempt to use EGL to configure the GPU.
 --
 -- The default is `true`
----@field prefer_egl? bool
+---@field prefer_egl? boolean
 -- If set to `true`, launching a new instance of wezterm will prefer to spawn
 -- a new tab when it is able to connect to your already-running GUI instance.
 -- Otherwise, it will spawn a new window.
 --
 -- The default value for this option is `false`
----@field prefer_to_spawn_tabs? bool
+---@field prefer_to_spawn_tabs? boolean
 -- Specify the alphabet used to produce labels for the items matched in quick select mode.
 --
 -- The default alphabet is `"asdfqwerzxcvjklmiuopghtybn"` which means that
@@ -696,7 +696,7 @@
 -- already had a lot of styling and colors.
 --
 -- Defaults to `false`
----@field quick_select_remove_styling? bool
+---@field quick_select_remove_styling? boolean
 -- The minimum contrast ratio required to use the reverse video cursor.
 --
 -- When the contrast ratio between the reverse video cursor foreground and background
@@ -704,7 +704,7 @@
 -- will be used instead
 ---@field reverse_video_cursor_min_contrast? number
 -- How many lines of scrollback you want to retain
----@field scrollback_lines? usize
+---@field scrollback_lines? number
 -- Specifies a map of environment variables that should be set
 -- when spawning commands in the local domain.
 -- This is not used when working with remote domains.
@@ -714,13 +714,13 @@
 -- when the fancy tab bar is in use.
 --
 -- Default is `true`
----@field show_close_tab_button_in_tabs? bool
+---@field show_close_tab_button_in_tabs? boolean
 -- When set to `true` (the default), the tab bar will display the `new-tab` button,
 -- which can be left-clicked to create a new tab,
 -- or right-clicked to display the Launcher Menu.
 --
 -- When set to `false`, the new-tab button will not be drawn into the tab bar
----@field show_new_tab_button_in_tab_bar? bool
+---@field show_new_tab_button_in_tab_bar? boolean
 -- When set to `true` (the default), tab titles show their tab number (tab index)
 -- with a prefix such as `1:`.
 --
@@ -728,29 +728,29 @@
 --
 -- The tab_and_split_indices_are_zero_based setting controls
 -- whether numbering starts with `0` or `1`
----@field show_tab_index_in_tab_bar? bool
+---@field show_tab_index_in_tab_bar? boolean
 -- When set to `true` (the default), the tab bar will display the tabs
 -- associated with the current window.
 --
 -- When set to `false`, the tabs will not be drawn into the tab bar
----@field show_tabs_in_tab_bar? bool
+---@field show_tabs_in_tab_bar? boolean
 ---@field ssh_backend? SshBackend
 ---@field ssh_domains? SshDomain[]
 -- If true, the `Backspace` and `Delete` keys generate `Delete` and `Backspace`
 -- keypresses, respectively, rather than their normal keycodes.
 -- On macOS the default for this is true because its Backspace key
 -- is labeled as Delete and things are backwards.
----@field swap_backspace_and_delete? bool
----@field switch_to_last_active_tab_when_closing_tab? bool
+---@field swap_backspace_and_delete? boolean
+---@field switch_to_last_active_tab_when_closing_tab? boolean
 -- If `true`, show_tab_index_in_tab_bar uses a zero-based index.
 --
 -- The default is `false` and the tab shows a one-based index
----@field tab_and_split_indices_are_zero_based? bool
+---@field tab_and_split_indices_are_zero_based? boolean
 -- When `config.tab_bar_at_bottom = true`, the tab bar will be rendered
 -- at the bottom of the window rather than the top of the window.
 --
 -- The default is `false`
----@field tab_bar_at_bottom? bool
+---@field tab_bar_at_bottom? boolean
 ---@field tab_bar_style? TabBarStyle
 -- Specifies the maximum width that a tab can have in the tab bar
 -- when using retro tab mode.
@@ -795,7 +795,7 @@
 -- with the option `treat_left_ctrlalt_as_altgr`.
 --
 -- Note that the key bindings using separate `Ctrl` and `Alt` won't be triggered anymore
----@field treat_left_ctrlalt_as_altgr? bool
+---@field treat_left_ctrlalt_as_altgr? boolean
 -- The set of unix domains
 ---@field unix_domains? UnixDomain[]
 -- When set to `true` (the default), the tab bar is rendered
@@ -803,9 +803,9 @@
 --
 -- When set to `false`, the tab bar is rendered using a retro aesthetic
 -- using the main terminal font
----@field use_fancy_tab_bar? bool
----@field use_ime? bool
----@field webgpu_force_fallback_adapter? bool
+---@field use_fancy_tab_bar? boolean
+---@field use_ime? boolean
+---@field webgpu_force_fallback_adapter? boolean
 -- Whether to select the higher powered discrete GPU when
 -- the system has a choice of integrated or discrete.
 -- Defaults to low power.
@@ -819,7 +819,7 @@
 -- of the window before any other content.
 --
 -- The image will be scaled to fit the window.
----@field window_background_image? PathBuf
+---@field window_background_image? string
 ---@field window_background_image_hsb? HsbTransform
 -- Controls the alignment of the terminal cells inside the window.
 --
@@ -861,11 +861,11 @@
 ---@field foreground_text_hsb? HsbTransform
 ---@field background? BackgroundLayer[]
 -- Only works on MacOS
----@field macos_window_background_blur? i64
+---@field macos_window_background_blur? integer
 -- Only works on Windows
 ---@field win32_system_backdrop? SystemBackdrop
 -- Only works on Windows
----@field win32_acrylic_accent_color? RgbaColor
+---@field win32_acrylic_accent_color? string
 -- Specifies the alpha value to use when rendering the background
 -- of the window.
 --
@@ -881,20 +881,20 @@
 --
 -- Setting opacity to a value other than `1.0` can impact render
 -- performance
----@field window_background_opacity? f32
+---@field window_background_opacity? number
 ---@field inactive_pane_hsb? HsbTransform
----@field text_background_opacity? f32
+---@field text_background_opacity? number
 -- Specifies how often a blinking cursor transitions between visible
 -- and invisible, expressed in milliseconds.
 -- Setting this to 0 disables blinking.
 -- Note that this value is approximate due to the way that the system
 -- event loop schedulers manage timers; non-zero values will be at
 -- least the interval specified with some degree of slop.
----@field cursor_blink_rate? u64
+---@field cursor_blink_rate? integer
 ---@field cursor_blink_ease_in? EasingFunction
 ---@field cursor_blink_ease_out? EasingFunction
----@field animation_fps? u8
----@field force_reverse_video_cursor? bool
+---@field animation_fps? integer
+---@field force_reverse_video_cursor? boolean
 -- Specifies the default cursor style.  various escape sequences
 -- can override the default style in different situations (eg:
 -- an editor can change it depending on the mode), but this value
@@ -910,10 +910,10 @@
 -- value is approximate due to the way that the system event loop
 -- schedulers manage timers; non-zero values will be at least the
 -- interval specified with some degree of slop.
----@field text_blink_rate? u64
+---@field text_blink_rate? integer
 ---@field text_blink_ease_in? EasingFunction
 ---@field text_blink_ease_out? EasingFunction
----@field text_blink_rate_rapid? u64
+---@field text_blink_rate_rapid? integer
 -- Specifies how often blinking text (rapid speed) transitions
 -- between visible and invisible, expressed in milliseconds.
 -- Setting this to 0 disables rapid text blinking.  Note that this
@@ -924,73 +924,73 @@
 ---@field text_blink_rapid_ease_out? EasingFunction
 -- If true, the mouse cursor will be hidden while typing.
 -- This option is true by default.
----@field hide_mouse_cursor_when_typing? bool
+---@field hide_mouse_cursor_when_typing? boolean
 -- If non-zero, specifies the period (in seconds) at which various
 -- statistics are logged.  Note that there is a minimum period of
 -- 10 seconds.
----@field periodic_stat_logging? u64
+---@field periodic_stat_logging? integer
 -- If false, do not scroll to the bottom of the terminal when
 -- you send input to the terminal.
 --
 -- The default is to scroll to the bottom when you send input
 -- to the terminal
----@field scroll_to_bottom_on_input? bool
+---@field scroll_to_bottom_on_input? boolean
 ---@field ime_preedit_rendering? ImePreeditRendering
----@field use_dead_keys? bool
----@field use_box_model_render? bool
----@field check_for_updates? bool
----@field show_update_window? bool
----@field check_for_updates_interval_seconds? u64
----@field enable_csi_u_key_encoding? bool
+---@field use_dead_keys? boolean
+---@field use_box_model_render? boolean
+---@field check_for_updates? boolean
+---@field show_update_window? boolean
+---@field check_for_updates_interval_seconds? integer
+---@field enable_csi_u_key_encoding? boolean
 ---@field window_close_confirmation? WindowCloseConfirmation
----@field native_macos_fullscreen_mode? bool
+---@field native_macos_fullscreen_mode? boolean
 ---@field selection_word_boundary? string
 ---@field enq_answerback? string
----@field adjust_window_size_when_changing_font_size? bool
+---@field adjust_window_size_when_changing_font_size? boolean
 ---@field tiling_desktop_environments? string[]
----@field use_resize_increments? bool
----@field alternate_buffer_wheel_scroll_speed? u8
----@field status_update_interval? u64
----@field experimental_pixel_positioning? bool
+---@field use_resize_increments? boolean
+---@field alternate_buffer_wheel_scroll_speed? integer
+---@field status_update_interval? integer
+---@field experimental_pixel_positioning? boolean
 ---@field skip_close_confirmation_for_processes_named? string[]
----@field quit_when_all_windows_are_closed? bool
----@field warn_about_missing_glyphs? bool
----@field sort_fallback_fonts_by_coverage? bool
----@field search_font_dirs_for_fallback? bool
----@field use_cap_height_to_scale_fallback_fonts? bool
----@field swallow_mouse_click_on_pane_focus? bool
----@field swallow_mouse_click_on_window_focus? bool
----@field pane_focus_follows_mouse? bool
----@field unzoom_on_switch_pane? bool
----@field max_fps? u8
----@field shape_cache_size? usize
----@field line_state_cache_size? usize
----@field line_quad_cache_size? usize
----@field line_to_ele_shape_cache_size? usize
----@field glyph_cache_image_cache_size? usize
+---@field quit_when_all_windows_are_closed? boolean
+---@field warn_about_missing_glyphs? boolean
+---@field sort_fallback_fonts_by_coverage? boolean
+---@field search_font_dirs_for_fallback? boolean
+---@field use_cap_height_to_scale_fallback_fonts? boolean
+---@field swallow_mouse_click_on_pane_focus? boolean
+---@field swallow_mouse_click_on_window_focus? boolean
+---@field pane_focus_follows_mouse? boolean
+---@field unzoom_on_switch_pane? boolean
+---@field max_fps? integer
+---@field shape_cache_size? number
+---@field line_state_cache_size? number
+---@field line_quad_cache_size? number
+---@field line_to_ele_shape_cache_size? number
+---@field glyph_cache_image_cache_size? number
 ---@field visual_bell? VisualBell
 ---@field audible_bell? "Disabled"|"SystemBeep"
 ---@field canonicalize_pasted_newlines? NewlineCanon
----@field unicode_version? u8
----@field treat_east_asian_ambiguous_width_as_wide? bool
----@field allow_download_protocols? bool
----@field allow_win32_input_mode? bool
+---@field unicode_version? integer
+---@field treat_east_asian_ambiguous_width_as_wide? boolean
+---@field allow_download_protocols? boolean
+---@field allow_win32_input_mode? boolean
 ---@field default_domain? string
 ---@field default_mux_server_domain? string
 ---@field default_workspace? string
 ---@field xcursor_theme? string
----@field xcursor_size? u32
+---@field xcursor_size? integer
 ---@field quote_dropped_files? DroppedFileQuoting
 ---@field ui_key_cap_rendering? UIKeyCapRendering
----@field palette_max_key_assigments_for_action? usize
----@field ulimit_nofile? u64
----@field ulimit_nproc? u64
+---@field palette_max_key_assigments_for_action? number
+---@field ulimit_nofile? integer
+---@field ulimit_nproc? integer
 ---@field font_size? number
 ---@field cell_width? any
----@field cursor_thickess? Dimension
----@field underline_thickness? Dimension
----@field underline_position? Dimension
----@field strikethrough_position? Dimension
+---@field cursor_thickess? string|number
+---@field underline_thickness? string|number
+---@field underline_position? string|number
+---@field strikethrough_position? string|number
 ---@field allow_square_glyphs_to_overflow_width? "Allow"|"Never"|"WhenFollowedBySpace"
 ---@field integrated_title_buttons? IntegratedTitleButton[]
 ---@field integrated_title_button_alignment? IntegratedTitleButtonAlignment
