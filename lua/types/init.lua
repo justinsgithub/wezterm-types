@@ -6,6 +6,10 @@
 ---@module "types.objects"
 ---@module "types.wezterm"
 
+-- Deprecated data field
+---@class Deprecated
+-- NOTE: THIS IS DELIBERATELY LEFT EMPTY
+
 ---@alias FormatItem.UnderlineStyle
 ---|"None"
 ---|"Single"
@@ -511,9 +515,9 @@
 ---@field window_close_hover? string
 
 ---@class HyperlinkRule
----@field regex? string
----@field format? string
----@field highlight? number
+---@field regex string
+---@field format string
+---@field highlight? 1
 
 ---@class SerialDomain
 -- The name of this specific domain.
