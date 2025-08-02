@@ -4,7 +4,7 @@
 ---@field rise Time|nil
 ---@field progression number
 ---@field set Time|nil
----@field up bool
+---@field up boolean
 
 -- Represents a date and time that is tracked internally as UTC.
 --

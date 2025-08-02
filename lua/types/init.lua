@@ -6,9 +6,6 @@
 ---@module "types.objects"
 ---@module "types.wezterm"
 
--- Alias to help identify types that should actually be any
----@alias ANY any
-
 ---@alias FormatItem.UnderlineStyle
 ---|"None"
 ---|"Single"
@@ -25,13 +22,10 @@
 ---@alias FormatItemAttribute
 ---|{ Underline: FormatItem.UnderlineStyle }
 ---|{ Intensity: FormatItem.Intensity }
----|{ Italic: bool }
-
--- Reset all attributes to default
----@alias FormatItemReset "ResetAttributes"
+---|{ Italic: boolean }
 
 ---@alias FormatItem
----|FormatItemReset
+---|"ResetAttributes"
 ---|{ Attribute: FormatItemAttribute }
 ---|{ Foreground: ColorSpec }
 ---|{ Background: ColorSpec }
@@ -66,9 +60,6 @@
 ---|"LowPower"
 ---|"HighPerformance"
 
--- Only Option
----@alias FontRasterizerSelection "FreeType"
-
 ---@alias FontShaperSelection
 ---|"Allsorts" very preliminary support
 ---|"Harfbuzz" default
@@ -95,47 +86,16 @@
 ---|"Full"
 ---|"Unknown"
 
--- 32-bit floating point number
----@alias f32 number
--- 64-bit floating point number
----@alias f64 number
-
--- 8-bit unsigned integer
----@alias u8 integer
--- 16-bit unsigned integer
----@alias u16 integer
--- 32-bit unsigned integer
----@alias u32 integer
--- 64-bit unsigned integer
----@alias u64 integer
-
--- 64-bit signed integer
----@alias i64 integer
-
----@alias Duration u64
-
----@alias usize number
-
----@alias Regex string
-
----@alias RgbColor string
---
----@alias RgbaColor string
-
----@alias bool boolean
-
 ---@alias BoldBrightening
 ---|"No"
 ---|"BrightAndBold"
 ---|"BrightOnly"
 
--- TODO: describe
 ---@alias ExitBehavior
 ---|"Close"
 ---|"CloseOnCleanExit"
 ---|"Hold"
 
--- TODO: describe
 ---@alias ExitBehaviorMessaging
 ---|"Verbose"
 ---|"Brief"
@@ -205,31 +165,6 @@
 ---|string
 -- Add other valid combinations if needed
 
--- A value expressed in points, where 72 points == 1 inch
----@alias Points string
-
--- A value expressed in raw pixels
----@alias Pixels string|number
-
--- A value expressed in terms of a fraction of the maximum
--- value in the same direction.
--- For example, left padding of 10% depends on
--- the pixel width of that element.
--- The value is 1.0 == 100%.
--- It is possible to express e.g. 2.0 for 200%
----@alias Percent string
-
--- A value expressed in terms of a fraction of the cell
--- size computed from the configured font size.
--- 1.0 == the cell size
----@alias Cells string
-
----@alias Dimension
----|Points
----|Pixels
----|Percent
----|Cells
-
 ---@alias TabBarIntensity
 ---|"Normal"
 ---|"Half"
@@ -296,12 +231,12 @@
 -- Specify whether you want the text to be italic for this tab.
 --
 -- The default is `false`
----@field italic? bool
+---@field italic? boolean
 -- Specify whether you want the text to be rendered with strikethrough (true)
 -- or not for this tab.
 --
 -- The default is `false`
----@field strikethrough? bool
+---@field strikethrough? boolean
 
 ---@class TabBarColors
 -- The text color to use when the attributes are reset to default
@@ -327,11 +262,7 @@
 -- moves over the new tab button
 ---@field new_tab_hover TabBarColor
 
----@alias AC "AnsiColor"
-
----@alias CO "Color"
-
----@alias ColorSpec table<AC, AnsiColor>|table<CO, string>
+---@alias ColorSpec table<"AnsiColor", AnsiColor>|table<"Color", string>
 
 ---@class Palette
 -- The text color to use when the attributes are reset to default
@@ -529,8 +460,8 @@
 ---@field stretch? FontStretch
 -- Whether the font should be an italic variant
 ---@field style? FontStyle
----@field is_fallback? bool
----@field is_synthetic? bool
+---@field is_fallback? boolean
+---@field is_synthetic? boolean
 ---@field scale? number
 
 -- `FontAttributes`-like class but with font family specified
@@ -544,30 +475,30 @@
 -- you can combine the flags like `"NO_HINTING|MONOCHROME"`
 -- **(you probably wouldn't want to do this)**
 ---@field freetype_load_flags? FreeTypeLoadFlags
----@field assume_emoji_presentation? bool
+---@field assume_emoji_presentation? boolean
 
 ---@class Fonts
 ---@field fonts FontAttributes[]
 
 ---@class WindowFrameConfig
----@field inactive_titlebar_bg? RgbColor
----@field active_titlebar_bg? RgbColor
----@field inactive_titlebar_fg? RgbColor
----@field active_titlebar_fg? RgbColor
----@field inactive_titlebar_border_bottom? RgbColor
----@field active_titlebar_border_bottom? RgbColor
----@field button_fg? RgbColor
----@field button_bg? RgbColor
----@field button_hover_fg? RgbColor
----@field button_hover_bg? RgbColor
----@field border_left_width? Dimension
----@field border_right_width? Dimension
----@field border_top_height? Dimension
----@field border_bottom_height? Dimension
----@field border_left_color? RgbaColor
----@field border_right_color? RgbaColor
----@field border_top_color? RgbaColor
----@field border_bottom_color? RgbaColor
+---@field inactive_titlebar_bg? string
+---@field active_titlebar_bg? string
+---@field inactive_titlebar_fg? string
+---@field active_titlebar_fg? string
+---@field inactive_titlebar_border_bottom? string
+---@field active_titlebar_border_bottom? string
+---@field button_fg? string
+---@field button_bg? string
+---@field button_hover_fg? string
+---@field button_hover_bg? string
+---@field border_left_width? string|number
+---@field border_right_width? string|number
+---@field border_top_height? string|number
+---@field border_bottom_height? string|number
+---@field border_left_color? string
+---@field border_right_color? string
+---@field border_top_color? string
+---@field border_bottom_color? string
 
 ---@class TabBarStyle
 ---@field new_tab? string
@@ -580,9 +511,9 @@
 ---@field window_close_hover? string
 
 ---@class HyperlinkRule
----@field regex? Regex
+---@field regex? string
 ---@field format? string
----@field highlight? usize
+---@field highlight? number
 
 ---@class SerialDomain
 -- The name of this specific domain.
@@ -597,7 +528,7 @@
 -- Set the baud rate.
 --
 -- The default is `9600` baud
----@field baud usize|9600
+---@field baud number|9600
 
 ---@class GpuInfo
 ---@field name string
@@ -605,8 +536,8 @@
 ---@field backend string
 ---@field driver string
 ---@field driver_info string
----@field vendor u32
----@field device u32
+---@field vendor integer
+---@field device integer
 
 ---@class UnixDomain
 -- The name of this specific domain.
@@ -614,12 +545,12 @@
 ---@field name string
 -- The path to the socket.
 -- If unspecified, a resonable default value will be computed
----@field socket_path PathBuf
+---@field socket_path string
 -- If `true`, connect to this domain automatically at startup
----@field connect_automatically bool
+---@field connect_automatically boolean
 -- If `true`, do not attempt to start this server if we try and fail to
 -- connect to it.
----@field no_serve_automatically bool
+---@field no_serve_automatically boolean
 -- If we decide that we need to start the server, the command to run
 -- to set that up.
 --
@@ -644,20 +575,20 @@
 -- This is not recommended on a multi-user system,
 -- but is useful, for example, when running the server inside a WSL container
 -- but with the socket on the host NTFS volume
----@field skip_permissions_check bool
----@field read_timeout Duration
+---@field skip_permissions_check boolean
+---@field read_timeout integer
 -- Don"t use `default_local_echo_threshold_ms()` here to disable
 -- the predictive echo for UNIX domains by default
----@field write_timeout Duration
+---@field write_timeout integer
 -- Show time since last response when waiting for a response.
 --
 -- Recommended to look at this:
 -- `https://wezfurlong.org/wezterm/config/lua/pane/get_metadata.html#since_last_response_ms`
----@field local_echo_threshold_ms u64
----@field overlay_lag_indicator bool
+---@field local_echo_threshold_ms integer
+---@field overlay_lag_indicator boolean
 
 ---@class LeaderKey: KeyNoAction
----@field timeout_milliseconds? u64
+---@field timeout_milliseconds? integer
 
 ---@class HyperLinkRule
 -- The regular expression to match
@@ -761,7 +692,7 @@
 -- Only the first `"format-tab-title"` event will be executed;
 -- it doesn't make sense to define multiple instances of the event
 -- with `multiple wezterm.on("format-tab-title", ...)` calls
----@alias Event.FormatTabTitle fun(event: FormatTabTitle, callback: fun(tab: MuxTab, tabs: MuxTab[], panes: Pane[], config: Config, hover: bool, max_width: number): string|FormatItem)
+---@alias Event.FormatTabTitle fun(event: FormatTabTitle, callback: fun(tab: MuxTab, tabs: MuxTab[], panes: Pane[], config: Config, hover: boolean, max_width: number): string|FormatItem)
 
 -- The parameters to the event are:
 --
@@ -1094,8 +1025,8 @@
 ---@class MouseBindingBase
 ---@field event MouseEvent
 ---@field action Action
----@field mouse_reporting? bool
----@field alt_screen? bool|"Any"
+---@field mouse_reporting? boolean
+---@field alt_screen? boolean|"Any"
 
 ---@class MouseBinding: MouseBindingBase
 ---@field mods string

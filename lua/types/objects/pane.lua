@@ -8,19 +8,19 @@
 
 ---@class SpawnSplit: SpawnTab
 ---@field direction? SplitDirection
----@field top_level? bool
+---@field top_level? boolean
 ---@field size? number
 
 ---@class PaneMetadata
 -- A boolean value that is populated only for local panes.
 -- It is set to `true` if it appears as though the local PTY is configured
 -- for password entry (local echo disabled, canonical input mode enabled)
----@field password_input bool
+---@field password_input boolean
 -- A boolean value that is populated only for multiplexer client panes.
 -- It is set to `true` if wezterm is waiting for a response from the multiplexer server.
 --
 -- This can be used in conjunction with `since_last_response_ms`
----@field is_tardy bool
+---@field is_tardy boolean
 -- An integer value that is populated only for multiplexer client panes.
 -- It is set to the number of elapsed milliseconds since the most recent
 -- response from the multiplexer server
@@ -289,7 +289,7 @@
 --
 -- See also `PaneInformation.has_unseen_output` for an example
 -- using equivalent information to color tabs based on this state
----@field has_unseen_output fun(self: Pane): bool
+---@field has_unseen_output fun(self: Pane): boolean
 -- Sends text, which may include escape sequences,
 -- to the output side of the current pane.
 --
@@ -308,7 +308,7 @@
 -- (like `vim` or `less`) to do whatever they want on the screen
 -- without fear of destroying the user's scrollback.
 -- Those programs emit escape codes to return to the normal screen when they exit
----@field is_alt_screen_active fun(self: Pane): bool
+---@field is_alt_screen_active fun(self: Pane): boolean
 -- Creates a new tab in the window that contains pane, and moves pane into that tab.
 --
 -- Returns a tuple of the newly created `MuxTab` and `MuxWindow` objects containing it

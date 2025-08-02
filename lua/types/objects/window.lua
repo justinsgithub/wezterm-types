@@ -10,7 +10,7 @@
 ---@field pixel_width number
 ---@field pixel_height number
 ---@field dpi number
----@field is_full_screen bool
+---@field is_full_screen boolean
 
 ---@class WindowKeyboardMods
 ---@field mods string
@@ -78,7 +78,7 @@
 ---@field get_selection_text_for_pane fun(self: Window): string
 -- Returns `true` if the window has focus.
 -- The `"update-status"` event is fired when the focus state changes
----@field is_focused fun(self: Window): bool
+---@field is_focused fun(self: Window): boolean
 -- Returns two values; the keyboard modifiers and the key status leds.
 -- Both values are exposed to Lua as strings with `|`-delimited strings
 -- representing the various modifier keys and keyboard LED states:
@@ -91,7 +91,7 @@
 -- NOTE: macOS doesn't have a num lock concept
 ---@field keyboard_modifiers fun(self: Window): WindowKeyboardMods
 -- Returns true if the Leader Key is active in the window, or false otherwise
----@field leader_is_active fun(self: Window): bool
+---@field leader_is_active fun(self: Window): boolean
 -- Puts the window into the maximized state.
 -- Use `window:restore()` to return to the normal/non-maximized state
 ---@field maximize fun(self: Window)

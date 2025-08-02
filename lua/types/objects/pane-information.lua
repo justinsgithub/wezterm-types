@@ -12,9 +12,9 @@
 -- The logical position of the pane within its containing layout
 ---@field pane_index number
 -- is `true` if the pane is the active pane within its containing tab
----@field is_active bool
+---@field is_active boolean
 -- Is `true` if the pane is in the zoomed state
----@field is_zoomed bool
+---@field is_zoomed boolean
 -- The cell `x` coordinate of the left edge of the pane
 ---@field left number
 -- The cell `y` coordinate of the top edge of the pane
