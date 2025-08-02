@@ -4,7 +4,7 @@
 -- The 0-based tab index
 ---@field index integer
 -- A `boolean` indicating whether this is the active tab within the window
----@field is_active bool
+---@field is_active boolean
 -- The `MuxTab` object
 ---@field tab MuxTab
 

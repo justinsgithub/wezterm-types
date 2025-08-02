@@ -76,7 +76,7 @@
 ---@field square fun(self: Color): a: Color, b: Color, c: Color
 -- Returns a tuple of the internal `SRGBA` colors expressed
 -- as unsigned 8-bit integers in the range `0-255`
----@field srgb_u8 fun(self: Color): r: u8, g: u8, b: u8, alpha: u8
+---@field srgb_u8 fun(self: Color): r: integer, g: integer, b: integer, alpha: integer
 -- Returns the other two colors that form a triad.
 -- The other colors are at +/- 120 degrees in the `HSL` color wheel
 ---@field triad fun(self: Color): a: Color, b: Color
