@@ -1,0 +1,86 @@
+name: LazyDev Bug (Neovim)
+description: Is there anything wrong with the Neovim plugin? Tell us!
+title: "[NVIM]: <TITLE>"
+labels: ["bug", "important"]
+assignees:
+  - DrKJeff16
+
+body:
+  - type: checkboxes
+    attributes:
+      label: Before we begin...
+      description: "Make sure to read every checkbox and answer truthfully:"
+      options:
+        - label: I have checked for existing issues related to this one, whether open or closed
+          required: true
+        - label: I have checked for existing PRs and none address this, whether open or closed
+          required: true
+        - label: I have read the WezTerm Lua Reference and can confirm nothing should be wrong
+          required: true
+        - label: I have read the `lazydev.nvim` docs and my plugin manager's, respectively
+          required: true
+  - type: input
+    attributes:
+      label: "What version of Neovim are you using? (`nvim -v`)"
+      placeholder: NVIM v0.12.0-dev-918+g1240d29f8f
+    validations:
+      required: true
+  - type: input
+    attributes:
+      label: "Operating system and, if possible, what version?"
+      placeholder: Arch Linux 6.15.6-arch1-1
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Describe the issue
+      description: Write down what's wrong, as detailed as you can. Avoid irrelevant info
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Expected Behavior
+      description: Describe what were you expecting to happen
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Steps To Reproduce
+      description: Steps to reproduce the behavior
+      placeholder: |
+        1.
+        2.
+        3.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: How did you setup the plugin?
+      description: Paste the relevant code snippet of how you configured this plugin
+      value: |
+        require('lazy').setup({
+          spec = {
+            {
+              'folke/lazydev.nvim',
+              ft = 'lua',
+              dependencies = {
+                { 'justinsgithub/wezterm-types', lazy = true },
+              },
+              opts = {
+                library = {
+                  -- Other library configs...
+                  { path = 'wezterm-types', mods = { 'wezterm' } },
+                },
+              },
+            },
+          },
+        })
+      render: lua
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Additional Info and/or Screenshots
+      description: If there's more info you could tell, please do. Screenshots too, if applicable
+    validations:
+      required: false
