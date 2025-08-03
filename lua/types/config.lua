@@ -5,9 +5,6 @@
 ---@module "types.objects"
 ---@module "types.wezterm"
 
----@alias IntStr integer|string
----@alias NumStr number|string
-
 ---@alias HorizontalAlign
 ---|"Left"
 ---|"Center"
@@ -54,10 +51,10 @@
 ---|"Tabbed"
 
 ---@class WindowPadding
----@field left? IntStr
----@field right? IntStr
----@field top? IntStr
----@field bottom? IntStr
+---@field left? integer|string
+---@field right? integer|string
+---@field top? integer|string
+---@field bottom? integer|string
 
 ---@alias WindowCloseConfirmation
 ---|"AlwaysPrompt"
@@ -101,76 +98,78 @@
 ---|"SuppressFromFocusedTab" Show the notification unless it was generated from the currently focused tab
 ---|"SuppressFromFocusedWindow" Show the notification unless it was generated from the currently focused window
 
--- A layer is a Lua table with the following fields:
---
--- - `source`: Defines the source of the layer texture data
--- - `attachment`: Controls whether the layer is fixed to the viewport or moves as it scrolls:
---     * `"Fixed"`: (default) to not move as the window scrolls
---     * `"Scroll"`: To scroll 1:1 with the number of pixels scrolled in the viewport
---     * `{ Parallax = 0.1 }`: To scroll `1:10` with the number of pixels scrolled in the viewport
--- - `repeat_x`: Controls whether the image is repeated in the x-direction:
---     * `"Repeat"`: Repeat as much as possible to cover the area.
---                 The last image will be clipped if it doesn't fit.
---                 This is the default
---     * `"Mirror"`: Like `"Repeat"` except that the image is alternately mirrored which can
---                 make images that don't tile seamlessly look a bit better when repeated
---     * `"NoRepeat"`: The image is not repeated
--- - `repeat_x_size`: Normally, when repeating, the image is tiled based on its width
---                  such that each copy of the image is immediately adjacent to the preceding instance.
---                  You may set `repeat_x_size` to a different value to increase or decrease
---                  the space between the repeated instances:
---     * number values in pixels
---     * string values like `"100%"` to specify a size relative to the viewport
---     * `"10cell"` to specify a size based on the terminal cell metrics
--- - `repeat_y`: Same as `repeat_x` but affects the y-direction
--- - `repeat_y_size`: Same as `repeat_x_size` but affects the y-direction
--- - `vertical_align`: Controls the initial vertical position of the layer, relative to the viewport:
---     * `"Top"` (default)
---     * `"Middle"`
---     * `"Bottom"`
--- - `vertical_offset`: Specifies an offset from the initial vertical position:
---     * number values in pixels
---     * string values like `"100%"` to specify a size relative to the viewport
---     * `"10cell"`: to specify a size based on terminal cell metrics
---
--- - `horizontal_align`: Controls the initial horizontal position of the layer, relative to the viewport:
---     * `"Left"` (default)
---     * `"Center"`
---     * `"Right"`
--- - `horizontal_offset`: Same as `vertical_offset` but applies to the x-direction
--- - `opacity`: A number in the range `0.0` through `1.0` inclusive that is
---            multiplied with the alpha channel of the source to adjust the opacity of the layer.
---            The default is `1.0` to use the source alpha channel as-is.
---            Using a smaller value makes the layer less opaque/more transparent
--- - `hsb`: A _hue, saturation, brightness_ transformation that can be used to adjust
---        those attributes of the layer.
---        See `foreground_text_hsb` for more information about this kind of transform
--- - `height`: Controls the height of the image. The following values are accepted:
---     * `"Cover"`: (default) scales the image, preserving aspect ratio, to the smallest
---                possible size to fill the viewport, leaving no empty space.
---                If the aspect ratio of the viewport differs from the image, the image is cropped
---     * `"Contain"`: Scales the image as large as possible without cropping or stretching.
---                  If the viewport is larger than the image, tiles the image
---                  unless `repeat_y` is set to `"NoRepeat"`
---     * `123`: Specifies a height of `123` pixels
---     * `"50%"`: Specifies a size of `50%` of the viewport height
---     * `"2cell"`: Specifies a size equivalent to 2 rows
--- - `width`: Controls the width of the image.
---          Same details as height but applies to the x-direction
+-- Represents the `BackgroundLayer` type
 ---@class BackgroundLayer
+-- Defines the source of the layer texture data
 ---@field source? BackgroundLayer.Source1|BackgroundLayer.Source2
+-- Controls whether the layer is fixed to the viewport or moves as it scrolls:
+-- - `"Fixed"`: (default) to not move as the window scrolls
+-- - `"Scroll"`: To scroll 1:1 with the number of pixels scrolled in the viewport
+-- - `{ Parallax = 0.1 }`: To scroll `1:10` with the number of pixels scrolled in the viewport
 ---@field attachment? "Fixed"|"Scroll"|{ Parallax: number }
+-- Controls whether the image is repeated in the x-direction:
+-- - `"Repeat"`: Repeat as much as possible to cover the area.
+--             The last image will be clipped if it doesn't fit.
+--             This is the default
+-- - `"Mirror"`: Like `"Repeat"` except that the image is alternately mirrored which can
+--             make images that don't tile seamlessly look a bit better when repeated
+-- - `"NoRepeat"`: The image is not repeated
 ---@field repeat_x? BackgroundLayerRepeat
----@field repeat_x_size? NumStr
+-- Normally, when repeating, the image is tiled based on its width
+-- such that each copy of the image is immediately adjacent to the preceding instance.
+--
+-- You may set `repeat_x_size` to a different value to increase or decrease
+-- the space between the repeated instances:
+-- - number values in pixels
+-- - string values like `"100%"` to specify a size relative to the viewport
+-- - `"10cell"` to specify a size based on the terminal cell metrics
+---@field repeat_x_size? string|number
+-- Same as `repeat_x` but affects the y-direction
 ---@field repeat_y? BackgroundLayerRepeat
----@field repeat_y_size? NumStr
+-- Same as `repeat_x_size` but affects the y-direction
+---@field repeat_y_size? number|string
+-- Controls the initial vertical position of the layer, relative to the viewport:
+-- - `"Top"` (default)
+-- - `"Middle"`
+-- - `"Bottom"`
 ---@field vertical_align? "Top"|"Middle"|"Bottom"
----@field vertical_offset? NumStr
+-- Specifies an offset from the initial vertical position:
+-- - number values in pixels
+-- - string values like `"100%"` to specify a size relative to the viewport
+-- - `"10cell"`: to specify a size based on terminal cell metrics
+---@field vertical_offset? number|string
+-- Controls the initial horizontal position of the layer, relative to the viewport:
+-- - `"Left"` (default)
+-- - `"Center"`
+-- - `"Right"`
 ---@field horizontal_align? HorizontalAlign
----@field horizontal_offset? NumStr
+-- Same as `vertical_offset` but applies to the x-direction
+---@field horizontal_offset? number|string
+-- A number in the range `0.0` through `1.0` inclusive that is multiplied
+-- with the alpha channel of the source to adjust the opacity of the layer.
+--
+-- The default is `1.0` to use the source alpha channel as-is.
+-- Using a smaller value makes the layer less opaque/more transparent
 ---@field opacity? number
+-- A _hue, saturation, brightness_ transformation that can be used to adjust
+-- those attributes of the layer.
+--
+-- See `foreground_text_hsb` for more information about this kind of transform
 ---@field hsb? HsbTransform
+-- Controls the height of the image. The following values are accepted:
+-- - `"Cover"`: (default) scales the image, preserving aspect ratio, to the smallest
+-- -          possible size to fill the viewport, leaving no empty space.
+-- -          If the aspect ratio of the viewport differs from the image, the image is cropped
+-- - `"Contain"`: Scales the image as large as possible without cropping or stretching.
+-- -            If the viewport is larger than the image, tiles the image
+-- -            unless `repeat_y` is set to `"NoRepeat"`
+-- - `123`: Specifies a height of `123` pixels
+-- - `"50%"`: Specifies a size of `50%` of the viewport height
+-- - `"2cell"`: Specifies a size equivalent to 2 rows
 ---@field height? BackgroundLayerHeightWidth
+-- Controls the width of the image.
+--
+-- Same details as `height` but applies to the x-direction
 ---@field widtht? BackgroundLayerHeightWidth
 
 ---@alias NewlineCanon
