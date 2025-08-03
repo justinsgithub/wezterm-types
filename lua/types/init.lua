@@ -592,7 +592,7 @@
 ---@field overlay_lag_indicator boolean
 
 ---@class LeaderKey: KeyNoAction
----@field timeout_milliseconds? integer
+---@field timeout_milliseconds? integer Maximum time to wait for next key, default is 1000 ms.
 
 ---@class HyperLinkRule
 -- The regular expression to match

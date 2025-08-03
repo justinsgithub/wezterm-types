@@ -85,8 +85,87 @@
 ---|"TogglePaneZoomState"
 
 ---@class KeyNoAction
+-- A single unicode character, like 'A' or 'a'. Pay attention to the case of the text that you use
+-- and the state of the SHIFT modifier, as this matters whether 'A' or 'a' is matched.
+--
+-- Alternatively you can use on the following keycode identifiers, although note that not all of
+-- these are meaningful on all platforms:
+--
+-- Hyper, Super, Meta, Cancel, Backspace, Tab, Clear, Enter, Shift, Escape, LeftShift, RightShift,
+-- Control, LeftControl, RightControl, Alt, LeftAlt, RightAlt, Menu, LeftMenu, RightMenu, Pause,
+-- CapsLock, VoidSymbol, PageUp, PageDown, End, Home, LeftArrow, RightArrow, UpArrow, DownArrow,
+-- Select, Print, Execute, PrintScreen, Insert, Delete, Help, LeftWindows, RightWindows,
+-- Applications, Sleep, Numpad0, Numpad1, Numpad2, Numpad3, Numpad4, Numpad5, Numpad6, Numpad7,
+-- Numpad8, Numpad9, Multiply, Add, Separator, Subtract, Decimal, Divide, NumLock, ScrollLock,
+-- BrowserBack, BrowserForward, BrowserRefresh, BrowserStop, BrowserSearch, BrowserFavorites,
+-- BrowserHome, VolumeMute, VolumeDown, VolumeUp, MediaNextTrack, MediaPrevTrack, MediaStop,
+-- MediaPlayPause, ApplicationLeftArrow, ApplicationRightArrow, ApplicationUpArrow,
+-- ApplicationDownArrow, F1, F2, F3, F4, F5, F6, F7, F8, F9, F10, F11, F12, F13, F14, F15, F16, F17,
+-- F18, F19, F20, F21, F22, F23, F24.
+--
+-- The key value can refer either to the physical position of a key on an ANSI US keyboard or to the
+-- post-keyboard-layout-mapped value produced by a key press.
+--
+-- You can explicitly assign using the physical position by adding a phys: prefix to the value, for
+-- example: `key="phys:A"`. This will match key presses for the key that would be in the position of
+-- the A key on an ANSI US keyboard.
+--
+-- You can explicitly assign the mapped key by adding a mapped:
+-- prefix to the value, for example: key="mapped:a" will match a
+-- key press where the OS keyboard layout produces a, regardless of
+-- its physical position.
+--
+-- If you omit an explicit prefix, wezterm will assume phys: and use the physical position of the
+-- specified key.
+--
+-- The default key assignments listed above use `phys:`. In previous releases there was no physical
+-- position support and those assignments were all `mapped:`.
+--
+-- When upgrading from earlier releases, if you had `{key="N", mods="CMD", ..}` in your config, you
+-- will need to change it to either `{key="N", mods="CMD|SHIFT", ..}` or `{ key="mapped:N",
+-- mods="CMD", ..}` in order to continue to respect the SHIFT modifier.
+--
+-- The `key_map_preference` option controls how keys without an explicit `phys:` or `mapped:` prefix
+-- are treated. If `key_map_preference = "Mapped"` (the default), then `mapped:` is assumed. If
+-- `key_map_preference = "Physical"` then `phys:` is assumed.
+--
+-- The default key assignments will respect `key_map_preference`.
+--
+-- In some cases, wezterm may not know how to represent a key event in either its phys: or mapped:
+-- forms. In that case, you may wish to define an assignment in terms of the underlying operating
+-- system key code, using a `raw: prefix`.
+--
+-- Similar in concept to the `phys:` mapping described above, the `raw:` mapping is independent of
+-- the OS keyboard layout. Raw codes are hardware and windowing system dependent, so there is no
+-- portable way to list which key does what.
+--
+-- To discover these values, you can set `debug_key_events = true` and press the keys of interest.
+--
+-- You can specify a raw key value of 123 by using `key="raw:123"` in your config rather than one of
+-- the other key values.
+--
 ---@field key string
----@field mods? string
+-- Possible Modifier labels are:
+--
+-- `SUPER`, `CMD`, `WIN` - these are all equivalent: on macOS the Command key, on Windows the
+-- Windows key, on Linux this can also be the Super or Hyper key. Left and right are equivalent.
+--
+-- `CTRL` - The control key. Left and right are equivalent.
+--
+-- `SHIFT` - The shift key. Left and right are equivalent.
+--
+-- `ALT`, `OPT`, `META` - these are all equivalent: on macOS the Option key, on other systems the
+-- Alt or Meta key. Left and right are equivalent.
+--
+-- `LEADER` - a special modal modifier state managed by WezTerm.
+--
+-- `VoidSymbol` - This keycode is emitted in special cases where the original function of the key has
+-- been removed. Such as in Linux and using setxkbmap: `setxkbmap -option caps:none`. The CapsLock
+-- will no longer function as before in all applications, instead emitting `VoidSymbol`.
+
+-- You can also combine modifiers using the `|` symbol, like `"CMD|CTRL"`.
+--
+---@field mods? string Optional modifiers keys.
 
 ---@class Key :KeyNoAction
 ---@field action KeyAssignment
