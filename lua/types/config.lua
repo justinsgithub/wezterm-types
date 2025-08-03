@@ -5,9 +5,6 @@
 ---@module "types.objects"
 ---@module "types.wezterm"
 
----@alias IntStr integer|string
----@alias NumStr number|string
-
 ---@alias HorizontalAlign
 ---|"Left"
 ---|"Center"
@@ -54,10 +51,10 @@
 ---|"Tabbed"
 
 ---@class WindowPadding
----@field left? IntStr
----@field right? IntStr
----@field top? IntStr
----@field bottom? IntStr
+---@field left? integer|string
+---@field right? integer|string
+---@field top? integer|string
+---@field bottom? integer|string
 
 ---@alias WindowCloseConfirmation
 ---|"AlwaysPrompt"
@@ -75,11 +72,11 @@
 ---@field fade_out_function? EasingFunction
 ---@field target? "BackgroundColor"|"CursorColor"
 
----@class BackgroundLayer.Style1
+---@class BackgroundLayer.Source1
 ---@field File string
 ---@field speed? number
 
----@class BackgroundLayer.Style2
+---@class BackgroundLayer.Source2
 ---@field Gradient Gradient
 ---@field Color string
 
@@ -101,20 +98,78 @@
 ---|"SuppressFromFocusedTab" Show the notification unless it was generated from the currently focused tab
 ---|"SuppressFromFocusedWindow" Show the notification unless it was generated from the currently focused window
 
+-- Represents the `BackgroundLayer` type
 ---@class BackgroundLayer
----@field style? BackgroundLayer.Style1|BackgroundLayer.Style2
----@field attachment? "Fixed"|"Scroll"|{ ["Parallax"]: number }
+-- Defines the source of the layer texture data
+---@field source? BackgroundLayer.Source1|BackgroundLayer.Source2
+-- Controls whether the layer is fixed to the viewport or moves as it scrolls:
+-- - `"Fixed"`: (default) to not move as the window scrolls
+-- - `"Scroll"`: To scroll 1:1 with the number of pixels scrolled in the viewport
+-- - `{ Parallax = 0.1 }`: To scroll `1:10` with the number of pixels scrolled in the viewport
+---@field attachment? "Fixed"|"Scroll"|{ Parallax: number }
+-- Controls whether the image is repeated in the x-direction:
+-- - `"Repeat"`: Repeat as much as possible to cover the area.
+--             The last image will be clipped if it doesn't fit.
+--             This is the default
+-- - `"Mirror"`: Like `"Repeat"` except that the image is alternately mirrored which can
+--             make images that don't tile seamlessly look a bit better when repeated
+-- - `"NoRepeat"`: The image is not repeated
 ---@field repeat_x? BackgroundLayerRepeat
----@field repeat_x_size? NumStr
+-- Normally, when repeating, the image is tiled based on its width
+-- such that each copy of the image is immediately adjacent to the preceding instance.
+--
+-- You may set `repeat_x_size` to a different value to increase or decrease
+-- the space between the repeated instances:
+-- - number values in pixels
+-- - string values like `"100%"` to specify a size relative to the viewport
+-- - `"10cell"` to specify a size based on the terminal cell metrics
+---@field repeat_x_size? string|number
+-- Same as `repeat_x` but affects the y-direction
 ---@field repeat_y? BackgroundLayerRepeat
----@field repeat_y_size? NumStr
+-- Same as `repeat_x_size` but affects the y-direction
+---@field repeat_y_size? number|string
+-- Controls the initial vertical position of the layer, relative to the viewport:
+-- - `"Top"` (default)
+-- - `"Middle"`
+-- - `"Bottom"`
 ---@field vertical_align? "Top"|"Middle"|"Bottom"
----@field vertical_offset? NumStr
+-- Specifies an offset from the initial vertical position:
+-- - number values in pixels
+-- - string values like `"100%"` to specify a size relative to the viewport
+-- - `"10cell"`: to specify a size based on terminal cell metrics
+---@field vertical_offset? number|string
+-- Controls the initial horizontal position of the layer, relative to the viewport:
+-- - `"Left"` (default)
+-- - `"Center"`
+-- - `"Right"`
 ---@field horizontal_align? HorizontalAlign
----@field horizontal_offset? NumStr
+-- Same as `vertical_offset` but applies to the x-direction
+---@field horizontal_offset? number|string
+-- A number in the range `0.0` through `1.0` inclusive that is multiplied
+-- with the alpha channel of the source to adjust the opacity of the layer.
+--
+-- The default is `1.0` to use the source alpha channel as-is.
+-- Using a smaller value makes the layer less opaque/more transparent
 ---@field opacity? number
+-- A _hue, saturation, brightness_ transformation that can be used to adjust
+-- those attributes of the layer.
+--
+-- See `foreground_text_hsb` for more information about this kind of transform
 ---@field hsb? HsbTransform
+-- Controls the height of the image. The following values are accepted:
+-- - `"Cover"`: (default) scales the image, preserving aspect ratio, to the smallest
+-- -          possible size to fill the viewport, leaving no empty space.
+-- -          If the aspect ratio of the viewport differs from the image, the image is cropped
+-- - `"Contain"`: Scales the image as large as possible without cropping or stretching.
+-- -            If the viewport is larger than the image, tiles the image
+-- -            unless `repeat_y` is set to `"NoRepeat"`
+-- - `123`: Specifies a height of `123` pixels
+-- - `"50%"`: Specifies a size of `50%` of the viewport height
+-- - `"2cell"`: Specifies a size equivalent to 2 rows
 ---@field height? BackgroundLayerHeightWidth
+-- Controls the width of the image.
+--
+-- Same details as `height` but applies to the x-direction
 ---@field widtht? BackgroundLayerHeightWidth
 
 ---@alias NewlineCanon
@@ -145,6 +200,24 @@
 ---@field underline? "None"|"Single"|"Double"
 ---@field blink? "None"|"Rapid"|"Slow"
 
+-- The `return` statement at the end of your `wezterm.lua` file returns
+-- a table that is interpreted as the internal `Config` struct type.
+--
+-- ```lua
+-- ---@type Wezterm
+-- local wezterm = require 'wezterm'
+--
+-- ---@type Config
+-- local config = wezterm.config_builder()
+--
+-- -- YOUR CONFIG TWEAKS
+--
+-- return config
+-- ```
+--
+-- ---
+--
+-- At the time of writing, it is not a complete list!
 ---@class Config
 -- Control whether custom_block_glyphs are rendered
 -- using anti-aliasing or not.
@@ -155,6 +228,18 @@
 -- When true, watch the config file and reload it automatically
 -- when it is detected as changing
 ---@field automatically_reload_config? boolean
+-- The `background` config option allows you to compose a number of layers
+-- to produce the background content in the terminal.
+--
+-- Layers can be image files, gradients or solid blocks of color.
+-- Layers composite over each other based on their alpha channel.
+-- Images in layers can be made to fill the viewport or to tile, and also
+-- to scroll with optional parallax as the viewport is scrolled.
+--
+-- The `background` option is a table that lists the desired layers starting with
+-- the deepest/back-most layer.
+-- Subsequent layers are composited over the top of preceding layers
+---@field background? BackgroundLayer[]
 ---@field bypass_mouse_reporting_modifiers? Modifiers
 -- The character width recommended by the Unicode standard is occasionally
 -- inconsistent and may not align with linguistic tradition.
@@ -242,6 +327,18 @@
 --
 -- If unset or `nil`, a default value based on the terminal display will be used
 ---@field command_palette_rows? integer?
+---@field cursor_blink_ease_in? EasingFunction
+---@field cursor_blink_ease_out? EasingFunction
+-- Specifies how often a blinking cursor transitions between visible and invisible,
+-- expressed in milliseconds.
+-- Setting this to `0` disables blinking.
+--
+-- Note that this value is approximate due to the way that the system event loop schedulers
+-- manage timers; non-zero values will be at least the interval specified with some degree of slop.
+--
+-- Note: It is recommended to avoid blinking cursors when on battery power,
+--       as it is relatively costly to keep re-rendering for the blink
+---@field cursor_blink_rate? integer
 -- If specified, overrides the base thickness of the lines used to render the textual cursor glyph.
 --
 -- The default is to use the underline_thickness.
@@ -291,6 +388,22 @@
 -- This can be helpful in figuring out how keys are being decoded on your system,
 -- or for discovering the system-dependent "raw" key code values.
 ---@field debug_key_events? boolean
+-- Specifies the default cursor style.
+--
+-- Various escape sequences can override the default style
+-- in different situations (e.g. an editor can change it depending on the mode),
+-- but this value controls how the cursor appears when it is reset to default.
+--
+-- Acceptable values are:
+-- - `"SteadyBlock"`
+-- - `"BlinkingBlock"`
+-- - `"SteadyUnderline"`
+-- - `"BlinkingUnderline"`
+-- - `"SteadyBar"`
+-- - `"BlinkingBar"`
+--
+-- The default is `"SteadyBlock"`
+---@field default_cursor_style? DefaultCursorStyle
 -- Specifies the default current working directory if none is specified
 -- through configuration or OSC 7 (see docs for `default_cwd` for more
 -- info!)
@@ -308,7 +421,7 @@
 -- then you might consider using this configuration:
 --
 -- ```lua
--- config.default_gui_startup_args = { 'ssh', 'some-host' }
+-- config.default_gui_startup_args = { "ssh", "some-host" }
 -- ```
 --
 -- which will cause `wezterm` with no additional subcommand arguments
@@ -437,6 +550,34 @@
 -- and will match based on the attributes that were listed
 ---@field font_rules? FontRules
 ---@field font_shaper? FontShaperSelection
+-- Configures a Hue, Saturation, Brightness transformation
+-- that is applied to monochrome glyphs.
+--
+-- The transform works by converting the `RGB` colors to `HSV` values
+-- and then multiplying the HSV by the numbers specified in `foreground_text_hsb`.
+--
+-- Modifying the hue changes the hue of the color by rotating it through the color wheel.
+-- It is not as useful as the other components, but is available "for free"
+-- as part of the colorspace conversion.
+--
+-- Modifying the saturation can add or reduce the amount of "colorfulness".
+-- Making the value smaller can make it appear more washed out.
+--
+-- Modifying the brightness can be used to dim or increase the perceived amount of light.
+--
+-- The range of these values is `0.0` and up; they are used to multiply the existing values,
+-- so the default of `1.0` preserves the existing component, whilst `0.5` will reduce it by half,
+-- and `2.0` will double the value.
+--
+-- ```lua
+-- -- This increases color saturation by 50%
+-- config.foreground_text_hsb = {
+--   hue = 1.0,
+--   saturation = 1.5,
+--   brightness = 1.0,
+-- }
+-- ```
+---@field foreground_text_hsb? HsbTransform
 -- Selects the freetype interpret version to use.
 -- Likely values are 35, 38 and 40 which have different
 -- characteristics with respective to subpixel hinting.
@@ -513,7 +654,7 @@
 -- The characters in the string are used to calculate one or two key press
 -- shortcuts that can be used to quickly choose from the Launcher when in the default mode.
 --
--- Defaults to: `"1234567890abcdefghilmnopqrstuvwxyz"`.
+-- Defaults to: `"1234567890abcdefghilmnopqrstuvwxyz"`
 -- (Without j/k so they can be used for movement up and down)
 ---@field launcher_alphabet? string|"1234567890abcdefghilmnopqrstuvwxyz"
 -- You can define your own entries for the [Launcher Menu](https://wezterm.org/config/launch.html#the-launcher-menu)
@@ -569,6 +710,14 @@
 -- config.macos_fullscreen_extend_behind_notch = true
 -- ```
 ---@field macos_fullscreen_extend_behind_notch? boolean
+-- When combined with window_background_opacity, configures the blur radius amount
+-- used by macOS when compositing the window on the screen.
+--
+-- This can be used to produce a translucent window effect
+-- rather than a crystal clear transparent window effect.
+---
+--- The default value for `config.macos_window_background_blur` is `0`
+---@field macos_window_background_blur? integer
 -- Controls the minimum size of the scroll bar "thumb"
 --
 --The value can be a number to specify the number of pixels, or a string with a unit suffix:
@@ -810,7 +959,27 @@
 -- the system has a choice of integrated or discrete.
 -- Defaults to low power.
 ---@field webgpu_power_preference? WebGpuPowerPreference
+-- Specifies which WebGpu adapter should be used.
+--
+-- This option is only applicable when you have configured `config.front_end = "WebGpu"`.
+--
+-- You can use the `wezterm.gui.enumerate_gpus()` function to return a list of GPUs
 ---@field webgpu_preferred_adapter? GpuInfo
+-- When combined with `config.win32_system_backdrop = "Acrylic"` on Windows systems
+-- earlier than build 22621, this option specifies the accent color used
+-- with the Acrylic composition effect.
+--
+-- See also `config.win32_system_backdrop`
+---@field win32_acrylic_accent_color? string
+-- When combined with window_background_opacity,
+-- chooses from available window background effects provided by Windows
+---@field win32_system_backdrop? SystemBackdrop
+-- Dynamically generates a `window_background_image`
+-- from the provided gradient specification.
+-- When window_background_gradient is configured,
+-- the value for window_background_image is ignored.
+--
+-- Linear gradients with vertical or horizontal orientation are supported
 ---@field window_background_gradient? Gradient
 -- Specifies the path to a background image attachment file.
 -- The file can be any image format that the rust `image`
@@ -821,6 +990,23 @@
 -- The image will be scaled to fit the window.
 ---@field window_background_image? string
 ---@field window_background_image_hsb? HsbTransform
+-- Specifies the alpha value to use when rendering the background
+-- of the window.
+--
+-- The background is taken either from `window_background_image`,
+-- or if there is none, the background color of the cell
+-- in the current position.
+--
+-- The default is `1.0` which is 100% opaque.
+-- Setting it to a number between `0.0` and `1.0`
+-- will allow for the screen behind the window
+-- to "shine through" to varying degrees.
+--
+-- This only works on systems with a compositing window manager.
+--
+-- Setting opacity to a value other than `1.0` can impact render
+-- performance
+---@field window_background_opacity? number
 -- Controls the alignment of the terminal cells inside the window.
 --
 -- When window size is not a multiple of terminal cell size,
@@ -853,57 +1039,91 @@
 --                                                       also including `"TITLE|RESIZE"` in the set of decorations
 --
 ---@field window_decorations? WindowDecorations
+-- This setting is applicable primarily on Wayland systems when client side decorations are in use.
+--
+-- It allows you to customize the colors of the window frame.
+--
+-- Some of these colors are used by the fancy tab bar.
+--
+-- ```lua
+-- config.window_frame = {
+--   inactive_titlebar_bg = "#353535",
+--   active_titlebar_bg = "#2b2042",
+--   inactive_titlebar_fg = "#cccccc",
+--   active_titlebar_fg = "#ffffff",
+--   inactive_titlebar_border_bottom = "#2b2042",
+--   active_titlebar_border_bottom = "#2b2042",
+--   button_fg = "#cccccc",
+--   button_bg = "#2b2042",
+--   button_hover_fg = "#ffffff",
+--   button_hover_bg = "#3b3052",
+-- }
+-- ```
+--
+-- You may explicitly add a border around the window area:
+--
+-- ```lua
+-- config.window_frame = {
+--   border_left_width = "0.5cell",
+--   border_right_width = "0.5cell",
+--   border_bottom_height = "0.25cell",
+--   border_top_height = "0.25cell",
+--   border_left_color = "purple",
+--   border_right_color = "purple",
+--   border_bottom_color = "purple",
+--   border_top_color = "purple",
+-- }
+-- ```
+--
+-- You may specify the font and font size for the tabbar:
+--
+-- ```lua
+-- config.window_frame = {
+--   font = require("wezterm").font "Roboto",
+--   font_size = 12,
+-- }
+-- ```
+--
+-- The default font is `Roboto`.
+-- The default font_size is `10pt` on Windows and `12pt` on other systems
 ---@field window_frame? WindowFrameConfig
--- Controls the amount of padding to use around the terminal cell area
+-- Controls the amount of padding between the window border and the terminal cells.
+--
+-- Padding is measured in pixels.
+--
+-- If `config.enable_scroll_bar` is `true`, then the value you set
+-- for right will control the width of the scrollbar.
+-- If you have enabled the scrollbar and have set right to `0` then
+-- the right padding (and thus the scrollbar width)
+-- will instead match the width of a cell
 ---@field window_padding? WindowPadding
+-- Configures WSL domains.
+--
+-- This option accepts a list of `WslDomain` objects.
+--
+-- The default is a list derived from parsing the output of `wsl -l -v`.
+--
+-- See `wezterm.default_wsl_domains()` for more about that list,
+-- and on how to override it
 ---@field wsl_domains? WslDomain[]
+-- Explicitly set the name of the IME server to which wezterm will connect
+-- via the `XIM` protocol when using X11 and `use_ime` is `true`.
+--
+-- By default, this option is not set which means that wezterm
+-- will consider the value of the `XMODIFIERS` environment variable.
+--
+-- If for some reason the environment isn't set up correctly,
+-- or you want to quickly evaluate a different input method server,
+-- then you could update your config to specify it explicitly:
+--
+-- ```lua
+-- config.xim_im_name = 'fcitx'
+-- ```
+--
+-- will cause wezterm to connect to fcitx regardless of the value of `XMODIFIERS`
 ---@field xim_im_name? string
----@field foreground_text_hsb? HsbTransform
----@field background? BackgroundLayer[]
--- Only works on MacOS
----@field macos_window_background_blur? integer
--- Only works on Windows
----@field win32_system_backdrop? SystemBackdrop
--- Only works on Windows
----@field win32_acrylic_accent_color? string
--- Specifies the alpha value to use when rendering the background
--- of the window.
---
--- The background is taken either from `window_background_image`,
--- or if there is none, the background color of the cell
--- in the current position.
---
--- The default is `1.0` which is 100% opaque.
--- Setting it to a number between `0.0` and `1.0` will allow for the screen behind the window
--- to "shine through" to varying degrees.
---
--- This only works on systems with a compositing window manager.
---
--- Setting opacity to a value other than `1.0` can impact render
--- performance
----@field window_background_opacity? number
----@field inactive_pane_hsb? HsbTransform
----@field text_background_opacity? number
--- Specifies how often a blinking cursor transitions between visible
--- and invisible, expressed in milliseconds.
--- Setting this to 0 disables blinking.
--- Note that this value is approximate due to the way that the system
--- event loop schedulers manage timers; non-zero values will be at
--- least the interval specified with some degree of slop.
----@field cursor_blink_rate? integer
----@field cursor_blink_ease_in? EasingFunction
----@field cursor_blink_ease_out? EasingFunction
 ---@field animation_fps? integer
 ---@field force_reverse_video_cursor? boolean
--- Specifies the default cursor style.  various escape sequences
--- can override the default style in different situations (eg:
--- an editor can change it depending on the mode), but this value
--- controls how the cursor appears when it is reset to default.
--- The default is `SteadyBlock`.
--- Acceptable values are `SteadyBlock`, `BlinkingBlock`
--- `SteadyUnderline`, `BlinkingUnderline`, `SteadyBar`
--- and `BlinkingBar`.
----@field default_cursor_style? DefaultCursorStyle
 -- Specifies how often blinking text (normal speed) transitions
 -- between visible and invisible, expressed in milliseconds.
 -- Setting this to 0 disables slow text blinking.  Note that this
