@@ -2,4 +2,4 @@
 /wezterm.lua
 
 # Custom scripts directory (mostly for repo management)
-/scripts
+/scripts/
