@@ -991,7 +991,7 @@
 ---@field underline_thickness? string|number
 ---@field underline_position? string|number
 ---@field strikethrough_position? string|number
----@field allow_square_glyphs_to_overflow_width? "Allow"|"Never"|"WhenFollowedBySpace"
+---@field allow_square_glyphs_to_overflow_width? "Always"|"Never"|"WhenFollowedBySpace"
 ---@field integrated_title_buttons? IntegratedTitleButton[]
 ---@field integrated_title_button_alignment? IntegratedTitleButtonAlignment
 ---@field integrated_title_button_style? IntegratedTitleButtonStyle
