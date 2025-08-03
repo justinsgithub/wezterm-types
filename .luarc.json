@@ -1,8 +1,13 @@
 {
+  "$schema": "https://raw.githubusercontent.com/LuaLS/vscode-lua/master/setting/schema.json",
   "workspace.library": ["./lua/types"],
-  "runtime.version": "Lua 5.1",
-  "hint.enable": true,
-  "completion.autoRequire": true,
-  "completion.callSnippet": "Replace",
-  "completion.displayContext": 8
+  "runtime.version": "Lua 5.4",
+  "hint": {
+    "enable": true,
+    "setType": true
+  },
+  "completion": {
+    "callSnippet": "Replace",
+    "displayContext": 8
+  }
 }
