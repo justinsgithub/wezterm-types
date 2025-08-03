@@ -201,6 +201,24 @@
 ---@field underline? "None"|"Single"|"Double"
 ---@field blink? "None"|"Rapid"|"Slow"
 
+-- The `return` statement at the end of your `wezterm.lua` file returns
+-- a table that is interpreted as the internal `Config` struct type.
+--
+-- ```lua
+-- ---@type Wezterm
+-- local wezterm = require 'wezterm'
+--
+-- ---@type Config
+-- local config = wezterm.config_builder()
+--
+-- -- YOUR CONFIG TWEAKS
+--
+-- return config
+-- ```
+--
+-- ---
+--
+-- At the time of writing, it is not a complete list!
 ---@class Config
 -- Control whether custom_block_glyphs are rendered
 -- using anti-aliasing or not.
