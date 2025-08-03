@@ -91,3 +91,15 @@ return config
 
 This annotation enables the [Lua Language Server](https://luals.github.io/) to provide
 proper type checking and autocompletion for WezTerm configuration options.
+
+---
+
+## Credits
+
+- [@justinsgithub](https://github.com/justinsgithub) - **_The Author_**
+
+- [@gonstoll](https://github.com/gonstoll) - **Collaborator**
+- [@DrKJeff16](https://github.com/DrKJeff16) - **Collaborator**
+
+- [@craigmac](https://github.com/craigmac) - **Contributor**
+- [@TheLeoP](https://github.com/TheLeoP) - **Contributor**
