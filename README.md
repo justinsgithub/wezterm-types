@@ -98,8 +98,8 @@ proper type checking and autocompletion for WezTerm configuration options.
 
 - [@justinsgithub](https://github.com/justinsgithub) - **_The Author_**
 
-- [@gonstoll](https://github.com/gonstoll) - **Collaborator**
-- [@DrKJeff16](https://github.com/DrKJeff16) - **Collaborator**
+- [@gonstoll](https://github.com/gonstoll) - **Maintainer**
+- [@DrKJeff16](https://github.com/DrKJeff16) - **Maintainer**
 
 - [@craigmac](https://github.com/craigmac) - **Contributor**
 - [@TheLeoP](https://github.com/TheLeoP) - **Contributor**
