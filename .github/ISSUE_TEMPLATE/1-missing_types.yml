@@ -3,7 +3,6 @@ description: A type is missing/badly implemented? Please tell us
 title: "[TYPE]: <TITLE>"
 labels: ["missing-types", "wrong-types"]
 assignees:
-  - justinsgithub
   - DrKJeff16
 
 body:
