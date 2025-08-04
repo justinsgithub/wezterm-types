@@ -1,7 +1,7 @@
-name: LazyDev Bug (Neovim)
+name: Neovim Bug
 description: Is there anything wrong with the Neovim plugin? Tell us!
 title: "[NVIM]: <TITLE>"
-labels: ["bug", "important"]
+labels: ["bug", "important", "neovim"]
 assignees:
   - DrKJeff16
 
