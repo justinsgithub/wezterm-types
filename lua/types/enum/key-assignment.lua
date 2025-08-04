@@ -170,88 +170,90 @@
 ---@class Key :KeyNoAction
 ---@field action KeyAssignment
 
+---@alias KeyAssignFunction fun(param: any): KeyAssignment
+
 -- Can also be called as function like older versions of wezterm did
 ---@class ActionFuncClass
----@field ActivateCommandPalette fun(param: any): KeyAssignment
----@field ActivateCopyMode fun(param: any): KeyAssignment
----@field ActivateKeyTable fun(param: any): KeyAssignment
----@field ActivateLastTab fun(param: any): KeyAssignment
----@field ActivatePaneByIndex fun(param: any): KeyAssignment
----@field ActivatePaneDirection fun(param: any): KeyAssignment
----@field ActivateTab fun(param: any): KeyAssignment
----@field ActivateTabRelative fun(param: any): KeyAssignment
----@field ActivateTabRelativeNoWrap fun(param: any): KeyAssignment
----@field ActivateWindow fun(param: any): KeyAssignment
----@field ActivateWindowRelative fun(param: any): KeyAssignment
----@field ActivateWindowRelativeNoWrap fun(param: any): KeyAssignment
----@field AdjustPaneSize fun(param: any): KeyAssignment
----@field AttachDomain fun(param: any): KeyAssignment
----@field CharSelect fun(param: any): KeyAssignment
----@field ClearKeyTableStack fun(param: any): KeyAssignment
----@field ClearScrollback fun(param: any): KeyAssignment
----@field ClearSelection fun(param: any): KeyAssignment
----@field CloseCurrentPane fun(param: any): KeyAssignment
----@field CloseCurrentTab fun(param: any): KeyAssignment
----@field CompleteSelection fun(param: any): KeyAssignment
----@field CompleteSelectionOrOpenLinkAtMouseCursor fun(param: any): KeyAssignment
----@field Copy fun(param: any): KeyAssignment
----@field CopyTo fun(param: any): KeyAssignment
----@field DecreaseFontSize fun(param: any): KeyAssignment
----@field DetachDomain fun(param: any): KeyAssignment
----@field DisableDefaultAssignment fun(param: any): KeyAssignment
----@field EmitEvent fun(param: any): KeyAssignment
----@field ExtendSelectionToMouseCursor fun(param: any): KeyAssignment
----@field Hide fun(param: any): KeyAssignment
----@field HideApplication fun(param: any): KeyAssignment
----@field IncreaseFontSize fun(param: any): KeyAssignment
----@field InputSelector fun(param: any): KeyAssignment
----@field MoveTab fun(param: any): KeyAssignment
----@field MoveTabRelative fun(param: any): KeyAssignment
----@field Multiple fun(param: any): KeyAssignment
----@field Nop fun(param: any): KeyAssignment
----@field OpenLinkAtMouseCursor fun(param: any): KeyAssignment
----@field PaneSelect fun(param: any): KeyAssignment
----@field Paste fun(param: any): KeyAssignment
----@field PasteFrom fun(param: any): KeyAssignment
----@field PastePrimarySelection fun(param: any): KeyAssignment
----@field PopKeyTable fun(param: any): KeyAssignment
----@field PromptInputLine fun(param: any): KeyAssignment
----@field QuickSelect fun(param: any): KeyAssignment
----@field QuickSelectArgs fun(param: any): KeyAssignment
----@field QuitApplication fun(param: any): KeyAssignment
----@field ReloadConfiguration fun(param: any): KeyAssignment
----@field ResetFontAndWindowSize fun(param: any): KeyAssignment
----@field ResetFontSize fun(param: any): KeyAssignment
----@field ResetTerminal fun(param: any): KeyAssignment
----@field RotatePanes fun(param: any): KeyAssignment
----@field ScrollByCurrentEventWheelDelta fun(param: any): KeyAssignment
----@field ScrollByLine fun(param: any): KeyAssignment
----@field ScrollByPage fun(param: any): KeyAssignment
----@field ScrollToBottom fun(param: any): KeyAssignment
----@field ScrollToPrompt fun(param: any): KeyAssignment
----@field ScrollToTop fun(param: any): KeyAssignment
----@field Search fun(param: any): KeyAssignment
----@field SelectTextAtMouseCursor fun(param: any): KeyAssignment
----@field SendKey fun(param: any): KeyAssignment
----@field SendString fun(param: any): KeyAssignment
----@field SetPaneZoomState fun(param: any): KeyAssignment
----@field Show fun(param: any): KeyAssignment
----@field ShowDebugOverlay fun(param: any): KeyAssignment
----@field ShowLauncher fun(param: any): KeyAssignment
----@field ShowLauncherArgs fun(param: any): KeyAssignment
----@field ShowTabNavigator fun(param: any): KeyAssignment
----@field SpawnCommandInNewTab fun(param: any): KeyAssignment
----@field SpawnCommandInNewWindow fun(param: any): KeyAssignment
----@field SpawnTab fun(param: any): KeyAssignment
----@field SpawnWindow fun(param: any): KeyAssignment
----@field SplitHorizontal fun(param: any): KeyAssignment
----@field SplitPane fun(param: any): KeyAssignment
----@field SplitVertical fun(param: any): KeyAssignment
----@field StartWindowDrag fun(param: any): KeyAssignment
----@field SwitchToWorkspace fun(param: any): KeyAssignment
----@field SwitchWorkspaceRelative fun(param: any): KeyAssignment
----@field ToggleFullScreen fun(param: any): KeyAssignment
----@field TogglePaneZoomState fun(param: any): KeyAssignment
+---@field ActivateCommandPalette KeyAssignFunction
+---@field ActivateCopyMode KeyAssignFunction
+---@field ActivateKeyTable KeyAssignFunction
+---@field ActivateLastTab KeyAssignFunction
+---@field ActivatePaneByIndex KeyAssignFunction
+---@field ActivatePaneDirection KeyAssignFunction
+---@field ActivateTab KeyAssignFunction
+---@field ActivateTabRelative KeyAssignFunction
+---@field ActivateTabRelativeNoWrap KeyAssignFunction
+---@field ActivateWindow KeyAssignFunction
+---@field ActivateWindowRelative KeyAssignFunction
+---@field ActivateWindowRelativeNoWrap KeyAssignFunction
+---@field AdjustPaneSize KeyAssignFunction
+---@field AttachDomain KeyAssignFunction
+---@field CharSelect KeyAssignFunction
+---@field ClearKeyTableStack KeyAssignFunction
+---@field ClearScrollback KeyAssignFunction
+---@field ClearSelection KeyAssignFunction
+---@field CloseCurrentPane KeyAssignFunction
+---@field CloseCurrentTab KeyAssignFunction
+---@field CompleteSelection KeyAssignFunction
+---@field CompleteSelectionOrOpenLinkAtMouseCursor KeyAssignFunction
+---@field Copy KeyAssignFunction
+---@field CopyTo KeyAssignFunction
+---@field DecreaseFontSize KeyAssignFunction
+---@field DetachDomain KeyAssignFunction
+---@field DisableDefaultAssignment KeyAssignFunction
+---@field EmitEvent KeyAssignFunction
+---@field ExtendSelectionToMouseCursor KeyAssignFunction
+---@field Hide KeyAssignFunction
+---@field HideApplication KeyAssignFunction
+---@field IncreaseFontSize KeyAssignFunction
+---@field InputSelector KeyAssignFunction
+---@field MoveTab KeyAssignFunction
+---@field MoveTabRelative KeyAssignFunction
+---@field Multiple KeyAssignFunction
+---@field Nop KeyAssignFunction
+---@field OpenLinkAtMouseCursor KeyAssignFunction
+---@field PaneSelect KeyAssignFunction
+---@field Paste KeyAssignFunction
+---@field PasteFrom KeyAssignFunction
+---@field PastePrimarySelection KeyAssignFunction
+---@field PopKeyTable KeyAssignFunction
+---@field PromptInputLine KeyAssignFunction
+---@field QuickSelect KeyAssignFunction
+---@field QuickSelectArgs KeyAssignFunction
+---@field QuitApplication KeyAssignFunction
+---@field ReloadConfiguration KeyAssignFunction
+---@field ResetFontAndWindowSize KeyAssignFunction
+---@field ResetFontSize KeyAssignFunction
+---@field ResetTerminal KeyAssignFunction
+---@field RotatePanes KeyAssignFunction
+---@field ScrollByCurrentEventWheelDelta KeyAssignFunction
+---@field ScrollByLine KeyAssignFunction
+---@field ScrollByPage KeyAssignFunction
+---@field ScrollToBottom KeyAssignFunction
+---@field ScrollToPrompt KeyAssignFunction
+---@field ScrollToTop KeyAssignFunction
+---@field Search KeyAssignFunction
+---@field SelectTextAtMouseCursor KeyAssignFunction
+---@field SendKey KeyAssignFunction
+---@field SendString KeyAssignFunction
+---@field SetPaneZoomState KeyAssignFunction
+---@field Show KeyAssignFunction
+---@field ShowDebugOverlay KeyAssignFunction
+---@field ShowLauncher KeyAssignFunction
+---@field ShowLauncherArgs KeyAssignFunction
+---@field ShowTabNavigator KeyAssignFunction
+---@field SpawnCommandInNewTab KeyAssignFunction
+---@field SpawnCommandInNewWindow KeyAssignFunction
+---@field SpawnTab KeyAssignFunction
+---@field SpawnWindow KeyAssignFunction
+---@field SplitHorizontal KeyAssignFunction
+---@field SplitPane KeyAssignFunction
+---@field SplitVertical KeyAssignFunction
+---@field StartWindowDrag KeyAssignFunction
+---@field SwitchToWorkspace KeyAssignFunction
+---@field SwitchWorkspaceRelative KeyAssignFunction
+---@field ToggleFullScreen KeyAssignFunction
+---@field TogglePaneZoomState KeyAssignFunction
 
 ---@class ActionClass
 ---@field ActivateCommandPalette any
