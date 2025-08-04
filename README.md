@@ -2,7 +2,7 @@
 
 # wezterm-types
 
-[Wezterm](https://github.com/wezterm/wezterm) config types for Lua Language Server
+[Wezterm](https://github.com/wezterm/wezterm) config types for [Lua Language Server](https://luals.github.io/)
 
 </div>
 
@@ -14,12 +14,11 @@
 
 ## Installation
 
-For Neovim users, you can use the following install methods:
+### Neovim
 
-<details>
-<summary><a href="https://github.com/folke/lazy.nvim">lazy.nvim</a></summary>
+For [Neovim](https://github.com/neovim/neovim) users, we recommend the following install method.
 
-Using `lazy.nvim` as a package manager, install this together with
+Using [`lazy.nvim`](https://github.com/folke/lazy.nvim) as a package manager, install this together with
 [`lazydev`](https://github.com/folke/lazydev.nvim):
 
 ```lua
@@ -68,8 +67,6 @@ require('lazy').setup({
 }
 ```
 
-</details>
-
 ---
 
 ## Usage
@@ -89,17 +86,15 @@ config.window_decorations = "RESIZE|MACOS_FORCE_DISABLE_SHADOW"
 return config
 ```
 
-This annotation enables the [Lua Language Server](https://luals.github.io/) to provide
+This annotation enables the **Lua Language Server** to provide
 proper type checking and autocompletion for WezTerm configuration options.
 
 ---
 
 ## Credits
 
-- [@justinsgithub](https://github.com/justinsgithub) - **_The Author_**
-
+- [@justinsgithub](https://github.com/justinsgithub) - **The Author _(not active currently)_**
+- [@DrKJeff16](https://github.com/DrKJeff16) - **Maintainer, _de-facto_ Owner**
 - [@gonstoll](https://github.com/gonstoll) - **Maintainer**
-- [@DrKJeff16](https://github.com/DrKJeff16) - **Maintainer**
-
 - [@craigmac](https://github.com/craigmac) - **Contributor**
 - [@TheLeoP](https://github.com/TheLeoP) - **Contributor**
