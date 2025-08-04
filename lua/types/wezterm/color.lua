@@ -16,11 +16,11 @@
 ---@field threshold? number
 ---@field min_contrast? number
 
--- The `wezterm.color` module exposes functions that work with colors
+---The `wezterm.color` module exposes functions that work with colors
 ---@class Wezterm.Color
--- Parses the passed color and returns a Color object.
--- Color objects evaluate as strings but have a number of methods
--- that allow transforming and comparing colors
+---Parses the passed color and returns a Color object.
+---Color objects evaluate as strings but have a number of methods
+---that allow transforming and comparing colors
 ---@field parse fun(color: string): Color?
 ---@field extract_colors_from_image fun(filename: string, params: ImageExtractorParams?)
 ---@field from_hsla fun(h: StrNum, s: StrNum, l: StrNum, a: StrNum): Wezterm.Color

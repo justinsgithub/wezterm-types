@@ -8,29 +8,29 @@
 ---@field user string
 ---@field userknownhostsfile string
 
--- The `SshDomain` struct specifies information
--- about an individual [SSH Domain](https://wezterm.org/multiplexing.html#ssh-domains)
+---The `SshDomain` struct specifies information
+---about an individual [SSH Domain](https://wezterm.org/multiplexing.html#ssh-domains)
 ---@class SshDomain
--- The name of this specific domain.
---
--- Must be unique amongst all types of domain in the configuration file
+---The name of this specific domain.
+---
+---Must be unique amongst all types of domain in the configuration file
 ---@field name string
--- Identifies the host:port pair of the remote server.
---
--- Can be a DNS name or an IP address with an optional
--- `":<port>"` at the end
+---Identifies the host:port pair of the remote server.
+---
+---Can be a DNS name or an IP address with an optional
+---`":<port>"` at the end
 ---@field remote_address string
--- The username to use for authenticating with the remote host
+---The username to use for authenticating with the remote host
 ---@field username string
--- Whether agent auth should be disabled.
--- Set to true to disable it
+---Whether agent auth should be disabled.
+---Set to true to disable it
 ---@field no_agent_auth? boolean
--- If `true`, connect to this domain automatically at startup
+---If `true`, connect to this domain automatically at startup
 ---@field connect_automatically? boolean
--- Specifies an alternative read timeout
+---Specifies an alternative read timeout
 ---@field timeout? integer
--- The path to the wezterm binary on the remote host.
---
--- Primarily useful if it isn't installed in the `$PATH`
--- of the remote session
+---The path to the wezterm binary on the remote host.
+---
+---Primarily useful if it isn't installed in the `$PATH`
+---of the remote session
 ---@field remote_wezterm_path? string

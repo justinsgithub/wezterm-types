@@ -14,39 +14,39 @@
 ---|"LockBlocked"
 ---|"Unknown"
 
--- Represents a process running on the local machine
+---Represents a process running on the local machine
 ---@class LocalProcessInfo
--- The process identifier (`PID`)
+---The process identifier (`PID`)
 ---@field pid integer
--- The parent process identifier
+---The parent process identifier
 ---@field ppid integer
--- A short name for the process.
---
--- Due to platform limitations, this may be inaccurate and/or truncated;
--- you should look at the `executable` or `argv` fields instead of this one
+---A short name for the process.
+---
+---Due to platform limitations, this may be inaccurate and/or truncated;
+---you should look at the `executable` or `argv` fields instead of this one
 ---@field name string
--- the full path to the executable image for the process (may be empty)
+---the full path to the executable image for the process (may be empty)
 ---@field executable string|""
--- A table holding the argument array for the process
+---A table holding the argument array for the process
 ---@field argv string[]|table
--- The current working directory for the process (may be empty)
+---The current working directory for the process (may be empty)
 ---@field cwd string|""
--- A string holding the status of the process
---
--- Possible values are:
--- - `"Idle"`
--- - `"Run"`
--- - `"Sleep"`
--- - `"Stop"`
--- - `"Zombie"`
--- - `"Tracing"`
--- - `"Dead"`
--- - `"Wakekill"`
--- - `"Waking"`
--- - `"Parked"`
--- - `"LockBlocked"`
--- - `"Unknown"`
+---A string holding the status of the process
+---
+---Possible values are:
+--- - `"Idle"`
+--- - `"Run"`
+--- - `"Sleep"`
+--- - `"Stop"`
+--- - `"Zombie"`
+--- - `"Tracing"`
+--- - `"Dead"`
+--- - `"Wakekill"`
+--- - `"Waking"`
+--- - `"Parked"`
+--- - `"LockBlocked"`
+--- - `"Unknown"`
 ---@field status LocalProcessStatus
--- A table keyed by child process id and whose values are themselves
--- `LocalProcessInfo` objects that describe the child processes
+---A table keyed by child process id and whose values are themselves
+---`LocalProcessInfo` objects that describe the child processes
 ---@field children table<integer, LocalProcessInfo>

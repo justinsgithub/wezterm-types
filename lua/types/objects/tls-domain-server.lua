@@ -1,16 +1,16 @@
 ---@class TlsDomainServer
 ---@field bind_address string
--- The address:port combination on which the server will listen
--- for client connections
+---The address:port combination on which the server will listen
+---for client connections
 ---@field pem_private_key string
--- the path to an x509 PEM encoded private key file
+---the path to an x509 PEM encoded private key file
 ---@field pem_cert string
--- the path to an x509 PEM encoded certificate file
+---the path to an x509 PEM encoded certificate file
 ---@field pem_ca string
--- the path to an x509 PEM encoded CA chain file
+---the path to an x509 PEM encoded CA chain file
 ---@field pem_root_certs string[]
--- A set of paths to load additional CA certificates.
--- Each entry can be either the path to a directory
--- or to a PEM encoded CA file.  If an entry is a directory
--- then its contents will be loaded as CA certs and added
--- to the trust store.
+---A set of paths to load additional CA certificates.
+---Each entry can be either the path to a directory
+---or to a PEM encoded CA file.  If an entry is a directory
+---then its contents will be loaded as CA certs and added
+---to the trust store.
