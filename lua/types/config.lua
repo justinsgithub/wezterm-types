@@ -671,7 +671,7 @@
 ---LEADER stays active until a keypress is registered (whether it matches a key binding or not), or
 ---until it has been active for the duration specified by timeout_milliseconds, at which point it
 ---will automatically cancel itself.
----@field leader LeaderKey
+---@field leader? LeaderKey
 ---Scales the computed line height to adjust the spacing between successive rows of text.
 ---
 ---The default line height is controlled by the font_size configuration option.
