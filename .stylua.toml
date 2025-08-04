@@ -1,4 +1,4 @@
-syntax = 'Lua51'
+syntax = 'Lua54'
 space_after_function_names = "Never"
 indent_type = "Spaces"
 indent_width = 4
