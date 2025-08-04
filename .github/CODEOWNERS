@@ -4,3 +4,7 @@
 /lua/types/wezterm/url.lua @DrKJeff16
 /.github/CODEOWNERS @DrKJeff16
 /.github/workflows/stylua.yml @DrKJeff16
+/.github/ISSUE_TEMPLATE/1-missing_types.yml @DrKJeff16
+/.github/ISSUE_TEMPLATE/2-feature_request.yml @DrKJeff16
+/.github/ISSUE_TEMPLATE/3-lazydev-bug.yml @DrKJeff16
+/.github/ISSUE_TEMPLATE/config.yml @DrKJeff16
