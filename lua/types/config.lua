@@ -662,6 +662,16 @@
 --
 -- Each entry in `launch_menu` is an instance of a `SpawnCommand` object
 ---@field launch_menu? SpawnCommand[]
+-- A leader key is a a modal modifier key. If leader is specified in the configuration then pressing
+-- that key combination will enable a virtual LEADER modifier.
+--
+-- While LEADER is active, only defined key assignments that include LEADER in the mods mask will be
+-- recognized. Other keypresses will be swallowed and NOT passed through to the terminal.
+--
+-- LEADER stays active until a keypress is registered (whether it matches a key binding or not), or
+-- until it has been active for the duration specified by timeout_milliseconds, at which point it
+-- will automatically cancel itself.
+---@field leader LeaderKey
 -- Scales the computed line height to adjust the spacing between successive rows of text.
 --
 -- The default line height is controlled by the font_size configuration option.
