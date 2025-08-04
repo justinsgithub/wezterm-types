@@ -1,38 +1,38 @@
 ---@meta
 
 ---@class PluginSpec
--- The URL of the plugin repo, as provided to the
--- `wezterm.plugin.require` function
+---The URL of the plugin repo, as provided to the
+---`wezterm.plugin.require` function
 ---@field url string
--- The encoded name of the plugin, derived from the repo URL
+---The encoded name of the plugin, derived from the repo URL
 ---@field component string
---  The absolute location of the plugin checkout in the
---  Wezterm runtime directory.
---  Use this to set the plugin path if needed
+--- The absolute location of the plugin checkout in the
+--- Wezterm runtime directory.
+--- Use this to set the plugin path if needed
 ---@field plugin_dir string
 
--- The `wezterm.plugin` module provides functions to manage Wezterm plugins
+---The `wezterm.plugin` module provides functions to manage Wezterm plugins
 ---@class Wezterm.Plugin
--- Will clone the plugin repo if it doesn't already exist and store it
--- in the runtime dir under plugins/NAME where NAME is derived from the repo URL.
--- Once cloned, the repo is NOT automatically updated when `require` is called again
---
--- The function takes a single string parameter, the Git repo URL
---
--- Only HTTP(S) or local filesystem repos are allowed for the git URL
+---Will clone the plugin repo if it doesn't already exist and store it
+---in the runtime dir under plugins/NAME where NAME is derived from the repo URL.
+---Once cloned, the repo is NOT automatically updated when `require` is called again
+---
+---The function takes a single string parameter, the Git repo URL
+---
+---Only HTTP(S) or local filesystem repos are allowed for the git URL
 ---@field require fun(url: string): any
--- Will return a `PluginSpec` array listing all the plugin repos in the plugin directory
---
--- Each entry has three fields:
---
---   - url: The URL of the plugin repo, as provided to the wezterm.plugin.require function
---   - component: The encoded name of the plugin, derived from the repo URL
---   - plugin_dir: The absolute location of the plugin checkout in the Wezterm runtime directory.
---                 Use this to set the plugin path if needed
+---Will return a `PluginSpec` array listing all the plugin repos in the plugin directory
+---
+---Each entry has three fields:
+---
+---  - url: The URL of the plugin repo, as provided to the wezterm.plugin.require function
+---  - component: The encoded name of the plugin, derived from the repo URL
+---  - plugin_dir: The absolute location of the plugin checkout in the Wezterm runtime directory.
+---                Use this to set the plugin path if needed
 ---@field list fun(): PluginSpec[]
--- Attempt to fast-forward or pull --rebase each of the repos in the plugin directory
--- ---
--- NOTE: The configuration is not reloaded afterwards; the user will need to do that themselves
--- ---
--- TIP: Run the `wezterm.reload_configuration()` function to reload the configuration
+---Attempt to fast-forward or pull --rebase each of the repos in the plugin directory
+--- ---
+---NOTE: The configuration is not reloaded afterwards; the user will need to do that themselves
+--- ---
+---TIP: Run the `wezterm.reload_configuration()` function to reload the configuration
 ---@field update_all fun()

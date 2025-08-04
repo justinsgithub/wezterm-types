@@ -4,56 +4,56 @@
 ---|"Attached"
 ---|"Detached"
 
--- Represents a domain that is managed by the multiplexer
+---Represents a domain that is managed by the multiplexer
 ---@class MuxDomain
--- Attempts to attach the domain.
---
--- Attaching a domain will attempt to import the windows, tabs and panes
--- from the remote system into those of the local GUI.
---
--- Unlike the `AttachDomain` key assignment, calling `domain:attach()`
--- will not implicitly spawn a new pane into the domain if the domain contains no panes.
--- This is to provide flexibility when used in the `gui-startup` event.
---
--- If the domain is already attached, calling this method again has no effect
+---Attempts to attach the domain.
+---
+---Attaching a domain will attempt to import the windows, tabs and panes
+---from the remote system into those of the local GUI.
+---
+---Unlike the `AttachDomain` key assignment, calling `domain:attach()`
+---will not implicitly spawn a new pane into the domain if the domain contains no panes.
+---This is to provide flexibility when used in the `gui-startup` event.
+---
+---If the domain is already attached, calling this method again has no effect
 ---@field attach fun(self: MuxDomain)
--- Attempts to detach the domain.
---
--- Detaching a domain causes it to disconnect and remove its set of windows, tabs and panes
--- from the local `GUI`.
--- Detaching does not cause those panes to close;
--- if or when you later attach to the domain, they'll still be there
---
--- NOTE: Not every domain supports detaching,
--- and will log an error to the error log/debug overlay
+---Attempts to detach the domain.
+---
+---Detaching a domain causes it to disconnect and remove its set of windows, tabs and panes
+---from the local `GUI`.
+---Detaching does not cause those panes to close;
+---if or when you later attach to the domain, they'll still be there
+---
+---NOTE: Not every domain supports detaching,
+---and will log an error to the error log/debug overlay
 ---@field detach fun(self: MuxDomain)
--- Returns the domain id
+---Returns the domain id
 ---@field domain_id fun(self: MuxDomain): number
--- Returns `true` if the mux has any panes that belong to this domain.
--- This can be useful when deciding whether to spawn additional panes
--- after attaching to a domain
+---Returns `true` if the mux has any panes that belong to this domain.
+---This can be useful when deciding whether to spawn additional panes
+---after attaching to a domain
 ---@field has_any_panes fun(self: MuxDomain): boolean
--- Returns `false` if this domain will never be able to spawn
--- a new pane/tab/window, `true` otherwise.
---
--- Serial ports are represented by a serial domain that is not spawnable
+---Returns `false` if this domain will never be able to spawn
+---a new pane/tab/window, `true` otherwise.
+---
+---Serial ports are represented by a serial domain that is not spawnable
 ---@field is_spawnable fun(self: MuxDomain): boolean
--- Computes a label describing the `name` and `state` of the domain.
--- The label can change depending on the `state` of the domain.
---
--- See also `domain:name()`
+---Computes a label describing the `name` and `state` of the domain.
+---The label can change depending on the `state` of the domain.
+---
+---See also `domain:name()`
 ---@field label fun(self: MuxDomain): string
--- Returns the name of the domain.
--- Domain names are unique; no two domains can have the same name,
--- and the name is fixed for the lifetime of the domain.
---
--- See also `domain:label()`
+---Returns the name of the domain.
+---Domain names are unique; no two domains can have the same name,
+---and the name is fixed for the lifetime of the domain.
+---
+---See also `domain:label()`
 ---@field name fun(self: MuxDomain): string
--- Returns whether the domain is attached or not.
--- The result is a string that is either:
---
--- - `"Attached"`: the domain is attached
--- - `"Detached"`: the domain is not attached
---
--- See also `domain:detach()` and `domain:detach()`
+---Returns whether the domain is attached or not.
+---The result is a string that is either:
+---
+--- - `"Attached"`: the domain is attached
+--- - `"Detached"`: the domain is not attached
+---
+---See also `domain:detach()` and `domain:detach()`
 ---@field state fun(self: MuxDomain): MuxDomain.State

@@ -1,6 +1,6 @@
 ---@meta
 
--- NOTE: (DrKJeff16) I am not touching this file ever again
+---NOTE: (DrKJeff16) I am not touching this file ever again
 
 ---@class (exact) Wezterm.NerdFont
 ---@field cod_account string
