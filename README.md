@@ -95,6 +95,6 @@ proper type checking and autocompletion for WezTerm configuration options.
 
 - [@justinsgithub](https://github.com/justinsgithub) - **The Author _(not active currently)_**
 - [@DrKJeff16](https://github.com/DrKJeff16) - **Maintainer, _de-facto_ Owner**
+- [@craigmac](https://github.com/craigmac) - **Maintainer**
 - [@gonstoll](https://github.com/gonstoll) - **Maintainer**
-- [@craigmac](https://github.com/craigmac) - **Contributor**
 - [@TheLeoP](https://github.com/TheLeoP) - **Contributor**
