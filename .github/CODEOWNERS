@@ -1,4 +1,5 @@
-* @justinsgithub
+* @DrKJeff16
+/lua/types/config.lua @DrKJeff16
 /lua/types/wezterm/serde.lua @DrKJeff16
 /lua/types/wezterm/plugin.lua @DrKJeff16
 /lua/types/wezterm/url.lua @DrKJeff16
