@@ -201,6 +201,12 @@
 ---|"WindowsLong" `Win`, `Alt`, `Ctrl`, `Shift`
 ---|"WindowsSymbols" like `"WindowsLong"` but using a logo for the `Win` key
 
+---@alias AllFontAttributes
+---|Fonts
+---|FontAttributes
+---|FontFamilyAttributes
+---|FontFamilyExtendedAttributes
+
 ---@class FontRules
 ---@field font? Fonts|FontAttributes|FontFamilyAttributes
 ---@field italic? boolean
@@ -1361,28 +1367,8 @@
 ---
 ---@field xim_im_name? string
 ---@field animation_fps? integer
----@field force_reverse_video_cursor? boolean
----Specifies how often blinking text (normal speed) transitions
----between visible and invisible, expressed in milliseconds.
----Setting this to 0 disables slow text blinking.  Note that this
----value is approximate due to the way that the system event loop
----schedulers manage timers; non-zero values will be at least the
----interval specified with some degree of slop.
----@field text_blink_rate? integer
 ---@field text_blink_ease_in? EasingFunction
 ---@field text_blink_ease_out? EasingFunction
----@field text_blink_rate_rapid? integer
----Specifies how often blinking text (rapid speed) transitions
----between visible and invisible, expressed in milliseconds.
----Setting this to 0 disables rapid text blinking.  Note that this
----value is approximate due to the way that the system event loop
----schedulers manage timers; non-zero values will be at least the
----interval specified with some degree of slop.
----@field text_blink_rapid_ease_in? EasingFunction
----@field text_blink_rapid_ease_out? EasingFunction
----If true, the mouse cursor will be hidden while typing.
----This option is true by default.
----@field hide_mouse_cursor_when_typing? boolean
 ---If non-zero, specifies the period (in seconds) at which various
 ---statistics are logged.
 ---
@@ -1457,7 +1443,6 @@
 ---@field integrated_title_button_alignment? IntegratedTitleButtonAlignment
 ---@field integrated_title_button_style? IntegratedTitleButtonStyle
 ---@field integrated_title_button_color? "Auto"|AnsiColor
----@field dpi? integer
 ---@field bold_brightens_ansi_colors? BoldBrightening
 ---@field font_dirs? table|string[]
 ---@field color_scheme_dirs? table|string[]
