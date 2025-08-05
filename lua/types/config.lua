@@ -818,13 +818,13 @@
 ---the second with `s` and so forth;
 ---these are easily accessible characters in a `qwerty` keyboard layout.
 ---
----|----------|----------------------------------------|
----| `qwerty`   | `"asdfqwerzxcvjklmiuopghtybn"` (default) |
----| `qwertz`   | `"asdfqweryxcvjkluiopmghtzbn"`           |
----| `azerty`   | `"qsdfazerwxcvjklmuiopghtybn"`           |
----| `dvorak`   | `"aoeuqjkxpyhtnsgcrlmwvzfidb"`           |
----| `colemak`  | `"arstqwfpzxcvneioluymdhgjbk"`           |
----
+-- |----------|----------------------------------------|
+-- | `qwerty`   | `"asdfqwerzxcvjklmiuopghtybn"` (default) |
+-- | `qwertz`   | `"asdfqweryxcvjkluiopmghtzbn"`           |
+-- | `azerty`   | `"qsdfazerwxcvjklmuiopghtybn"`           |
+-- | `dvorak`   | `"aoeuqjkxpyhtnsgcrlmwvzfidb"`           |
+-- | `colemak`  | `"arstqwfpzxcvneioluymdhgjbk"`           |
+--
 ---The suggested alphabet in the above table uses the left 4 fingers
 ---on the home row, top row, bottom row, then the right 4 fingers
 ---on the home raw, top row, bottom row, followed by the characters
