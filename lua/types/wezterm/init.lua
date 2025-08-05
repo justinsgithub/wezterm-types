@@ -132,9 +132,11 @@
 ---@field enumerate_ssh_hosts fun(ssh_config_file_name: (string[]|string)?): table<string, SshHost>
 ---This constant is set to the directory containing the wezterm executable file
 ---@field executable_dir string
----[Info](https://wezfurlong.org/wezterm/config/lua/wezterm/font.html)
+---Info: https://wezfurlong.org/wezterm/config/lua/wezterm/font.html
+---
 ---@field font (fun(attributes: FontFamilyAttributes|FontFamilyExtendedAttributes): FontFamilyAttributes)|(fun(name: string, attributes: FontAttributes?): FontFamilyAttributes)
----[Info](https://wezfurlong.org/wezterm/config/lua/wezterm/font_with_fallback.html)
+---Info: https://wezfurlong.org/wezterm/config/lua/wezterm/font_with_fallback.html
+---
 ---@field font_with_fallback fun(fonts: (string|FontAttributes)[]): Fonts
 --- Can be used to produce a formatted string with terminal graphic attributes
 --- such as `bold`, `italic` and `colors`.
