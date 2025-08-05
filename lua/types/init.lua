@@ -474,7 +474,13 @@
 ---@field family string
 
 ---@class FontFamilyExtendedAttributes: FontFamilyAttributes
----@field harfbuzz_features? HarfbuzzFeatures[]
+---See _Font Shaping_ (https://wezterm.org/config/font-shaping.html)
+---for more information and examples.
+---
+---The _OpenType_ spec lists a number of features here:
+---https://docs.microsoft.com/en-us/typography/opentype/spec/featurelist
+---
+---@field harfbuzz_features? (HarfbuzzFeatures)[]
 ---@field freetype_load_target? FreeTypeLoadTarget
 ---@field freetype_render_target? FreeTypeLoadTarget
 ---you can combine the flags like `"NO_HINTING|MONOCHROME"`
