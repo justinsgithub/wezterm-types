@@ -64,10 +64,6 @@
 ---|"LowPower"
 ---|"HighPerformance"
 
----@alias FontShaperSelection
----|"Allsorts" very preliminary support
----|"Harfbuzz" default
-
 ---@alias FontLocatorSelection
 ---|"FontConfig" Use fontconfig APIs to resolve fonts (!macos, posix systems)
 ---|"Gdi" Use GDI on win32 systems
@@ -405,7 +401,12 @@
 ---|"MONOCHROME"
 ---|"NO_AUTOHINT"
 
----TODO: Find out what do the undocumented options do
+---See _Font Shaping_ (https://wezterm.org/config/font-shaping.html)
+---for more information and examples.
+---
+---The _OpenType_ spec lists a number of features here:
+---https://docs.microsoft.com/en-us/typography/opentype/spec/featurelist
+---
 ---@alias HarfbuzzFeatures
 ---|"calt=0"
 ---|"clig=0"
