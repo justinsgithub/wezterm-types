@@ -80,9 +80,13 @@ require('lazy').setup({
 
 ## Usage
 
-After installing the types, add the type annotation when requiring wezterm in your configuration:
+After installing the types, add the type annotations to `wezterm` and `config` respectively
+when requiring wezterm in your configuration:
 
 ```lua
+---Import this module using annotations
+---@module "wezterm.types"
+
 ---@type Wezterm
 local wezterm = require("wezterm")
 
@@ -95,7 +99,7 @@ config.window_decorations = "RESIZE|MACOS_FORCE_DISABLE_SHADOW"
 return config
 ```
 
-This annotation enables the **Lua Language Server** to provide
+These annotations enable the **Lua Language Server** to provide
 proper type checking and autocompletion for WezTerm configuration options.
 
 ---
