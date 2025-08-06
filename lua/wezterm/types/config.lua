@@ -1,9 +1,9 @@
 ---@meta
 
----@module "types.enum"
----@module "types.events"
----@module "types.objects"
----@module "types.wezterm"
+---@module "wezterm.types.enum"
+---@module "wezterm.types.events"
+---@module "wezterm.types.objects"
+---@module "wezterm.types.wezterm"
 
 ---@alias HorizontalAlign
 ---|"Left"

@@ -1,5 +1,5 @@
 ---@meta
 
----@module 'types.events.gui'
----@module 'types.events.multiplexer'
----@module 'types.events.window'
+---@module "wezterm.types.events.gui"
+---@module "wezterm.types.events.multiplexer"
+---@module "wezterm.types.events.window"

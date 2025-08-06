@@ -1,4 +1,4 @@
 ---@meta
 
----@module 'types.enum.copy-mode-assignment'
----@module 'types.enum.key-assignment'
+---@module "wezterm.types.enum.copy-mode-assignment"
+---@module "wezterm.types.enum.key-assignment"
