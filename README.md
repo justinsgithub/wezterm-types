@@ -12,6 +12,15 @@
 
 ---
 
+## Table of Contents
+
+1. [Installation](#installation)
+    1. [Neovim](#neovim)
+2. [Usage](#usage)
+3. [Credits](#credits)
+
+---
+
 ## Installation
 
 ### Neovim
