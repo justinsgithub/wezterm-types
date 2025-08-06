@@ -1,8 +1,4 @@
 * @DrKJeff16
-/lua/types/config.lua @DrKJeff16
-/lua/types/wezterm/serde.lua @DrKJeff16
-/lua/types/wezterm/plugin.lua @DrKJeff16
-/lua/types/wezterm/url.lua @DrKJeff16
 /.github/CODEOWNERS @DrKJeff16
 /.github/workflows/stylua.yml @DrKJeff16
 /.github/ISSUE_TEMPLATE/1-missing_types.yml @DrKJeff16
