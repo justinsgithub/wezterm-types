@@ -84,9 +84,6 @@ After installing the types, add the type annotations to `wezterm` and `config` r
 when requiring wezterm in your configuration:
 
 ```lua
----Import this module using annotations
----@module "wezterm.types"
-
 ---@type Wezterm
 local wezterm = require("wezterm")
 
