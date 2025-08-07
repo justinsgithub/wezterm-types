@@ -1,14 +1,14 @@
 ---@meta
 
----@module 'types.wezterm.color'
----@module 'types.wezterm.gui'
----@module 'types.wezterm.mux'
----@module 'types.wezterm.nerdfonts'
----@module 'types.wezterm.plugin'
----@module 'types.wezterm.procinfo'
----@module 'types.wezterm.serde'
----@module 'types.wezterm.time'
----@module 'types.wezterm.url'
+---@module "wezterm.types.wezterm.color"
+---@module "wezterm.types.wezterm.gui"
+---@module "wezterm.types.wezterm.mux"
+---@module "wezterm.types.wezterm.nerdfonts"
+---@module "wezterm.types.wezterm.plugin"
+---@module "wezterm.types.wezterm.procinfo"
+---@module "wezterm.types.wezterm.serde"
+---@module "wezterm.types.wezterm.time"
+---@module "wezterm.types.wezterm.url"
 
 ---@class Wezterm: ExecDomain
 ---Provides global, in-process, in-memory, data storage for JSON-like variables

@@ -1,6 +1,6 @@
 ---@meta
 
----@module 'types.object.local-process-info'
+---@module "wezterm.types.objects.local-process-info"
 
 ---@alias Wezterm.ProcInfo.Pid number
 
