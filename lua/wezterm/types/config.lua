@@ -152,6 +152,7 @@
 ---
 ---@field horizontal_align? HorizontalAlign
 ---Same as `vertical_offset` but applies to the x-direction
+---
 ---@field horizontal_offset? number|string
 ---A number in the range `0.0` through `1.0` inclusive that is multiplied
 ---with the alpha channel of the source to adjust the opacity of the layer.
@@ -164,6 +165,7 @@
 ---those attributes of the layer.
 ---
 ---See `foreground_text_hsb` for more information about this kind of transform.
+---
 ---@field hsb? HsbTransform
 ---Controls the height of the image. The following values are accepted:
 --- - `"Cover"`: (default) scales the image, preserving aspect ratio, to the smallest

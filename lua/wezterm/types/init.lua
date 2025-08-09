@@ -298,7 +298,7 @@
 ---@field visual_bell? string
 ---The color to use for the cursor when a dead key or leader state is active
 ---@field compose_cursor? string
----Use `AnsiColor` to specify one of the ansi color palette values
+---Use [`AnsiColor`](lua://AnsiColor) to specify one of the ansi color palette values
 ---(index 0-15) using one of the following values:
 ---
 --- - `"Black"`
@@ -317,14 +317,16 @@
 --- - `"Fuchsia"`
 --- - `"Aqua"`
 --- - `"White"`
+---
 ---@field copy_mode_active_highlight_fg? ColorSpec
 ---Colors for copy_mode and quick_select.
 ---
 ---In copy_mode, the color of the active text is:
 ---1. `copy_mode_active_highlight` if additional text was selected using the mouse
 ---2. `selection` otherwise
+---
 ---@field copy_mode_active_highlight_bg? ColorSpec
----Use `AnsiColor` to specify one of the ansi color palette values
+---Use [`AnsiColor`](lua://AnsiColor) to specify one of the ansi color palette values
 ---(index 0-15) using one of the following values:
 ---
 --- - `"Black"`
@@ -343,12 +345,14 @@
 --- - `"Fuchsia"`
 --- - `"Aqua"`
 --- - `"White"`
+---
 ---@field copy_mode_inactive_highlight_fg? ColorSpec
 ---Colors for copy_mode and quick_select.
 ---
 ---In copy_mode, the color of the active text is:
 ---1. `copy_mode_active_highlight` if additional text was selected using the mouse
 ---2. `selection` otherwise
+---
 ---@field copy_mode_inactive_highlight_bg? ColorSpec
 ---@field quick_select_label_fg? ColorSpec
 ---@field quick_select_label_bg? ColorSpec
