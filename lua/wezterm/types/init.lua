@@ -218,85 +218,115 @@
 ---|"White"
 
 ---@class TabBarColor
----The color of the background area for the tab
+---The color of the background area for the tab.
+---
 ---@field bg_color? string
----The color of the text for the tab
+---The color of the text for the tab.
+---
 ---@field fg_color? string
 ---Specify whether you want `"Half"`, `"Normal"` or `"Bold"` intensity for the
 ---label shown for this tab.
 ---
----The default is `"Normal"`
+---The default is `"Normal"`.
+---
 ---@field intensity? TabBarIntensity
 ---Specify whether you want `"None"`, `"Single"` or `"Double"` underline for
 ---label shown for this tab.
 ---
----The default is `"None"`
+---The default is `"None"`.
+---
 ---@field underline? TabBarUnderline
 ---Specify whether you want the text to be italic for this tab.
 ---
----The default is `false`
+---The default is `false`.
+---
 ---@field italic? boolean
 ---Specify whether you want the text to be rendered with strikethrough (true)
 ---or not for this tab.
 ---
----The default is `false`
+---The default is `false`.
+---
 ---@field strikethrough? boolean
 
 ---@class TabBarColors
----The text color to use when the attributes are reset to default
+---The text color to use when the attributes are reset to default.
+---
 ---@field background? string
 ---@field inactive_tab_edge? string
 ---@field inactive_tab_edge_hover? string
 
----Configure the color and styling for the tab bar
+---Configure the color and styling for the tab bar.
+---
 ---@class TabBar: TabBarColors
 ---The color of the strip that goes along the top of the window
----(does not apply when fancy tab bar is in use)
+---(does not apply when fancy tab bar is in use).
+---
 ---@field background string
----The active tab is the one that has focus in the window
+---The active tab is the one that has focus in the window.
+---
 ---@field active_tab TabBarColor
----Inactive tabs are the tabs that do not have focus
+---Inactive tabs are the tabs that do not have focus.
+---
 ---@field inactive_tab TabBarColor
 ---You can configure some alternate styling when the mouse pointer
----moves over inactive tabs
+---moves over inactive tabs.
+---
 ---@field inactive_tab_hover TabBarColor
----The new tab button that let you create new tabs
+---The new tab button that let you create new tabs.
+---
 ---@field new_tab TabBarColor
 ---You can configure some alternate styling when the mouse pointer
----moves over the new tab button
+---moves over the new tab button.
+---
 ---@field new_tab_hover TabBarColor
 
 ---@alias ColorSpec table<"AnsiColor", AnsiColor>|table<"Color", string>
 
 ---@class Palette
----The text color to use when the attributes are reset to default
+---The text color to use when the attributes are reset to default.
+---
 ---@field foreground? string
---- The background color to use when the attributes are reset to default
+---The background color to use when the attributes are reset to default.
+---
 ---@field background? string
----The foreground color of the cursor
+---The foreground color of the cursor.
+---
 ---@field cursor_fg? string
----The background color of the cursor
+---The background color of the cursor.
+---
 ---@field cursor_bg? string
----The border of the cursor
+---The border of the cursor.
+---
 ---@field cursor_border? string
----The foreground color of selected text
+---The foreground color of selected text.
+---
 ---@field selection_fg? string
----The background color of selected text
+---The background color of selected text.
+---
 ---@field selection_bg? string
----A list of 8 colors corresponding to the basic ANSI palette
+---A list of 8 colors corresponding to the basic ANSI palette.
+---
 ---@field ansi? table<integer, PaletteAnsi>
----A list of 8 colors corresponding to the brights
+---A list of 8 colors corresponding to the brights.
+---
 ---@field brights? table<integer, PaletteBrights>
----A map for setting arbitrary colors ranging from 16 to 256 in the color palette
+---A map for setting arbitrary colors ranging from 16 to 256 in the color palette.
+---
 ---@field indexed? string[]|table
----The color of the "thumb" of the scrollbar; the segment that represents the current viewable area
+---The color of the "thumb" of the scrollbar; the segment that represents
+---the current viewable area.
+---
 ---@field scrollbar_thumb? string
----The color of the split line between panes
+---The color of the split line between panes.
+---
 ---@field split? string
 ---The color of the visual bell.
----If unspecified, the foreground color is used instead
+---
+---If unspecified, the foreground color is used instead.
+---
 ---@field visual_bell? string
----The color to use for the cursor when a dead key or leader state is active
+---The color to use for the cursor when a dead key or leader state is active.
+---
 ---@field compose_cursor? string
 ---Use [`AnsiColor`](lua://AnsiColor) to specify one of the ansi color palette values
 ---(index 0-15) using one of the following values:
@@ -463,16 +493,19 @@
 ---|"ss10"
 
 ---@class FontAttributes
----Whether the font should be a bold variant
+---Whether the font should be a bold variant.
+---
 ---@field weight? FontWeight
 ---@field stretch? FontStretch
----Whether the font should be an italic variant
+---Whether the font should be an italic variant.
+---
 ---@field style? FontStyle
 ---@field is_fallback? boolean
 ---@field is_synthetic? boolean
 ---@field scale? number
 
----`FontAttributes`-like class but with font family specified
+---`FontAttributes`-like class but with font family specified.
+---
 ---@class FontFamilyAttributes: FontAttributes
 ---@field family string
 
@@ -481,7 +514,8 @@
 ---@field freetype_load_target? FreeTypeLoadTarget
 ---@field freetype_render_target? FreeTypeLoadTarget
 ---you can combine the flags like `"NO_HINTING|MONOCHROME"`
----**(you probably wouldn't want to do this)**
+---**(you probably wouldn't want to do this)**.
+---
 ---@field freetype_load_flags? FreeTypeLoadFlags
 ---@field assume_emoji_presentation? boolean
 
@@ -525,17 +559,21 @@
 
 ---@class SerialDomain
 ---The name of this specific domain.
----Must be unique amongst all types of domain in the configuration file
+---
+---Must be unique amongst all types of domain in the configuration file.
+---
 ---@field name string
 ---Specifies the serial device name.
 ---
 --- - On Windows systems this can be a name like `COM0`
 --- - On POSIX systems this will be something like `/dev/ttyUSB0`
 --- - If omitted, the name will be interpreted as the port
+---
 ---@field port string
 ---Set the baud rate.
 ---
----The default is `9600` baud
+---The default is `9600` baud.
+---
 ---@field baud number|9600
 
 ---@class GpuInfo
@@ -549,15 +587,21 @@
 
 ---@class UnixDomain
 ---The name of this specific domain.
----Must be unique amongst all types of domain in the configuration file
+---
+---Must be unique amongst all types of domain in the configuration file.
+---
 ---@field name string
 ---The path to the socket.
----If unspecified, a resonable default value will be computed
+---
+---If unspecified, a resonable default value will be computed.
+---
 ---@field socket_path string
----If `true`, connect to this domain automatically at startup
+---If `true`, connect to this domain automatically at startup.
+---
 ---@field connect_automatically boolean
 ---If `true`, do not attempt to start this server if we try and fail to
 ---connect to it.
+---
 ---@field no_serve_automatically boolean
 ---If we decide that we need to start the server, the command to run
 ---to set that up.
@@ -573,33 +617,42 @@
 ---```sh
 ---wsl -e wezterm-mux-server --daemonize
 ---```
+---
 ---@field serve_command string[]
 ---Instead of directly connecting to `socket_path`
 ---spawn this command and use its stdin/stdout in place of
----the socket
+---the socket.
+---
 ---@field proxy_command string[]
 ---If `true`, bypass checking for secure ownership of the socket_path.
 ---
 ---This is not recommended on a multi-user system,
 ---but is useful, for example, when running the server inside a WSL container
----but with the socket on the host NTFS volume
+---but with the socket on the host NTFS volume.
+---
 ---@field skip_permissions_check boolean
 ---@field read_timeout integer
 ---Don"t use `default_local_echo_threshold_ms()` here to disable
----the predictive echo for UNIX domains by default
+---the predictive echo for UNIX domains by default.
+---
 ---@field write_timeout integer
 ---Show time since last response when waiting for a response.
 ---
----Recommended to look at this:
----`https://wezfurlong.org/wezterm/config/lua/pane/get_metadata.html#since_last_response_ms`
+---[_Recommended Source_](https://wezfurlong.org/wezterm/config/lua/pane/get_metadata.html#since_last_response_ms).
+---
 ---@field local_echo_threshold_ms integer
 ---@field overlay_lag_indicator boolean
 
 ---@class LeaderKey: KeyNoAction
----@field timeout_milliseconds? integer Maximum time to wait for next key, default is 1000 ms.
+---Maximum time to wait for next key.
+---
+---Default is `1000` ms.
+---
+---@field timeout_milliseconds? integer
 
 ---@class HyperLinkRule
----The regular expression to match
+---The regular expression to match.
+---
 ---@field regex string
 ---Controls which parts of the regex match will be used to form the link.
 ---
@@ -610,6 +663,7 @@
 ---that will be replaced with that numbered capture group.
 ---So, `$0` will take the entire region of text matched by the whole regex,
 ---while `$1` matches out the first capture group.
+---
 ---@field format string
 ---Specifies the range of the matched text that should be highlighted/underlined
 ---when the mouse hovers over the link.
@@ -618,34 +672,48 @@
 ---
 ---The default is `0`, highlighting the entire region of text matched by the regex.
 ---`1` would be the first capture group, and so on...
+---
 ---@field highlight? number
 
 ---@class BatteryInfo
----The battery level expressed as a number between `0.0` (empty) and `1.0` (full)
+---The battery level expressed as a number between `0.0` (empty) and `1.0` (full).
+---
 ---@field state_of_charge number
----If known, shows battery manufacturer name or `"unknown"` otherwise
----@field vendor string
----If known, shows the battery model string or `"unknown"` otherwise
----@field model string
----If known, shows the battery serial number or `"unknown"` otherwise
----@field serial string
----If charging, how long until the battery is full (in seconds)
+---If known, shows battery manufacturer name or `"unknown"` otherwise.
+---
+---@field vendor string|"unknown"
+---If known, shows the battery model string or `"unknown"` otherwise.
+---
+---@field model string|"unknown"
+---If known, shows the battery serial number or `"unknown"` otherwise.
+---
+---@field serial string|"unknown"
+---If charging, how long until the battery is full (in seconds).
+---
 ---@field time_to_full? number
----If discharing, how long until the battery is empty (in seconds)
+---If discharing, how long until the battery is empty (in seconds).
+---
 ---@field time_to_empty? number
 ---@field state BatteryState
 
 ---@class AugmentCommandPaletteReturn
----The brief description for the entry
+---The brief description for the entry.
+---
 ---@field brief string
 ---A long description that may be shown after the entry, or that may be used in
----future versions of wezterm to provide more information about the command
+---future versions of wezterm to provide more information about the command.
+---
 ---@field doc? string
 ---The action to take when the item is activated.
----Can be any key assignment action
+---
+---Can be any key assignment action.
+---
+---See [`KeyAssignment`](lua://KeyAssignment).
+---
 ---@field action KeyAssignment
----(Optional) Nerd Fonts glyph name to use for the icon for the entry.
----@see Wezterm.NerdFont for a list of icon names
+---**(OPTIONAL)** Nerd Fonts glyph name to use for the icon for the entry.
+---
+---See [`Wezterm.NerdFont`](lua://Wezterm.NerdFont) for a list of icon names.
 ---@field icon? Wezterm.NerdFont
 
 --- - The first event parameter is a `Window` object that represents the GUI window
@@ -663,7 +731,7 @@
 ---
 ---This hook is synchronous; calling asynchronous functions will not succeed.
 ---
----@alias Event.AugmentCommandPalette fun(event: AugmentCommandPalette, callback: AugmentCallbackWindowPane): AugmentCommandPaletteReturn): nil
+---@alias Event.AugmentCommandPalette fun(event: AugmentCommandPalette, callback: AugmentCallbackWindowPane): AugmentCommandPaletteReturn)
 
 --- - The first event parameter is a `Window` object that represents the GUI window
 --- - The second event parameter is a `Pane` object that represents
@@ -701,7 +769,8 @@
 ---
 ---Only the first `"format-tab-title"` event will be executed;
 ---it doesn't make sense to define multiple instances of the event
----with `multiple wezterm.on("format-tab-title", ...)` calls
+---with `multiple wezterm.on("format-tab-title", ...)` calls.
+---
 ---@alias Event.FormatTabTitle fun(event: FormatTabTitle, callback: fun(tab: MuxTab, tabs: MuxTab[], panes: Pane[], config: Config, hover: boolean, max_width: number): string|FormatItem)
 
 ---The parameters to the event are:
@@ -722,7 +791,8 @@
 ---
 ---Only the first `"format-window-title"` event will be executed;
 ---it doesn't make sense to define multiple instances of the event
----with multiple `wezterm.on("format-window-title", ...)` calls
+---with multiple `wezterm.on("format-window-title", ...)` calls.
+---
 ---@alias Event.FormatWindowTitle fun(event: FormatWindowTitle, callback: fun(window: Window, pane: Pane, tabs: MuxTab[], panes: Pane[], config: Config): string)
 
 ---@alias Event.GuiAttached fun(event: GuiAttached, callback: fun(domain: ExecDomain))
@@ -755,7 +825,8 @@
 ---WezTerm will ensure that only a single instance of this event is outstanding;
 ---if the hook takes longer than the `status_update_interval` to complete,
 ---`wezterm` won't schedule another call until `status_update_interval milliseconds`
----have elapsed since the last call completed
+---have elapsed since the last call completed.
+---
 ---@deprecated
 ---@alias Event.UpdateRightStatus fun(event: UpdateRightStatus, callback: CallbackWindowPane)
 
@@ -769,11 +840,12 @@
 ---WezTerm will ensure that only a single instance of this event is outstanding;
 ---if the hook takes longer than the `status_update_interval` to complete,
 ---`wezterm` won't schedule another call until `status_update_interval milliseconds`
----have elapsed since the last call completed
+---have elapsed since the last call completed.
+---
 ---@alias Event.UpdateStatus fun(event: UpdateStatus, callback: CallbackWindowPane)
 
 ---You can use something like the following from your shell
----to set the user var named foo to the value bar:
+---to set the user var named `foo` to the value `bar`:
 ---
 ---```sh
 ---printf "\033]1337;SetUserVar=%s=%s\007" foo `echo -n bar | base64`
@@ -794,6 +866,7 @@
 ---your event handler will be called with `name = 'foo'` and `value = 'bar'`.
 ---
 ---See `Pane:get_user_vars()`
+---
 ---@alias Event.UserVarChanged fun(event: UserVarChanged, callback: fun(window: Window, pane: Pane, name: string, value: string))
 
 ---This event is _fire-and-forget_ from the perspective of wezterm;
@@ -801,11 +874,13 @@
 ---
 ---If you call `Window:set_config_overrides()` from inside this event callback
 ---then an additional window-config-reloaded event will be triggered.
+---
 ---You should take care to avoid creating a loop by only calling `Window:set_config_overrides()`
 ---when the actual override values are changed.
 ---
 --- - The first event parameter is a `Window` object that represents the GUI window
 --- - The second event parameter is a `Pane` object that represents the active pane in that window
+---
 ---@alias Event.WindowConfigReloaded fun(event: WindowConfigReloaded, callback: CallbackWindowPane)
 
 ---This event is _fire-and-forget_ from the perspective of wezterm;
@@ -813,13 +888,16 @@
 ---
 --- - The first event parameter is a `Window` object that represents the GUI window
 --- - The second event parameter is a `Pane` object that represents the active pane in that window
+---
 ---@alias Event.WindowFocusChanged fun(event: WindowFocusChanged, callback: CallbackWindowPane)
 
 --- - The first event parameter is a `Window` object that represents the GUI window
 --- - The second event parameter is a `Pane` object that represents the active pane in that window
+---
 ---@alias Event.WindowResized fun(event: WindowResized, callback: CallbackWindowPane)
 
----A custom declared function
+---A custom declared event function.
+---
 ---@alias Event.Custom fun(event: string, callback: fun(...: any))
 
 ---@alias Events
@@ -852,13 +930,17 @@
 ---|"Hidden"
 
 ---@class StableCursorPosition
----The horizontal cell index
+---The horizontal cell index.
+---
 ---@field x number
----The vertical stable row index
+---The vertical stable row index.
+---
 ---@field y number
----The CursorShape enum value
+---The CursorShape enum value.
+---
 ---@field shape CursorShape
----The CursorVisibility enum value
+---The CursorVisibility enum value.
+---
 ---@field visibility CursorVisibility
 
 ---@class LinearGradientOrientation
@@ -898,6 +980,7 @@
 ---            lower contrasting, text color on a dark background
 --- - `"LightHighContrast"`: Light mode but with high contrast colors (not reported on all systems)
 --- - `"DarkHighContrast"`: Dark mode but with high contrast colors (not reported on all systems)
+---
 ---@alias Appearance
 ---|"Dark"
 ---|"DarkHighContrast"
