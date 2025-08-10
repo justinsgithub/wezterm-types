@@ -298,7 +298,7 @@
 ---@field visual_bell? string
 ---The color to use for the cursor when a dead key or leader state is active
 ---@field compose_cursor? string
----Use `AnsiColor` to specify one of the ansi color palette values
+---Use [`AnsiColor`](lua://AnsiColor) to specify one of the ansi color palette values
 ---(index 0-15) using one of the following values:
 ---
 --- - `"Black"`
@@ -317,14 +317,16 @@
 --- - `"Fuchsia"`
 --- - `"Aqua"`
 --- - `"White"`
+---
 ---@field copy_mode_active_highlight_fg? ColorSpec
 ---Colors for copy_mode and quick_select.
 ---
 ---In copy_mode, the color of the active text is:
 ---1. `copy_mode_active_highlight` if additional text was selected using the mouse
 ---2. `selection` otherwise
+---
 ---@field copy_mode_active_highlight_bg? ColorSpec
----Use `AnsiColor` to specify one of the ansi color palette values
+---Use [`AnsiColor`](lua://AnsiColor) to specify one of the ansi color palette values
 ---(index 0-15) using one of the following values:
 ---
 --- - `"Black"`
@@ -343,12 +345,14 @@
 --- - `"Fuchsia"`
 --- - `"Aqua"`
 --- - `"White"`
+---
 ---@field copy_mode_inactive_highlight_fg? ColorSpec
 ---Colors for copy_mode and quick_select.
 ---
 ---In copy_mode, the color of the active text is:
 ---1. `copy_mode_active_highlight` if additional text was selected using the mouse
 ---2. `selection` otherwise
+---
 ---@field copy_mode_inactive_highlight_bg? ColorSpec
 ---@field quick_select_label_fg? ColorSpec
 ---@field quick_select_label_bg? ColorSpec
@@ -646,8 +650,9 @@
 
 --- - The first event parameter is a `Window` object that represents the GUI window
 --- - The second event parameter is a `Pane` object that represents the pane in which
----  the bell was rung, which may not be active pane;
----  it could be in an unfocused pane or tab
+---   the bell was rung, which may not be active pane;
+---   it could be in an unfocused pane or tab
+---
 ---@alias CallbackWindowPane fun(window: Window, pane: Pane)
 
 ---@alias AugmentCallbackWindowPane fun(window: Window, pane: Pane): AugmentCommandPaletteReturn
@@ -656,13 +661,14 @@
 ---
 ---Its purpose is to enable you to add additional entries to the list of commands shown in the palette.
 ---
----This hook is synchronous; calling asynchronous functions will not succeed
+---This hook is synchronous; calling asynchronous functions will not succeed.
+---
 ---@alias Event.AugmentCommandPalette fun(event: AugmentCommandPalette, callback: AugmentCallbackWindowPane): AugmentCommandPaletteReturn): nil
 
 --- - The first event parameter is a `Window` object that represents the GUI window
 --- - The second event parameter is a `Pane` object that represents
----  the pane in which the bell was rung, which may not be active pane;
----  it could be in an unfocused pane or tab
+---   the pane in which the bell was rung, which may not be active pane;
+---   it could be in an unfocused pane or tab
 ---@alias Event.Bell fun(event: Bell, callback: CallbackWindowPane)
 
 ---The parameters to the event are:
@@ -719,6 +725,10 @@
 ---with multiple `wezterm.on("format-window-title", ...)` calls
 ---@alias Event.FormatWindowTitle fun(event: FormatWindowTitle, callback: fun(window: Window, pane: Pane, tabs: MuxTab[], panes: Pane[], config: Config): string)
 
+---@alias Event.GuiAttached fun(event: GuiAttached, callback: fun(domain: ExecDomain))
+
+---@alias Event.GuiStartup fun(event: GuiStartup, callback: fun(cmd: SpawnCommand?))
+
 --- - The first event parameter is a `Window` object that represents the GUI window
 --- - The second event parameter is a `Pane` object that represents the active pane in the window
 ---@alias Event.NewTabButtonClick fun(event: NewTabButtonClick, callback: fun(window: Window, pane: Pane, button: "Left"|"Middle"|"Right", default_action: KeyAssignment))
@@ -740,7 +750,7 @@
 ---
 ---There is no defined return value for the event,
 ---but its purpose is to allow you the chance to carry out some activity
----and then ultimately call `Window:set_right_status()'
+---and then ultimately call `Window:set_right_status()`
 ---
 ---WezTerm will ensure that only a single instance of this event is outstanding;
 ---if the hook takes longer than the `status_update_interval` to complete,
@@ -818,6 +828,8 @@
 ---|Event.Custom
 ---|Event.FormatTabTitle
 ---|Event.FormatWindowTitle
+---|Event.GuiAttached
+---|Event.GuiStartup
 ---|Event.NewTabButtonClick
 ---|Event.OpenUri
 ---|Event.UpdateRightStatus -- DEPRECATED

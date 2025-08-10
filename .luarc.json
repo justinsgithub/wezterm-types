@@ -1,6 +1,6 @@
 {
   "$schema": "https://raw.githubusercontent.com/LuaLS/vscode-lua/master/setting/schema.json",
-  "workspace.library": ["./lua/types"],
+  "workspace.library": ["./lua/wezterm/types"],
   "runtime.version": "Lua 5.4",
   "hint": {
     "enable": true,
