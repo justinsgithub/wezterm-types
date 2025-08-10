@@ -750,7 +750,7 @@
 ---
 ---There is no defined return value for the event,
 ---but its purpose is to allow you the chance to carry out some activity
----and then ultimately call `Window:set_right_status()'
+---and then ultimately call `Window:set_right_status()`
 ---
 ---WezTerm will ensure that only a single instance of this event is outstanding;
 ---if the hook takes longer than the `status_update_interval` to complete,
