@@ -650,8 +650,9 @@
 
 --- - The first event parameter is a `Window` object that represents the GUI window
 --- - The second event parameter is a `Pane` object that represents the pane in which
----  the bell was rung, which may not be active pane;
----  it could be in an unfocused pane or tab
+---   the bell was rung, which may not be active pane;
+---   it could be in an unfocused pane or tab
+---
 ---@alias CallbackWindowPane fun(window: Window, pane: Pane)
 
 ---@alias AugmentCallbackWindowPane fun(window: Window, pane: Pane): AugmentCommandPaletteReturn
@@ -660,13 +661,14 @@
 ---
 ---Its purpose is to enable you to add additional entries to the list of commands shown in the palette.
 ---
----This hook is synchronous; calling asynchronous functions will not succeed
+---This hook is synchronous; calling asynchronous functions will not succeed.
+---
 ---@alias Event.AugmentCommandPalette fun(event: AugmentCommandPalette, callback: AugmentCallbackWindowPane): AugmentCommandPaletteReturn): nil
 
 --- - The first event parameter is a `Window` object that represents the GUI window
 --- - The second event parameter is a `Pane` object that represents
----  the pane in which the bell was rung, which may not be active pane;
----  it could be in an unfocused pane or tab
+---   the pane in which the bell was rung, which may not be active pane;
+---   it could be in an unfocused pane or tab
 ---@alias Event.Bell fun(event: Bell, callback: CallbackWindowPane)
 
 ---The parameters to the event are:
@@ -722,6 +724,10 @@
 ---it doesn't make sense to define multiple instances of the event
 ---with multiple `wezterm.on("format-window-title", ...)` calls
 ---@alias Event.FormatWindowTitle fun(event: FormatWindowTitle, callback: fun(window: Window, pane: Pane, tabs: MuxTab[], panes: Pane[], config: Config): string)
+
+---@alias Event.GuiAttached fun(event: GuiAttached, callback: fun(domain: ExecDomain))
+
+---@alias Event.GuiStartup fun(event: GuiStartup, callback: fun(cmd: SpawnCommand?))
 
 --- - The first event parameter is a `Window` object that represents the GUI window
 --- - The second event parameter is a `Pane` object that represents the active pane in the window
@@ -822,6 +828,8 @@
 ---|Event.Custom
 ---|Event.FormatTabTitle
 ---|Event.FormatWindowTitle
+---|Event.GuiAttached
+---|Event.GuiStartup
 ---|Event.NewTabButtonClick
 ---|Event.OpenUri
 ---|Event.UpdateRightStatus -- DEPRECATED
