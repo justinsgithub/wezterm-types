@@ -1149,8 +1149,18 @@ local Wezterm = {}
 ---Its purpose is to enable you to add additional entries to the list of commands shown in the palette.
 ---
 ---This hook is synchronous; calling asynchronous functions will not succeed.
+------
+---The `"augment-command-palette"` event is emitted when
+---the `Command Palette` is shown.
 ---
----@param event AugmentCommandPalette
+---Its purpose is to enable you to add additional entries
+---to the list of commands shown in the palette.
+---
+---This hook is synchronous; calling asynchronous functions will not succeed.
+---
+---The return value is an [`AugmentCommandPaletteReturn`](lua://AugmentCommandPaletteReturn) table.
+---
+---@param event "augment-command-palette"
 ---@param callback AugmentCallbackWindowPane
 ---@return AugmentCommandPaletteReturn
 function Wezterm.on(event, callback) end
@@ -1160,7 +1170,15 @@ function Wezterm.on(event, callback) end
 ---   the pane in which the bell was rung, which may not be active pane;
 ---   it could be in an unfocused pane or tab
 ---
----@param event Bell
+------
+---The `"bell"` event is emitted when the `ASCII BEL` sequence
+---is emitted to a pane in the window.
+---
+---Defining an event handler doesn't alter wezterm's handling of the bell;
+---the event supplements it and allows you
+---to take additional action over the configured behavior.
+---
+---@param event "bell"
 ---@param callback CallbackWindowPane
 function Wezterm.on(event, callback) end
 
@@ -1196,7 +1214,19 @@ function Wezterm.on(event, callback) end
 ---it doesn't make sense to define multiple instances of the event
 ---with `multiple wezterm.on("format-tab-title", ...)` calls.
 ---
----@param event FormatTabTitle
+------
+---The `"format-tab-title"` event is emitted when the text for a tab title
+---needs to be recomputed.
+---
+---This event is a bit special in that it is synchronous and must return
+---as quickly as possible in order to avoid blocking the GUI thread.
+---
+---The most notable consequence of this is that some functions that are asynchronous
+---(e.g. `wezterm.run_child_process()`) are not possible to call
+---from inside the event handler and will generate a
+---`format-tab-title: runtime error: attempt to yield from outside a coroutine` error.
+---
+---@param event "format-tab-title"
 ---@param callback fun(tab: MuxTab, tabs: MuxTab[], panes: Pane[], config: Config, hover: boolean, max_width: number): string|FormatItem
 function Wezterm.on(event, callback) end
 
@@ -1227,29 +1257,55 @@ function Wezterm.on(event, callback) end
 ---it doesn't make sense to define multiple instances of the event
 ---with multiple `wezterm.on("format-window-title", ...)` calls.
 ---
----@param event FormatWindowTitle
+------
+---The `"format-window-title"` event is emitted when the text for the window title
+---needs to be recomputed.
+---
+---This event is a bit special in that it is synchronous and must return
+---as quickly as possible in order to avoid blocking the GUI thread.
+---
+---The most notable consequence of this is that some functions that are asynchronous
+---(e.g. `wezterm.run_child_process()`) are not possible to call
+---from inside the event handler and will generate a
+---`format-window-title: runtime error: attempt to yield from outside a coroutine` error.
+---
+---@param event "format-window-title"
 ---@param callback fun(window: Window, pane: Pane, tabs: MuxTab[], panes: Pane[], config: Config): string
 function Wezterm.on(event, callback) end
 
----@param event GuiAttached
+---@param event "gui-attached"
 ---@param callback fun(domain: ExecDomain)
 function Wezterm.on(event, callback) end
 
----@param event GuiStartup
+---@param event "gui-startup"
 ---@param callback fun(cmd?: SpawnCommand)
 function Wezterm.on(event, callback) end
 
 --- - The first event parameter is a [`Window`](lua://Window) object that represents the GUI window
 --- - The second event parameter is a [`Pane`](lua://Pane) object that represents the active pane in the window
 ---
----@param event NewTabButtonClick
+------
+---The `"new-tab-button-click"` event is emitted when the user clicks on the
+---`"new tab"` button in the tab bar.
+---
+---This is the `+` button that is drawn to the right of the last tab.
+---
+---@param event "new-tab-button-click"
 ---@param callback fun(window: Window, pane: Pane, button: "Left"|"Middle"|"Right", default_action: KeyAssignment)
 function Wezterm.on(event, callback) end
 
 --- - The first event parameter is a [`Window`](lua://Window) object that represents the GUI window
 --- - The second event parameter is a [`Pane`](lua://Pane) object that represents the pane
 --- - The third event parameter is the URI string
----@param event OpenUri
+---
+------
+---The `"open-uri"` event is emitted when
+---the `CompleteSelectionOrOpenLinkAtMouseCursor` key/mouse assignment is triggered.
+---
+---The default action is to open the active URI in your browser,
+---but if you register for this event you can co-opt the default behavior.
+---
+---@param event "open-uri"
 ---@param callback fun(window: Window, pane: Pane, uri: string)
 function Wezterm.on(event, callback) end
 
@@ -1268,7 +1324,11 @@ function Wezterm.on(event, callback) end
 ---`wezterm` won't schedule another call until `status_update_interval_milliseconds`
 ---have elapsed since the last call completed.
 ---
----@param event UpdateRightStatus
+------
+---The `"update-right-status"` event is emitted periodically
+---(based on the interval specified by `config.status_update_interval`).
+---
+---@param event "update-right-status"
 ---@param callback CallbackWindowPane
 ---@deprecated
 function Wezterm.on(event, callback) end
@@ -1285,7 +1345,11 @@ function Wezterm.on(event, callback) end
 ---`wezterm` won't schedule another call until `status_update_interval` milliseconds
 ---have elapsed since the last call completed.
 ---
----@param event UpdateStatus
+------
+---The `"update-status"` event is emitted periodically
+---(based on the interval specified by the status_update_interval configuration value).
+---
+---@param event "update-status"
 ---@param callback CallbackWindowPane
 function Wezterm.on(event, callback) end
 
@@ -1312,7 +1376,11 @@ function Wezterm.on(event, callback) end
 ---
 ---See `Pane:get_user_vars()`.
 ---
----@param event UserVarChanged
+------
+---The `"user-var-changed"` event is emitted when a _user var escape sequence_
+---is used to set a user var.
+---
+---@param event "user-var-changed"
 ---@param callback fun(window: Window, pane: Pane, name: string, value: string)
 function Wezterm.on(event, callback) end
 
@@ -1328,7 +1396,16 @@ function Wezterm.on(event, callback) end
 --- - The first event parameter is a [`Window`](lua://Window) object that represents the GUI window
 --- - The second event parameter is a [`Pane`](lua://Pane) object that represents the active pane in that window
 ---
----@param event WindowConfigReloaded
+------
+---The `"window-config-reloaded"` event is emitted when the configuration for
+---a window has been reloaded.
+---
+---This can occur when the configuration file is detected as changed
+---(when `Config.automatically_reload_config` is enabled),
+---when the configuration is explicitly reloaded via the `ReloadConfiguration` key action,
+---and when `Window:set_config_overrides()` is called for the window.
+---
+---@param event "window-config-reloaded"
 ---@param callback CallbackWindowPane
 function Wezterm.on(event, callback) end
 
@@ -1338,13 +1415,25 @@ function Wezterm.on(event, callback) end
 --- - The first event parameter is a `Window` object that represents the GUI window
 --- - The second event parameter is a `Pane` object that represents the active pane in that window
 ---
----@param event WindowFocusChanged
+------
+---The `"window-focus-changed"` event is emitted when the focus state
+---for a window is changed.
+---
+---@param event "window-focus-changed"
 ---@param callback CallbackWindowPane
 function Wezterm.on(event, callback) end
 
 --- - The first event parameter is a `Window` object that represents the GUI window
 --- - The second event parameter is a `Pane` object that represents the active pane in that window
 ---
----@param event WindowResized
+---The `"window-resized"` event is emitted when the window is resized
+---and when transitioning between full-screen and regular windowed mode.
+---
+---The event is triggered asynchronously with respect to the potentially-ongoing
+---live resize operation. `wezterm` will coalesce the stream of multiple events
+---generated by a live resize such that there can be
+---a maximum of 1 event executing and 1 event buffered.
+---
+---@param event "window-resized"
 ---@param callback CallbackWindowPane
 function Wezterm.on(event, callback) end
