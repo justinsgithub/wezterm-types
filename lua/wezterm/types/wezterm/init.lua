@@ -10,6 +10,15 @@
 ---@module "wezterm.types.wezterm.time"
 ---@module "wezterm.types.wezterm.url"
 
+--- - The first event parameter is a `Window` object that represents the GUI window
+--- - The second event parameter is a `Pane` object that represents the pane in which
+---   the bell was rung, which may not be active pane;
+---   it could be in an unfocused pane or tab
+---
+---@alias CallbackWindowPane fun(window: Window, pane: Pane)
+
+---@alias AugmentCallbackWindowPane fun(window: Window, pane: Pane): AugmentCommandPaletteReturn
+
 ---@class Wezterm: ExecDomain
 ---Provides global, in-process, in-memory, data storage for JSON-like variables
 ---that persists across config reloads.
@@ -34,33 +43,63 @@
 --- -  `table`
 --- -  `boolean`
 ---
----**Attempting to assign other types will raise an error**
+---**Attempting to assign other types will raise an error.**
+---
 ---@field GLOBAL userdata
----The `wezterm.color` module exposes functions that work with colors
+---The `wezterm.color` module exposes functions that work with colors.
+---
+---See [`Wezterm.Color`](lua://Wezterm.Color) for more info.
+---
 ---@field color Wezterm.Color
 ---The `wezterm.gui` module exposes functions that operate on the GUI layer.
 ---
 ---The multiplexer may not be connected to a GUI, so attempting to
----resolve this module from the mux server will return `nil`
+---resolve this module from the mux server will return `nil`.
+---
+---See [`Wezterm.Gui`](lua://Wezterm.Gui) for more info.
+---
 ---@field gui? Wezterm.Gui
+---See [`Wezterm.Mux`](lua://Wezterm.Mux) for more info.
+---
 ---@field mux Wezterm.Mux
+---See [`Wezterm.NerdFont`](lua://Wezterm.NerdFont) for more info.
+---
 ---@field nerdfonts Wezterm.NerdFont
----The `wezterm.plugin` module provides functions to manage Wezterm plugins
+---The `wezterm.plugin` module provides functions to manage Wezterm plugins.
+---
+---See [`Wezterm.Plugin`](lua://Wezterm.Plugin) for more info.
+---
 ---@field plugin Wezterm.Plugin
 ---The `wezterm.procinfo` module exposes functions that allow querying information
----about processes that are running on the local system
+---about processes that are running on the local system.
+---
+---See [`Wezterm.ProcInfo`](lua://Wezterm.ProcInfo) for more info.
+---
 ---@field procinfo Wezterm.ProcInfo
 ---The `wezterm.serde` module provides functions for parsing the given string as
----JSON, YAML, or TOML, returning the corresponding Lua values, and vice versa
+---JSON, YAML, or TOML, returning the corresponding Lua values, and vice versa.
+---
+---See [`Wezterm.Serde`](lua://Wezterm.Serde) for more info.
+---
 ---@field serde Wezterm.Serde
----The `wezterm.time` module exposes functions that allow working with time
+---The `wezterm.time` module exposes functions that allow working with time.
+---
+---See [`Wezterm.Time`](lua://Wezterm.Time) for more info.
+---
 ---@field time Wezterm.Time
----The `wezterm.url` module exposes functions that allow working with URLs
+---The `wezterm.url` module exposes functions that allow working with URLs.
+---
+---See [`Wezterm.Url`](lua://Wezterm.Url) for more info.
+---
 ---@field url Wezterm.Url
 ---Helper for defining key assignment actions in your configuration file.
----This is really just sugar for the underlying Lua -> Rust deserialation mapping
+---
+---This is really just sugar for the underlying Lua ==> Rust deserialation mapping
 ---that makes it a bit easier to identify where syntax errors may exist
----in your configuration file
+---in your configuration file.
+---
+---See the [`Action`](lua://Action) type for more info.
+---
 ---@field action Action
 ---This function is a helper to register a custom event
 ---and return an action triggering it.
@@ -77,32 +116,45 @@
 ---  return wezterm.action.EmitEvent(event_id)
 ---end
 ---```
+---
 ---@field action_callback fun(callback: ActionCallback): Action
 ---Adds path to the list of files that are watched for config changes.
 ---
 ---If `automatically_reload_config` is enabled, then the config will be reloaded
----when any of the files that have been added to the watch list have changed
+---when any of the files that have been added to the watch list have changed.
+---
 ---@field add_to_config_reload_watch_list fun(path: string)
----Accepts an argument list; it will attempt to spawn that command in the background
+---Accepts an argument list; it will attempt to spawn that command in the background.
+---
 ---@field background_child_process fun(args: string[])
 ---Returns the battery information for each of the installed batteries on the system.
 ---
----This is useful for example to assemble status information for the status bar
+---This is useful for example to assemble status information for the status bar.
+---
 ---@field battery_info fun(): BatteryInfo[]
----Given a `string` parameter, returns the number of columns
----that text occupies in the terminal,
----which is useful together with `format-tab-title` and `update-right-status`
----to compute/layout tabs and status information
+---Given a `string` parameter, returns the number of columns that text occupies
+---in the terminal, which is useful together with `format-tab-title` and `update-right-status`
+---to compute/layout tabs and status information.
+---
 ---@field column_width fun(value: string): number
----Returns a `Config` object that can be used to define your configuration
+---Returns a `Config` object that can be used to define your configuration.
+---
+---See the [`Config`](lua://Config) type for more info.
+---
 ---@field config_builder fun(): Config
 ---This constant is set to the path to the directory
----in which your `wezterm.lua` configuration file was found
+---in which your `wezterm.lua` configuration file was found.
+---
 ---@field config_dir string
----This constant is set to the path to the `wezterm.lua` that is in use
+---This constant is set to the path to the `wezterm.lua` that is in use.
+---
 ---@field config_file string
----@field default_hyperlink_rules fun(): HyperLinkRule[] Returns the compiled-in default values for hyperlink_rules.
----Computes a list of `SshDomain` objects based on the set of hosts
+---Returns the compiled-in default hyperlink rules as a table.
+---
+---See the [`HyperLinkRule`](lua://HyperLinkRule) type for more info.
+---
+---@field default_hyperlink_rules fun(): HyperLinkRule[]
+---Computes a list of [`SshDomain`](lua://SshDomain) objects based on the set of hosts
 ---discovered in `~/.ssh/config`.
 ---
 ---Each host will have both a plain SSH and a multiplexing SSH domain
@@ -111,15 +163,17 @@
 ---while the latter do require it.
 ---
 ---The intended purpose of this function is to give you the opportunity
----to edit/adjust the returned information before assigning it to your config
+---to edit/adjust the returned information before assigning it to your config.
+---
 ---@field default_ssh_domains fun(): SshDomain[]
----Computes a list of `WslDomain` objects, each one representing
+---Computes a list of [`WslDomain`](lua://WslDomain) objects, each one representing
 ---an installed WSL distribution on your system.
 ---
 ---This list is the same as the default value for the `wsl_domains` configuration option,
 ---which is to make a `WslDomain` with the `distribution` field set to the name
 ---of the WSL distro and the `name` field set to name of the distro
----but with `"WSL:"` prefixed to it
+---but with `"WSL:"` prefixed to it.
+---
 ---@field default_wsl_domains fun(): WslDomain[]
 ---@field emit fun(event: string, ...: any)
 ---This function will parse your ssh configuration file(s) and extract from them
@@ -128,42 +182,87 @@
 ---and return a mapping from the hostname to the effective ssh config options for that host.
 ---
 ---You may optionally pass a list of ssh configuration files that should be read
----in case you have a special configuration
----@field enumerate_ssh_hosts fun(ssh_config_file_name: (string[]|string)?): table<string, SshHost>
----This constant is set to the directory containing the wezterm executable file
----@field executable_dir string
----[Info](https://wezfurlong.org/wezterm/config/lua/wezterm/font.html)
----@field font (fun(attributes: FontFamilyAttributes|FontFamilyExtendedAttributes): FontFamilyAttributes)|(fun(name: string, attributes: FontAttributes?): FontFamilyAttributes)
----[Info](https://wezfurlong.org/wezterm/config/lua/wezterm/font_with_fallback.html)
----@field font_with_fallback fun(fonts: (string|FontAttributes)[]): Fonts
---- Can be used to produce a formatted string with terminal graphic attributes
---- such as `bold`, `italic` and `colors`.
+---in case you have a special configuration.
 ---
---- The result is a string with wezterm-compatible escape sequences embedded
+---@field enumerate_ssh_hosts fun(ssh_config_file_name: (string[]|string)?): table<string, SshHost>
+---This constant is set to the directory containing the wezterm executable file.
+---
+---@field executable_dir string
+---This function constructs a Lua table that corresponds to the internal [`FontAttributes`](lua://FontAttributes) struct
+---that is used to select a single named font:
+---
+---```lua
+---local wezterm = require 'wezterm'
+---
+---return {
+---  font = wezterm.font 'JetBrains Mono',
+---}
+---```
+---
+---The first parameter is the name of the font; the name can be one of the following types of names:
+---
+--- - The font family name, e.g. `"JetBrains Mono"`. The family name doesn't include any style information
+---   (such as `weight`, `stretch` or `italic`), which can be specified via the `attributes` parameter.
+---   This is the recommended name to use for the font, as it the most compatible way to resolve
+---   an installed font.
+--- - The computed full name, which is the family name with the sub-family
+---   (which incorporates style information) appended, e.g. `"JetBrains Mono Regular"`.
+--- - The postscript name, which is an ostensibly unique name identifying a given font and style
+---   that is encoded into the font by the font designer.
+---
+---When specifying a font using its family name, the second attributes parameter is
+---an **optional** table that can be used to specify style attributes.
+---
+---See [`FontAttributes`](lua://FontAttributes)
+---See [`FontFamilyAttributes`](lua://FontFamilyAttributes)
+---See [`FontFamilyExtendedAttributes`](lua://FontFamilyExtendedAttributes)
+---
+---@field font (fun(attributes: FontFamilyAttributes|FontFamilyExtendedAttributes): FontFamilyAttributes)|(fun(name: string, attributes: FontAttributes?): FontFamilyAttributes)
+---TODO: Complete description.
+---
+---[Info](https://wezterm.org/config/lua/wezterm/font_with_fallback.html).
+---
+---@field font_with_fallback fun(fonts: (string|FontAttributes)[]): Fonts
+---Can be used to produce a formatted string with terminal graphic attributes
+---such as `bold`, `italic` and `colors`.
+---
+---The result is a string with wezterm-compatible escape sequences embedded.
+---
 ---@field format fun(...: FormatItem[]): string
----@field get_builtin_color_schemes any
+---Returns a Lua table keyed by color scheme name and whose values are
+---the color scheme definition of the builtin color schemes.
+---
+---This is useful for programmatically deciding things about the scheme to use
+---based on its color, or for taking a scheme and overriding a couple of entries
+---just from your `wezterm.lua` configuration file.
+---
+---This function moved to [`wezterm.color.get_builtin_schemes()`](https://wezterm.org/config/lua/wezterm.color/get_builtin_schemes.html)
+---but can still be called as `wezterm.get_builtin_color_schemes()`.
+---See that page for more examples.
+---
+---@field get_builtin_color_schemes fun(): PaletteDict
 ---This function evalutes the glob pattern and returns an array
 ---containing the absolute file names of the matching results.
 ---
 ---Due to limitations in the Lua bindings,
 ---all of the paths must be able to be represented as `UTF-8`
----or this function will generate an error
+---or this function will generate an error.
+---
 ---@field glob fun(pattern: string, relative_to: string?): string[]
 ---@field has_action fun(action: string): boolean
----@field home_dir string This constant is set to the home directory of the user running wezterm.
----@field hostname fun(): string This function returns the current hostname of the system that is running wezterm. This can be useful to adjust configuration based on the host.
----@field json_encode fun(value: any): string Encodes the supplied lua value as json.
----@field json_parse fun(value: string): any Parses the supplied string as json and returns the equivalent lua values.
----@field log_error fun(msg: string, ...: any): nil Logs the provided message string through wezterm's logging layer at 'ERROR' level. If you started wezterm from a terminal that text will print to the stdout of that terminal. If running as a daemon for the multiplexer server then it will be logged to the daemon output path.
----@field log_info fun(msg: string, ...: any): nil Logs the provided message string through wezterm's logging layer at 'INFO' level. If you started wezterm from a terminal that text will print to the stdout of that terminal. If running as a daemon for the multiplexer server then it will be logged to the daemon output path.
----@field log_warn fun(msg: string, ...: any): nil Logs the provided message string through wezterm's logging layer at 'WARN' level. If you started wezterm from a terminal that text will print to the stdout of that terminal. If running as a daemon for the multiplexer server then it will be logged to the daemon output path.
----@field open_with fun(path_or_url: string, application: string?) This function opens the specified path_or_url with either the specified application or uses the default application if application was not passed in.
----@field on Events
+---@field home_dir string
+---@field hostname fun(): string
+---@field json_encode fun(value: any): string
+---@field json_parse fun(value: string): any
+---@field log_error fun(msg: string, ...: any)
+---@field log_info fun(msg: string, ...: any)
+---@field log_warn fun(msg: string, ...: any)
+---@field open_with fun(path_or_url: string, application: string?)
 ---@field pad_left fun(string: string, min_width: integer): string Returns a copy of string that is at least min_width columns (as measured by wezterm.column_width)
 ---@field pad_right fun(string: string, min_width: integer): string Returns a copy of string that is at least min_width columns (as measured by wezterm.column_width).
 ---@field permute_any_or_no_mods any #TODO
 ---@field permute_any_mods (fun(tbl: MouseBindingBase): MouseBinding)|(fun(tbl: KeyBindingBase): KeyBinding)
----@field read_dir fun(path: string): string Returns an array containing the absolute file names of the directory specified. Due to limitations in the lua bindings, all of the paths must be able to be represented as UTF-8 or this function will generate an error.
+---@field read_dir fun(path: string): string Returns an array containing the absolute file names of the directory specified. Due to limitations in the Lua bindings, all of the paths must be able to be represented as UTF-8 or this function will generate an error.
 ---@field reload_configuration fun(): nil Immediately causes the configuration to be reloaded and re-applied.
 ---@field run_child_process fun(args: string[]): success: boolean, stdout: string, stderr: string  Will attempt to spawn that command and will return a tuple consisting of the boolean success of the invocation, the stdout data and the stderr data.
 ---@field running_under_wsl fun(): boolean Returns a boolean indicating whether we believe that we are running in a Windows Services for Linux (WSL) container.
@@ -184,3 +283,209 @@
 ---This can potentially be used to adjust configuration according to the installed version
 ---@field version string
 ---@field gradient_colors fun(gradient: Gradient, num_colors: number): Color[]
+local Wezterm = {}
+
+---This event is emitted when the Command Palette is shown.
+---
+---Its purpose is to enable you to add additional entries to the list of commands shown in the palette.
+---
+---This hook is synchronous; calling asynchronous functions will not succeed.
+---
+---@param event AugmentCommandPalette
+---@param callback AugmentCallbackWindowPane
+---@return AugmentCommandPaletteReturn
+function Wezterm.on(event, callback) end
+
+--- - The first event parameter is a `Window` object that represents the GUI window
+--- - The second event parameter is a `Pane` object that represents
+---   the pane in which the bell was rung, which may not be active pane;
+---   it could be in an unfocused pane or tab
+---
+---@param event Bell
+---@param callback CallbackWindowPane
+function Wezterm.on(event, callback) end
+
+---The parameters to the event are:
+---
+--- - `tab`: The `TabInformation` for the active tab
+--- - `tabs`: An array containing `TabInformation` objects
+---         for each of the tabs in the window
+--- - `panes`: An array containing `PaneInformation` objects
+---          for each of the panes in the active tab
+--- - `config`: The effective configuration for the window
+--- - `hover`: `true` if the current tab is in the hover state
+--- - `max_width`: The maximum number of cells available
+---              to draw this tab when using the retro tab bar style
+---
+---The return value of the event can be:
+---
+--- - A string, holding the text to use for the tab title
+--- - A [`FormatItem`](lua://FormatItem) object as used in the `wezterm.format()` function.
+---   This allows formatting style and color information
+---   for individual elements within the tab
+---
+---If the event encounters an error, or returns something that is not one of the types mentioned above,
+---then the default tab title text will be computed and used instead.
+---
+---When the tab bar is computed, this event is called twice for each tab;
+---on the first pass, `hover` will be false and `max_width` will be set to `tab_max_width`.
+---WezTerm will then compute the tab widths that will fit in the tab bar,
+---and then call the event again for the set of tabs,
+---this time with appropriate hover and max_width values.
+---
+---Only the first `"format-tab-title"` event will be executed;
+---it doesn't make sense to define multiple instances of the event
+---with `multiple wezterm.on("format-tab-title", ...)` calls.
+---
+---@param event FormatTabTitle
+---@param callback fun(tab: MuxTab, tabs: MuxTab[], panes: Pane[], config: Config, hover: boolean, max_width: number): string|FormatItem
+function Wezterm.on(event, callback) end
+
+---A custom declared event function.
+---
+---@param event string
+---@param callback fun(...: any)
+---@return ...
+function Wezterm.on(event, callback) end
+
+---The parameters to the event are:
+---
+--- - `tab`: The `TabInformation` object for the active tab
+--- - `pane`: The `PaneInformation` object for the active pane
+--- - `tabs`: An array containing TabInformation objects
+---        for each of the tabs in the window
+--- - `panes`: An array containing `PaneInformation` objects
+---         for each of the panes in the active tab
+--- - `config`: The effective configuration for the window
+---
+---The return value of the event should be a `string`,
+---and if it is then it will be used as the title text in the window title bar.
+---
+---If the event encounters an error, or returns something that is not a `string`,
+---then the default window title text will be computed and used instead.
+---
+---Only the first `"format-window-title"` event will be executed;
+---it doesn't make sense to define multiple instances of the event
+---with multiple `wezterm.on("format-window-title", ...)` calls.
+---
+---@param event FormatWindowTitle
+---@param callback fun(window: Window, pane: Pane, tabs: MuxTab[], panes: Pane[], config: Config): string
+function Wezterm.on(event, callback) end
+
+---@param event GuiAttached
+---@param callback fun(domain: ExecDomain)
+function Wezterm.on(event, callback) end
+
+---@param event GuiStartup
+---@param callback fun(cmd?: SpawnCommand)
+function Wezterm.on(event, callback) end
+
+--- - The first event parameter is a [`Window`](lua://Window) object that represents the GUI window
+--- - The second event parameter is a [`Pane`](lua://Pane) object that represents the active pane in the window
+---
+---@param event NewTabButtonClick
+---@param callback fun(window: Window, pane: Pane, button: "Left"|"Middle"|"Right", default_action: KeyAssignment)
+function Wezterm.on(event, callback) end
+
+--- - The first event parameter is a [`Window`](lua://Window) object that represents the GUI window
+--- - The second event parameter is a [`Pane`](lua://Pane) object that represents the pane
+--- - The third event parameter is the URI string
+---@param event OpenUri
+---@param callback fun(window: Window, pane: Pane, uri: string)
+function Wezterm.on(event, callback) end
+
+---This event is considered to be deprecated and you should migrate to using `"update-status"`,
+---which behaves the same way, but doesn't overly focus on the right status area.
+------
+--- - The first event parameter is a [`Window`](lua://Window) object that represents the GUI window
+--- - The second event parameter is a [`Pane`](lua://Pane) object that represents the active pane in that window
+---
+---There is no defined return value for the event, but its purpose is
+---to allow you the chance to carry out some activity and then ultimately
+---call `Window:set_right_status()`.
+---
+---WezTerm will ensure that only a single instance of this event is outstanding;
+---if the hook takes longer than the `status_update_interval` to complete,
+---`wezterm` won't schedule another call until `status_update_interval_milliseconds`
+---have elapsed since the last call completed.
+---
+---@param event UpdateRightStatus
+---@param callback CallbackWindowPane
+---@deprecated
+function Wezterm.on(event, callback) end
+
+--- - The first event parameter is a [`Window`](lua://Window) object that represents the GUI window
+--- - The second event parameter is a [`Pane`](lua://Pane) object that represents the active pane in that window
+---
+---There is no defined return value for the event, but its purpose is
+---to allow you the chance to carry out some activity and then ultimately call either
+---`Window:set_right_status()` or `Window:set_left_status()`.
+---
+---WezTerm will ensure that only a single instance of this event is outstanding;
+---if the hook takes longer than the `status_update_interval` to complete,
+---`wezterm` won't schedule another call until `status_update_interval` milliseconds
+---have elapsed since the last call completed.
+---
+---@param event UpdateStatus
+---@param callback CallbackWindowPane
+function Wezterm.on(event, callback) end
+
+---You can use something like the following from your shell
+---to set the user var named `foo` to the value `bar`:
+---
+---```sh
+---printf "\033]1337;SetUserVar=%s=%s\007" foo `echo -n bar | base64`
+---```
+---
+---Then, if you have this in your config:
+---
+---```lua
+---local wezterm = require 'wezterm'
+---
+---wezterm.on('user-var-changed', function(window, pane, name, value)
+---  wezterm.log_info('var', name, value)
+---end)
+---
+---return {}
+---```
+---
+---your event handler will be called with `name = 'foo'` and `value = 'bar'`.
+---
+---See `Pane:get_user_vars()`.
+---
+---@param event UserVarChanged
+---@param callback fun(window: Window, pane: Pane, name: string, value: string)
+function Wezterm.on(event, callback) end
+
+---This event is _fire-and-forget_ from the perspective of wezterm;
+---it fires the event to advise of the config change, but has no other expectations.
+---
+---If you call `Window:set_config_overrides()` from inside this event callback
+---then an additional window-config-reloaded event will be triggered.
+---
+---You should take care to avoid creating a loop by only calling `Window:set_config_overrides()`
+---when the actual override values are changed.
+---
+--- - The first event parameter is a [`Window`](lua://Window) object that represents the GUI window
+--- - The second event parameter is a [`Pane`](lua://Pane) object that represents the active pane in that window
+---
+---@param event WindowConfigReloaded
+---@param callback CallbackWindowPane
+function Wezterm.on(event, callback) end
+
+---This event is _fire-and-forget_ from the perspective of wezterm;
+---it fires the event to advise of the config change, but has no other expectations.
+---
+--- - The first event parameter is a `Window` object that represents the GUI window
+--- - The second event parameter is a `Pane` object that represents the active pane in that window
+---
+---@param event WindowFocusChanged
+---@param callback CallbackWindowPane
+function Wezterm.on(event, callback) end
+
+--- - The first event parameter is a `Window` object that represents the GUI window
+--- - The second event parameter is a `Pane` object that represents the active pane in that window
+---
+---@param event WindowResized
+---@param callback CallbackWindowPane
+function Wezterm.on(event, callback) end

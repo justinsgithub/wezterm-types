@@ -16,7 +16,6 @@
 ---@field threshold? number
 ---@field min_contrast? number
 
----The `wezterm.color` module exposes functions that work with colors
 ---@class Wezterm.Color
 ---Parses the passed color and returns a Color object.
 ---Color objects evaluate as strings but have a number of methods

@@ -10,14 +10,9 @@
 ---|"Center"
 ---|"Right"
 
----@alias VerticalAlign
----|"Top"
----|"Center"
----|"Bottom"
-
 ---@class ContentAlignment
 ---@field horizontal HorizontalAlign
----@field vertical VerticalAlign
+---@field vertical "Top"|"Center"|"Bottom"
 
 ---@alias DroppedFileQuoting
 ---|"None"
@@ -25,10 +20,6 @@
 ---|"Posix"
 ---|"Windows"
 ---|"WindowsAlwaysQuoted"
-
----@alias ImePreeditRendering
----|"Builtin"
----|"System"
 
 ---@alias DefaultCursorStyle
 ---|"SteadyBlock"
@@ -56,10 +47,6 @@
 ---@field top? integer|string
 ---@field bottom? integer|string
 
----@alias WindowCloseConfirmation
----|"AlwaysPrompt"
----|"NeverPrompt"
-
 ---@class DaemonOptions
 ---@field stdout? string
 ---@field stderr? string
@@ -71,14 +58,6 @@
 ---@field fade_in_function? EasingFunction
 ---@field fade_out_function? EasingFunction
 ---@field target? "BackgroundColor"|"CursorColor"
-
----@class BackgroundLayer.Source1
----@field File string
----@field speed? number
-
----@class BackgroundLayer.Source2
----@field Gradient Gradient
----@field Color string
 
 ---@alias BackgroundLayerRepeat
 ---|"Repeat"
@@ -103,7 +82,7 @@
 ---@class BackgroundLayer
 ---Defines the source of the layer texture data.
 ---
----@field source? BackgroundLayer.Source1|BackgroundLayer.Source2
+---@field source? { File: string, speed: number? }|{ Gradient: Gradient, Color: string }
 ---Controls whether the layer is fixed to the viewport or moves as it scrolls:
 ---
 --- - `"Fixed"`: (default) to not move as the window scrolls
@@ -172,7 +151,7 @@
 ---A _hue, saturation, brightness_ transformation that can be used to adjust
 ---those attributes of the layer.
 ---
----See `foreground_text_hsb` for more information about this kind of transform.
+---See `config.foreground_text_hsb` for more information about this kind of transform.
 ---
 ---@field hsb? HsbTransform
 ---Controls the height of the image. The following values are accepted:
@@ -200,10 +179,6 @@
 ---|"LineFeed"
 ---|"CarriageReturn"
 ---|"CarriageReturnAndLineFeed"
-
----@alias KeyMapPreference
----|"Mapped"
----|"Physical"
 
 ---@alias UIKeyCapRendering
 ---|"UnixLong" `Super`, `Meta`, `Ctrl`, `Shift`
@@ -650,8 +625,8 @@
 ---
 ---@field enable_wayland? boolean
 ---@field exec_domains? ExecDomain[]
----@field exit_behavior? ExitBehavior
----@field exit_behavior_messaging? ExitBehaviorMessaging
+---@field exit_behavior? "Close"|"CloseOnCleanExit"|"Hold"
+---@field exit_behavior_messaging? "Verbose"|"Brief"|"Terse"|"None"
 ---Configures the font to use by default.
 ---
 ---The font setting can specify a set of fallbacks and other options,
@@ -699,9 +674,8 @@
 ---
 ---The shaper is responsible for handling kerning, ligatures and emoji composition.
 ---
+---The only option is `"Harfbuzz"`.
 ---The incomplete `"Allsorts"` shaper was removed.
----
----The default is `"Harfbuzz"`.
 ---
 ---@field font_shaper? "Harfbuzz"
 ---@field font_size? number
@@ -724,7 +698,7 @@
 ---that is applied to monochrome glyphs.
 ---
 ---The transform works by converting the `RGB` colors to `HSV` values
----and then multiplying the HSV by the numbers specified in `foreground_text_hsb`.
+---and then multiplying the HSV by the numbers specified in `config.foreground_text_hsb`.
 ---
 ---Modifying the hue changes the hue of the color by rotating it through the color wheel.
 ---It is not as useful as the other components, but is available "for free"
@@ -747,6 +721,8 @@
 ---  brightness = 1.0,
 ---}
 ---```
+---
+---See [`HsbTransform`](lua://HsbTransform) for more details.
 ---
 ---@field foreground_text_hsb? HsbTransform
 ---Selects the freetype interpret version to use.
@@ -817,7 +793,7 @@
 ---Defines rules to match text from the terminal output and generate clickable links.
 ---
 ---@field hyperlink_rules? HyperlinkRule[]
----@field ime_preedit_rendering? ImePreeditRendering
+---@field ime_preedit_rendering? "Builtin"|"System"
 ---Specifies the width of a new window, expressed in character cells.
 ---
 ---@field initial_cols? integer
@@ -843,7 +819,7 @@
 ---
 ---Default key assignments also respect `config.key_map_preference`.
 ---
----@field key_map_preference? KeyMapPreference
+---@field key_map_preference? "Mapped"|"Physical"
 ---See the main [Key Tables docs](https://wezterm.org/config/key-tables.html).
 ---
 ---@field key_tables? table<string, Key[]>
@@ -1333,7 +1309,7 @@
 ---performance.
 ---
 ---@field window_background_opacity? number
----@field window_close_confirmation? WindowCloseConfirmation
+---@field window_close_confirmation? "AlwaysPrompt"|"NeverPrompt"
 ---Controls the alignment of the terminal cells inside the window.
 ---
 ---When window size is not a multiple of terminal cell size,
