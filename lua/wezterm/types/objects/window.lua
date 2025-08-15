@@ -40,7 +40,7 @@
 ---This is the same text that is shown at the cursor position when composing
 ---@field composition_status fun(self: Window): string|nil
 ---Puts text into the specified clipboard
----@field copy_to_clipboard fun(self: Window, text: string, target: CopyToTarget?)
+---@field copy_to_clipboard fun(self: Window, text: string, target?: "Clipboard"|"PrimarySelection"|"ClipboardAndPrimarySelection")
 ---Returns the current event. For now only implemented for mouse events
 ---@field current_event fun(self: Window): WindowEvent
 ---Returns a Lua table representing the effective configuration for the `Window`.

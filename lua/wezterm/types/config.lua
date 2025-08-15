@@ -246,7 +246,7 @@
 ---Subsequent layers are composited over the top of preceding layers.
 ---
 ---@field background? BackgroundLayer[]
----@field bold_brightens_ansi_colors? BoldBrightening
+---@field bold_brightens_ansi_colors? "No"|"BrightAndBold"|"BrightOnly"
 ---If an application has enabled mouse reporting mode, mouse events are sent directly
 ---to the application, and do not get routed through the mouse assignment logic.
 ---
@@ -541,7 +541,7 @@
 ---@field disable_default_key_bindings? boolean
 ---@field disable_default_mouse_bindings? boolean
 ---@field disable_default_quick_select_patterns? boolean
----@field display_pixel_geometry? DisplayPixelGeometry
+---@field display_pixel_geometry? "RGB"|"BGR"
 ---Override the detected DPI (dots per inch) for the display.
 ---
 ---This can be useful if the detected DPI is inaccurate and the text
@@ -549,14 +549,14 @@
 ---(particularly if you are using a 4K display on X11 or Wayland).
 ---
 ---The default value is system specific:
---
+---
 -- | OS      | Standard Density        | High Density            |
 -- |---------|-------------------------|-------------------------|
 -- | macOS   | `72.0`                  | `144.0`                 |
 -- | Windows | Probed from the display | Probed from the display |
 -- | X11     | `96.0`                  | `96.0`                  |
 -- | Wayland | `96.0`                  | `192.0`                 |
---
+---
 ---In macOS and Wayland environments there isn't strictly a system DPI value that can be queried;
 ---instead standard density has a fixed value and the system will inform WezTerm
 ---when the display is high density by communicating a scaling factor for the display.
@@ -640,7 +640,7 @@
 ---@field font_dirs? string[]
 ---DEPRECATED
 ---@field font_hinting? Deprecated
----@field font_locator? FontLocatorSelection
+---@field font_locator? "FontConfig"|"Gdi"|"CoreText"|"ConfigDirsOnly"
 ---@field font_rasterizer? "FreeType"
 ---When textual output in the terminal is styled with `bold`, `italic`
 ---or other attributes, wezterm uses `config.font_rules`
@@ -767,7 +767,7 @@
 --- - Vulkan
 --- - DirectX 12 (on Windows)
 ---
----@field front_end? FrontEndSelection
+---@field front_end? "OpenGL"|"WebGpu"|"Software"
 ---@field glyph_cache_image_cache_size? number
 ---When `config.font_shaper = "Harfbuzz"`, this setting affects how font shaping takes place.
 ---
@@ -1116,7 +1116,7 @@
 ---@field show_update_window? boolean
 ---@field skip_close_confirmation_for_processes_named? string[]
 ---@field sort_fallback_fonts_by_coverage? boolean
----@field ssh_backend? SshBackend
+---@field ssh_backend? "Ssh2"|"LibSsh"
 ---@field ssh_domains? SshDomain[]
 ---@field status_update_interval? integer
 ---@field strikethrough_position? string|number
@@ -1252,7 +1252,7 @@
 ---
 ---Defaults to `"LowPower"`.
 ---
----@field webgpu_power_preference? WebGpuPowerPreference
+---@field webgpu_power_preference? "LowPower"|"HighPerformance"
 ---Specifies which WebGpu adapter should be used.
 ---
 ---This option is only applicable when you have configured `config.front_end = "WebGpu"`.
