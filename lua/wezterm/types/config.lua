@@ -98,17 +98,21 @@
 ---|"SuppressFromFocusedTab" Show the notification unless it was generated from the currently focused tab
 ---|"SuppressFromFocusedWindow" Show the notification unless it was generated from the currently focused window
 
----Represents the `BackgroundLayer` type
+---Represents the `BackgroundLayer` type.
+---
 ---@class BackgroundLayer
----Defines the source of the layer texture data
+---Defines the source of the layer texture data.
+---
 ---@field source? BackgroundLayer.Source1|BackgroundLayer.Source2
 ---Controls whether the layer is fixed to the viewport or moves as it scrolls:
+---
 --- - `"Fixed"`: (default) to not move as the window scrolls
 --- - `"Scroll"`: To scroll 1:1 with the number of pixels scrolled in the viewport
 --- - `{ Parallax = 0.1 }`: To scroll `1:10` with the number of pixels scrolled in the viewport
 ---
 ---@field attachment? "Fixed"|"Scroll"|{ Parallax: number }
 ---Controls whether the image is repeated in the x-direction:
+---
 --- - `"Repeat"`: Repeat as much as possible to cover the area.
 ---            The last image will be clipped if it doesn't fit.
 ---            This is the default
@@ -122,9 +126,10 @@
 ---
 ---You may set `repeat_x_size` to a different value to increase or decrease
 ---the space between the repeated instances:
+---
 --- - number values in pixels
 --- - string values like `"100%"` to specify a size relative to the viewport
---- - `"10cell"` to specify a size based on the terminal cell metrics.
+--- - `"10cell"` to specify a size based on the terminal cell metrics
 ---
 ---@field repeat_x_size? string|number
 ---Same as `repeat_x` but affects the y-direction.
@@ -134,24 +139,27 @@
 ---
 ---@field repeat_y_size? number|string
 ---Controls the initial vertical position of the layer, relative to the viewport:
+---
 --- - `"Top"` (default)
 --- - `"Middle"`
 --- - `"Bottom"`
 ---
 ---@field vertical_align? "Top"|"Middle"|"Bottom"
 ---Specifies an offset from the initial vertical position:
+---
 --- - number values in pixels
 --- - string values like `"100%"` to specify a size relative to the viewport
 --- - `"10cell"`: to specify a size based on terminal cell metrics
 ---
 ---@field vertical_offset? number|string
 ---Controls the initial horizontal position of the layer, relative to the viewport:
+---
 --- - `"Left"` (default)
 --- - `"Center"`
 --- - `"Right"`
 ---
 ---@field horizontal_align? HorizontalAlign
----Same as `vertical_offset` but applies to the x-direction
+---Same as `vertical_offset` but applies to the x-direction.
 ---
 ---@field horizontal_offset? number|string
 ---A number in the range `0.0` through `1.0` inclusive that is multiplied
@@ -168,6 +176,7 @@
 ---
 ---@field hsb? HsbTransform
 ---Controls the height of the image. The following values are accepted:
+---
 --- - `"Cover"`: (default) scales the image, preserving aspect ratio, to the smallest
 --- -          possible size to fill the viewport, leaving no empty space.
 --- -          If the aspect ratio of the viewport differs from the image, the image is cropped
@@ -223,22 +232,22 @@
 ---a table that is interpreted as the internal `Config` struct type.
 ---
 ---```lua
---- ---@type Wezterm
+------@type Wezterm
 ---local wezterm = require 'wezterm'
 ---
---- ---@type Config
+------@type Config
 ---local config = wezterm.config_builder()
 ---
---- -- YOUR CONFIG TWEAKS
+------YOUR CONFIG TWEAKS
 ---
 ---return config
 ---```
 ---
---- ---
+------
 ---At the time of writing, it is not a complete list.
 ---
 ---@class Config
----Control whether custom_block_glyphs are rendered
+---Control whether `config.custom_block_glyphs` are rendered
 ---using anti-aliasing or not.
 ---
 ---Anti-aliasing makes lines look smoother but may not
@@ -249,7 +258,7 @@
 ---when it is detected as changing.
 ---
 ---@field automatically_reload_config? boolean
----The `background` config option allows you to compose a number of layers
+---The `config.background` option allows you to compose a number of layers
 ---to produce the background content in the terminal.
 ---
 ---Layers can be image files, gradients or solid blocks of color.
@@ -257,18 +266,19 @@
 ---Images in layers can be made to fill the viewport or to tile, and also
 ---to scroll with optional parallax as the viewport is scrolled.
 ---
----The `background` option is a table that lists the desired layers starting with
+---The `config.background` option is a table that lists the desired layers starting with
 ---the deepest/back-most layer.
 ---Subsequent layers are composited over the top of preceding layers.
 ---
 ---@field background? BackgroundLayer[]
+---@field bold_brightens_ansi_colors? BoldBrightening
 ---If an application has enabled mouse reporting mode, mouse events are sent directly
 ---to the application, and do not get routed through the mouse assignment logic.
 ---
 ---Holding down the `config.bypass_mouse_reporting_modifiers` modifier key(s)
 ---will prevent the event from being passed to the application.
 ---
----The default value for bypass_mouse_reporting_modifiers is `"SHIFT"`,
+---The default value for `config.bypass_mouse_reporting_modifiers` is `"SHIFT"`,
 ---which means that holding down shift while clicking will not send
 ---the mouse event to e.g.: _vim running in mouse mode_
 ---and will instead treat the event as though `"SHIFT"` was not pressed
@@ -336,6 +346,7 @@
 ---See [Colors & Appearance](https://wezterm.org/config/appearance.html#defining-a-color-scheme-in-your-weztermlua).
 ---
 ---@field color_scheme? string
+---@field color_scheme_dirs? string[]
 ---Specifies various named color schemes in your configuration file.
 ---
 ---Described in more detail in [Colors & Appearance](https://wezterm.org/config/appearance.html#defining-a-color-scheme-in-your-weztermlua).
@@ -380,6 +391,7 @@
 ---@field cursor_blink_ease_out? EasingFunction
 ---Specifies how often a blinking cursor transitions between visible and invisible,
 ---expressed in milliseconds.
+---
 ---Setting this to `0` disables blinking.
 ---
 ---Note that this value is approximate due to the way that the system event loop schedulers
@@ -429,6 +441,7 @@
 --- - `stderr`: Specifies where a log of the `stderr` stream from the daemon will be placed.
 ---          The default is `$XDG_RUNTIME_DIR/wezterm/stderr` on X11/Wayland systems,
 ---          or `$HOME/.local/share/wezterm/stderr`
+---
 ---@field daemon_options? DaemonOptions
 ---When set to `true`, each key event will be logged by the GUI layer
 ---as an `INFO` level log message on the `stderr` stream from wezterm.
@@ -438,6 +451,7 @@
 ---
 ---This can be helpful in figuring out how keys are being decoded on your system,
 ---or for discovering the system-dependent "raw" key code values.
+---
 ---@field debug_key_events? boolean
 ---Specifies the default cursor style.
 ---
@@ -461,6 +475,7 @@
 ---for more info).
 ---
 ---@field default_cwd? string
+---@field default_domain? string
 ---When launching the GUI using either `wezterm` or `wezterm-gui`
 ---(with no subcommand explicitly specified), WezTerm will use
 ---the value of `config.default_gui_startup_args` to pick
@@ -469,8 +484,7 @@
 ---The default for this config is `{ "start" }` which makes `wezterm`
 ---with no additional subcommand arguments equivalent to `wezterm start`.
 ---
----If you know that you always want to use wezterm's ssh client
----to login to a particular host,
+---If you always want to use wezterm's ssh client to login to a particular host,
 ---then you might consider using this configuration:
 ---
 ---```lua
@@ -488,15 +502,17 @@
 ---that runs the subcommand you desire.
 ---
 ---@field default_gui_startup_args? string[]|table|{ [1]: "start" }
+---@field default_mux_server_domain? string
 ---If no `prog` is specified on the command line, use this
 ---instead of running the user's shell.
 ---
----`default_prog` is implemented as an array where the 0th element
+---`config.default_prog` is implemented as an array where the 0th element
 ---is the command to run and the rest of the elements are passed
 ---as the positional arguments to that command.
+---
 ---@field default_prog? string[]
 ---Setting this value will cause wezterm to replace the the value of the
----`SSH_AUTH_SOCK` environment when it first starts up, and to use this value
+---`$SSH_AUTH_SOCK` environment when it first starts up, and to use this value
 ---for the auth socket registered with the multiplexer server
 ---(visible via `wezterm cli list-clients`).
 ---
@@ -516,7 +532,7 @@
 ---```lua
 ---local config = wezterm.config_builder()
 ---
---- -- Override gnome keyring with 1password's ssh agent
+------Override gnome keyring with 1password's ssh agent
 ---local SSH_AUTH_SOCK = os.getenv 'SSH_AUTH_SOCK'
 ---if
 ---  SSH_AUTH_SOCK
@@ -532,7 +548,9 @@
 ---  end
 ---end
 ---```
+---
 ---@field default_ssh_auth_sock? string
+---@field default_workspace? string
 ---When set to `true`, on UNIX systems, for local panes, WezTerm will query
 ---the _termios_ associated with the PTY to see whether local echo is disabled
 ---and canonical input is enabled.
@@ -588,6 +606,18 @@
 ---it isn't ideal for a multi-monitor setup where the monitors have varying DPIs.
 ---
 ---@field dpi? integer
+---When set to `true`, the [keyboard encoding](https://wezterm.org/config/key-encoding.html) will be changed
+---to use the scheme that is [described here](http://www.leonerd.org.uk/hacks/fixterms/).
+---
+---It is not recommended to enable this option as it does change the behavior
+---of some keys in backwards incompatible ways and there isn't a way for applications
+---to detect or request this behavior.
+---
+---The default for this option is `false`.
+---
+---Note that `config.allow_win32_input_mode` takes precedence over this option.
+---
+---@field enable_csi_u_key_encoding? boolean
 ---@field enable_kitty_graphics? boolean
 ---@field enable_kitty_keyboard? boolean
 ---Enable the scrollbar.
@@ -632,30 +662,31 @@
 ---@field font? AllFontAttributes
 ---DEPRECATED
 ---@field font_antialias? Deprecated
+---@field font_dirs? string[]
 ---DEPRECATED
 ---@field font_hinting? Deprecated
 ---@field font_locator? FontLocatorSelection
 ---@field font_rasterizer? "FreeType"
 ---When textual output in the terminal is styled with `bold`, `italic`
----or other attributes, wezterm uses `font_rules`
+---or other attributes, wezterm uses `config.font_rules`
 ---to decide how to render that text.
 ---
----Most users won't need to specify any explicit value for `font_rules`,
+---Most users won't need to specify any explicit value for `config.font_rules`,
 ---as the defaults should be sufficient.
 ---
 ---By default, unstyled text will use the font specified by the font configuration,
 ---and wezterm will use that as a base,
----and then automatically generate appropriate `font_rules`
+---and then automatically generate appropriate `config.font_rules`
 ---that use heavier weight fonts for bold text,
 ---lighter weight fonts for dim text and italic fonts for italic text.
 ---
 ---If you have some unusual fonts or mixtures of fonts that you'd like to use,
 ---such as using your favourite monospace font for the base and
 ---a fancy italic font from a different font family for italics,
----then `font_rules` will allow you to do so.
+---then `config.font_rules` will allow you to do so.
 ---
----`font_rules` is comprised of a list of rule entries with fields that are
----split into matcher fields and action fields.
+---`config.font_rules` is comprised of a list of rule entries with fields
+---that are split into matcher fields and action fields.
 ---Matcher fields specify which textual attributes you want to match on,
 ---while action fields specify how you want to render them
 ---
@@ -673,6 +704,7 @@
 ---The default is `"Harfbuzz"`.
 ---
 ---@field font_shaper? "Harfbuzz"
+---@field font_size? number
 ---When `config.force_reverse_video_cursor = true`, override the
 ---`config.cursor_fg`, `config.cursor_bg`, `config.cursor_border`
 ---settings from the color scheme and force the cursor to use reverse video colors
@@ -708,16 +740,18 @@
 ---and `2.0` will double the value.
 ---
 ---```lua
---- -- This increases color saturation by 50%
+------This increases color saturation by 50%
 ---config.foreground_text_hsb = {
 ---  hue = 1.0,
 ---  saturation = 1.5,
 ---  brightness = 1.0,
 ---}
 ---```
+---
 ---@field foreground_text_hsb? HsbTransform
 ---Selects the freetype interpret version to use.
----Likely values are 35, 38 and 40 which have different
+---
+---Likely values are `35`, `38` and `40` which have different
 ---characteristics with respective to subpixel hinting.
 ---
 ---See [Subpixel Hinting](https://freetype.org/freetype2/docs/subpixel-hinting.html).
@@ -756,7 +790,9 @@
 --- - Metal (on macOS)
 --- - Vulkan
 --- - DirectX 12 (on Windows)
+---
 ---@field front_end? FrontEndSelection
+---@field glyph_cache_image_cache_size? number
 ---When `config.font_shaper = "Harfbuzz"`, this setting affects how font shaping takes place.
 ---
 ---See [Font Shaping](https://wezterm.org/config/font-shaping.html)
@@ -764,7 +800,8 @@
 ---
 ---The _OpenType_ spec lists a number of features [here](https://docs.microsoft.com/en-us/typography/opentype/spec/featurelist).
 ---
----See [Font Shaping](https://wezterm.org/config/font-shaping.html) for more information and examples
+---See [Font Shaping](https://wezterm.org/config/font-shaping.html) for more information and examples.
+---
 ---@field harfbuzz_features? HarfbuzzFeatures[]
 ---If `true`, the mouse cursor will be hidden while typing.
 ---
@@ -780,12 +817,17 @@
 ---Defines rules to match text from the terminal output and generate clickable links.
 ---
 ---@field hyperlink_rules? HyperlinkRule[]
+---@field ime_preedit_rendering? ImePreeditRendering
 ---Specifies the width of a new window, expressed in character cells.
 ---
 ---@field initial_cols? integer
 ---Specifies the height of a new window, expressed in character cells.
 ---
 ---@field initial_rows? integer
+---@field integrated_title_button_alignment? IntegratedTitleButtonAlignment
+---@field integrated_title_button_color? "Auto"|AnsiColor
+---@field integrated_title_button_style? IntegratedTitleButtonStyle
+---@field integrated_title_buttons? IntegratedTitleButton[]
 ---When combined with `window_background_opacity`, enables background blur
 ---using the KDE Wayland blur protocol.
 ---
@@ -838,29 +880,31 @@
 ---LEADER stays active until a keypress is registered (whether it matches a key binding or not), or
 ---until it has been active for the duration specified by timeout_milliseconds, at which point it
 ---will automatically cancel itself.
+---
 ---@field leader? LeaderKey
 ---Scales the computed line height to adjust the spacing between successive rows of text.
 ---
----The default line height is controlled by the font_size configuration option.
+---The default line height is controlled by the `config.font_size` configuration option.
+---
 ---If you feel that your chosen font feels too vertically cramped then you can set
 ---`config.line_height = 1.2` to increase the vertical spacing by 20%.
 ---Conversely, setting `config.line_height = 0.9` will decrease the vertical spacing by 10%.
 ---
 ---@field line_height? number
+---@field line_quad_cache_size? number
+---@field line_state_cache_size? number
+---@field line_to_ele_shape_cache_size? number
 ---When set to `true`, WezTerm will log warnings when it receives escape sequences
 ---which it does not understand.
 ---Those warnings are harmless and are useful primarily by the maintainer
 ---to discover new and interesting escape sequences.
----
----In previous versions, there was no option to control this, and WezTerm would always
----log warnings for unknown escape sequences.
 ---
 ---@field log_unknown_escape_sequences? boolean
 ---On macOS systems, this option controls whether modified key presses are routed
 ---via the IME when `use_ime = true`.
 ---
 ---When processing a key event, if any modifiers are held,
----if the modifiers intersect with the value of macos_forward_to_ime_modifier_mask,
+---if the modifiers intersect with the value of `config.macos_forward_to_ime_modifier_mask`,
 ---then the key event is routed to the IME,
 ---which may choose to swallow the key event as part of its own state management.
 ---
@@ -872,15 +916,13 @@
 ---When `true` and in full screen mode,
 ---the window will extend behind the notch on macOS.
 ---
----This option only has an effect when running on macOS
+---The default value for `config.macos_fullscreen_extend_behind_notch` is `false`.
 ---
----The default value for macos_fullscreen_extend_behind_notch is `false`.
----
----Must be used with `native_macos_fullscreen_mode` set to `false`.
+---Must be used with `config.native_macos_fullscreen_mode` set to `false`.
 ---
 ---Toggling full screen with the native macOS full screen button
 ---or a window manager command won't have any effect and you must use the
----"Toggle full screen mode" button in `View > Toggle` full screen mode
+---`"Toggle full screen mode"` button in `View > Toggle` full screen mode
 ---or configure your own key, see `ToggleFullScreen`.
 ---
 ---Example config:
@@ -889,6 +931,7 @@
 ---config.native_macos_fullscreen_mode = false
 ---config.macos_fullscreen_extend_behind_notch = true
 ---```
+---
 ---@field macos_fullscreen_extend_behind_notch? boolean
 ---When combined with window_background_opacity, configures the blur radius amount
 ---used by macOS when compositing the window on the screen.
@@ -899,6 +942,7 @@
 ---The default value for `config.macos_window_background_blur` is `0`.
 ---
 ---@field macos_window_background_blur? integer
+---@field max_fps? integer
 ---Controls the minimum size of the scroll bar "thumb".
 ---
 --The value can be a number to specify the number of pixels, or a string with a unit suffix:
@@ -927,6 +971,7 @@
 ---@field mouse_wheel_scrolls_tabs? boolean
 ---@field mux_enable_ssh_agent? boolean
 ---@field mux_env_remove? string[]
+---@field native_macos_fullscreen_mode? boolean
 ---When set to `true`, contiguous runs codepoints output to the terminal
 ---are normalized to Unicode Normalization Form C (NFC).
 ---
@@ -939,8 +984,7 @@
 ---enabling this option may introduce discrepancies in the understanding of text positioning:
 ---while it may fix some display glitches for some applications,
 ---it may trade them for other glitches.
----
----As such, you should consider this configuration setting to be an imperfect option!
+---**As such, you should consider this configuration setting to be an imperfect option.**
 ---
 ---This option defaults to `false` as it introduces some additional text processing
 ---that is not necessary for most users.
@@ -952,12 +996,12 @@
 ---
 ---```sh
 ---printf "\e]777;notify;%s;%s\e\\" "title" "body"
----```
----
----```sh
 ---printf "\e]9;%s\e\\" "hello there"
 ---```
+---
 ---@field notification_handling? NotifyHandler
+---@field palette_max_key_assigments_for_action? number
+---@field pane_focus_follows_mouse? boolean
 ---Configures the font to use for pane selection mode.
 ---
 ---The `pane_select_font` setting can specify a set of fallbacks and other options,
@@ -967,13 +1011,15 @@
 ---
 ---You will typically use `wezterm.font` or `wezterm.font_with_fallback` to specify the font.
 ---
----To specify pane_select_font:
+---To specify `config.pane_select_font`:
 ---
 ---```lua
 ---config.pane_select_font = wezterm.font 'Roboto'
 ---```
+---
 ---@field pane_select_font? Fonts|FontAttributes|FontFamilyAttributes
----Depending on the OS and windowing environment, there are a number of different ways to access the GPU.
+---Depending on the OS and windowing environment, there are a number of different ways
+---to access the GPU.
 ---
 ---This option controls whether wezterm should attempt to use EGL to configure the GPU.
 ---
@@ -994,12 +1040,12 @@
 ---the second with `s` and so forth;
 ---these are easily accessible characters in a `qwerty` keyboard layout.
 ---
----|----------|----------------------------------------|
----| `qwerty`   | `"asdfqwerzxcvjklmiuopghtybn"` (default) |
----| `qwertz`   | `"asdfqweryxcvjkluiopmghtzbn"`           |
----| `azerty`   | `"qsdfazerwxcvjklmuiopghtybn"`           |
----| `dvorak`   | `"aoeuqjkxpyhtnsgcrlmwvzfidb"`           |
----| `colemak`  | `"arstqwfpzxcvneioluymdhgjbk"`           |
+-- |----------|----------------------------------------|
+-- | `qwerty`   | `"asdfqwerzxcvjklmiuopghtybn"` (default) |
+-- | `qwertz`   | `"asdfqweryxcvjkluiopmghtzbn"`           |
+-- | `azerty`   | `"qsdfazerwxcvjklmuiopghtybn"`           |
+-- | `dvorak`   | `"aoeuqjkxpyhtnsgcrlmwvzfidb"`           |
+-- | `colemak`  | `"arstqwfpzxcvneioluymdhgjbk"`           |
 ---
 ---The suggested alphabet in the above table uses the left 4 fingers
 ---on the home row, top row, bottom row, then the right 4 fingers
@@ -1022,7 +1068,6 @@
 ---The regex syntax now supports backreferences and look around assertions.
 ---See [Fancy Regex Syntax](https://docs.rs/fancy-regex/latest/fancy_regex/#syntax) for the extended syntax,
 ---which builds atop the underlying [Regex syntax](https://docs.rs/regex/latest/regex/#syntax).
----In prior versions, only the base Regex syntax was supported.
 ---
 ---@field quick_select_patterns? string[]
 ---When set to `true`, all color and styling is removed from the pane
@@ -1035,6 +1080,8 @@
 ---Defaults to `false`.
 ---
 ---@field quick_select_remove_styling? boolean
+---@field quit_when_all_windows_are_closed? boolean
+---@field quote_dropped_files? DroppedFileQuoting
 ---The minimum contrast ratio required to use the reverse video cursor.
 ---
 ---When the contrast ratio between the reverse video cursor foreground and background
@@ -1042,14 +1089,26 @@
 ---will be used instead.
 ---
 ---@field reverse_video_cursor_min_contrast? number
+---If false, do not scroll to the bottom of the terminal when
+---you send input to the terminal.
+---
+---The default is to scroll to the bottom when you send input
+---to the terminal.
+---
+---@field scroll_to_bottom_on_input? boolean
 ---How many lines of scrollback you want to retain.
 ---
 ---@field scrollback_lines? number
+---@field search_font_dirs_for_fallback? boolean
+---@field selection_word_boundary? string
 ---Specifies a map of environment variables that should be set
 ---when spawning commands in the local domain.
+---
 ---This is not used when working with remote domains.
+---
 ---@field set_environment_variables? table<string, string>
 ---@field serial_ports? SerialDomain[]
+---@field shape_cache_size? number
 ---When set to `false`, the close-tab button will not be drawn in tabs
 ---when the fancy tab bar is in use.
 ---
@@ -1078,16 +1137,24 @@
 ---When set to `false`, the tabs will not be drawn into the tab bar.
 ---
 ---@field show_tabs_in_tab_bar? boolean
+---@field show_update_window? boolean
+---@field skip_close_confirmation_for_processes_named? string[]
+---@field sort_fallback_fonts_by_coverage? boolean
 ---@field ssh_backend? SshBackend
 ---@field ssh_domains? SshDomain[]
----If true, the `Backspace` and `Delete` keys generate `Delete` and `Backspace`
+---@field status_update_interval? integer
+---@field strikethrough_position? string|number
+---@field swallow_mouse_click_on_pane_focus? boolean
+---@field swallow_mouse_click_on_window_focus? boolean
+---If `true`, the `Backspace` and `Delete` keys generate `Delete` and `Backspace`
 ---keypresses, respectively, rather than their normal keycodes.
----On macOS the default for this is true because its Backspace key
----is labeled as Delete and things are backwards.
+---
+---On macOS the default for this is `true` because its `Backspace` key
+---is labeled as `Delete` and things are backwards.
 ---
 ---@field swap_backspace_and_delete? boolean
 ---@field switch_to_last_active_tab_when_closing_tab? boolean
----If `true`, show_tab_index_in_tab_bar uses a zero-based index.
+---If `true`, `config.show_tab_index_in_tab_bar` will use a zero-based index.
 ---
 ---The default is `false` and the tab shows a one-based index.
 ---
@@ -1101,7 +1168,8 @@
 ---@field tab_bar_style? TabBarStyle
 ---Specifies the maximum width that a tab can have in the tab bar
 ---when using retro tab mode.
----It is ignored when using fancy tab mode.
+---
+---> This is ignored when using fancy tab mode.
 ---
 ---Defaults to `16` glyphs in width.
 ---
@@ -1131,7 +1199,7 @@
 ---that the system event loop schedulers manage timers;
 ---non-zero values will be at least the interval specified
 ---with some degree of slop.
---- ---
+------
 ---Note that blinking is no longer a binary blink, but interpolates
 ---between invisible and visible text using an easing function.
 ---See `text_blink_rapid_ease_in` and `text_blink_rapid_ease_out`
@@ -1164,8 +1232,10 @@
 ---in the applications that you run in your terminal.
 ---
 ---@field text_min_contrast_ratio? number|nil
+---@field tiling_desktop_environments? string[]
 ---@field tls_clients? TlsDomainClient[]
 ---@field tls_servers? TlsDomainServer[]
+---@field treat_east_asian_ambiguous_width_as_wide? boolean
 ---If you are using a layout with an `AltGr` key, you may experience issues
 ---when running inside a VNC session, because VNC emulates the `AltGr` keypresses
 ---by sending plain `Ctrl-Alt` keys, which won't be understood as `AltGr`.
@@ -1176,9 +1246,19 @@
 ---Note that the key bindings using separate `Ctrl` and `Alt` won't be triggered anymore.
 ---
 ---@field treat_left_ctrlalt_as_altgr? boolean
+---@field ui_key_cap_rendering? UIKeyCapRendering
+---@field ulimit_nofile? integer
+---@field ulimit_nproc? integer
+---@field underline_position? string|number
+---@field underline_thickness? string|number
+---@field unicode_version? integer
 ---The set of UNIX domains.
 ---
 ---@field unix_domains? UnixDomain[]
+---@field unzoom_on_switch_pane? boolean
+---@field use_box_model_render? boolean
+---@field use_cap_height_to_scale_fallback_fonts? boolean
+---@field use_dead_keys? boolean
 ---When set to `true` (the default), the tab bar is rendered
 ---in a native style with proportional fonts.
 ---
@@ -1187,6 +1267,9 @@
 ---
 ---@field use_fancy_tab_bar? boolean
 ---@field use_ime? boolean
+---@field use_resize_increments? boolean
+---@field visual_bell? VisualBell
+---@field warn_about_missing_glyphs? boolean
 ---@field webgpu_force_fallback_adapter? boolean
 ---Whether to select the higher powered discrete GPU when
 ---the system has a choice of integrated or discrete.
@@ -1222,12 +1305,14 @@
 ---
 ---@field window_background_gradient? Gradient
 ---Specifies the path to a background image attachment file.
+---
 ---The file can be any image format that the rust `image`
 ---crate is able to identify and load.
 ---A window background image is rendered into the background
 ---of the window before any other content.
 ---
 ---The image will be scaled to fit the window.
+---
 ---@field window_background_image? string
 ---@field window_background_image_hsb? HsbTransform
 ---Specifies the alpha value to use when rendering the background
@@ -1248,6 +1333,7 @@
 ---performance.
 ---
 ---@field window_background_opacity? number
+---@field window_close_confirmation? WindowCloseConfirmation
 ---Controls the alignment of the terminal cells inside the window.
 ---
 ---When window size is not a multiple of terminal cell size,
@@ -1326,8 +1412,8 @@
 ---}
 ---```
 ---
----The default `font` is `Roboto`.
----The default `font_size` is `10pt` on Windows and `12pt` on other systems.
+---The default value of `font` is `Roboto`.
+---The default value of `font_size` is `10pt` on Windows and `12pt` on other systems.
 ---
 ---@field window_frame? WindowFrameConfig
 ---Controls the amount of padding between the window border and the terminal cells.
@@ -1351,6 +1437,8 @@
 ---and on how to override it.
 ---
 ---@field wsl_domains? WslDomain[]
+---@field xcursor_size? integer
+---@field xcursor_theme? string
 ---Explicitly set the name of the IME server to which wezterm will connect
 ---via the `XIM` protocol when using X11 and `use_ime` is `true`.
 ---
@@ -1377,79 +1465,14 @@
 ---Note that there is a minimum period of 10 seconds.
 ---
 ---@field periodic_stat_logging? integer
----If false, do not scroll to the bottom of the terminal when
----you send input to the terminal.
----
----The default is to scroll to the bottom when you send input
----to the terminal.
----
----@field scroll_to_bottom_on_input? boolean
----@field ime_preedit_rendering? ImePreeditRendering
----@field use_dead_keys? boolean
----@field use_box_model_render? boolean
----@field check_for_updates? boolean
----@field show_update_window? boolean
----@field check_for_updates_interval_seconds? integer
----@field enable_csi_u_key_encoding? boolean
----@field window_close_confirmation? WindowCloseConfirmation
----@field native_macos_fullscreen_mode? boolean
----@field selection_word_boundary? string
----@field enq_answerback? string
 ---@field adjust_window_size_when_changing_font_size? boolean
----@field tiling_desktop_environments? string[]
----@field use_resize_increments? boolean
+---@field allow_download_protocols? boolean
+---@field allow_square_glyphs_to_overflow_width? "Always"|"Never"|"WhenFollowedBySpace"
+---@field allow_win32_input_mode? boolean
 ---@field alternate_buffer_wheel_scroll_speed? integer
----@field status_update_interval? integer
----@field experimental_pixel_positioning? boolean
----@field skip_close_confirmation_for_processes_named? string[]
----@field quit_when_all_windows_are_closed? boolean
----@field warn_about_missing_glyphs? boolean
----@field sort_fallback_fonts_by_coverage? boolean
----@field search_font_dirs_for_fallback? boolean
----@field use_cap_height_to_scale_fallback_fonts? boolean
----@field swallow_mouse_click_on_pane_focus? boolean
----@field swallow_mouse_click_on_window_focus? boolean
----@field pane_focus_follows_mouse? boolean
----@field unzoom_on_switch_pane? boolean
----@field max_fps? integer
----@field shape_cache_size? number
----@field line_state_cache_size? number
----@field line_quad_cache_size? number
----@field line_to_ele_shape_cache_size? number
----@field glyph_cache_image_cache_size? number
----@field visual_bell? VisualBell
 ---@field audible_bell? "Disabled"|"SystemBeep"
 ---@field canonicalize_pasted_newlines? NewlineCanon
----@field unicode_version? integer
----@field treat_east_asian_ambiguous_width_as_wide? boolean
----@field allow_download_protocols? boolean
----@field allow_win32_input_mode? boolean
----@field default_domain? string
----@field default_mux_server_domain? string
----@field default_workspace? string
----@field xcursor_theme? string
----@field xcursor_size? integer
----@field quote_dropped_files? DroppedFileQuoting
----@field ui_key_cap_rendering? UIKeyCapRendering
----@field palette_max_key_assigments_for_action? number
----@field ulimit_nofile? integer
----@field ulimit_nproc? integer
----@field font_size? number
 ---@field cell_width? any
+---@field check_for_updates? boolean
+---@field check_for_updates_interval_seconds? integer
 ---@field cursor_thickess? string|number
----@field underline_thickness? string|number
----@field underline_position? string|number
----@field strikethrough_position? string|number
----@field allow_square_glyphs_to_overflow_width? "Always"|"Never"|"WhenFollowedBySpace"
----@field integrated_title_buttons? IntegratedTitleButton[]
----@field integrated_title_button_alignment? IntegratedTitleButtonAlignment
----@field integrated_title_button_style? IntegratedTitleButtonStyle
----@field integrated_title_button_color? "Auto"|AnsiColor
----@field bold_brightens_ansi_colors? BoldBrightening
----@field font_dirs? table|string[]
----@field color_scheme_dirs? table|string[]
-
----TODO: finish less commonly used conig options (maybe set the defaults, might be too much time)
----    -- An optional set of style rules to select the font based
----    -- on the cell attributes
----    font_rules = Vec<StyleRule>,
