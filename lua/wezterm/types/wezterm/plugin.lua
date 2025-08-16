@@ -1,6 +1,6 @@
 ---@meta
 
----@class PluginSpec
+---@class Wezterm.Plugin
 ---The URL of the plugin repo, as provided to the
 ---`wezterm.plugin.require` function
 ---@field url string
@@ -29,7 +29,7 @@
 ---  - component: The encoded name of the plugin, derived from the repo URL
 ---  - plugin_dir: The absolute location of the plugin checkout in the Wezterm runtime directory.
 ---                Use this to set the plugin path if needed
----@field list fun(): PluginSpec[]
+---@field list fun(): Wezterm.Plugin[]
 ---Attempt to fast-forward or pull --rebase each of the repos in the plugin directory
 --- ---
 ---NOTE: The configuration is not reloaded afterwards; the user will need to do that themselves

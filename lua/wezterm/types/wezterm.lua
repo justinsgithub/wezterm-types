@@ -1,0 +1,1439 @@
+---@meta
+
+---@module "wezterm.types.config"
+---@module "wezterm.types.enum"
+---@module "wezterm.types.events"
+---@module "wezterm.types.objects"
+---@module "wezterm.types.wezterm.color"
+---@module "wezterm.types.wezterm.gui"
+---@module "wezterm.types.wezterm.mux"
+---@module "wezterm.types.wezterm.nerdfonts"
+---@module "wezterm.types.wezterm.plugin"
+---@module "wezterm.types.wezterm.procinfo"
+---@module "wezterm.types.wezterm.serde"
+---@module "wezterm.types.wezterm.time"
+---@module "wezterm.types.wezterm.url"
+
+---Deprecated data field
+---@class Deprecated
+---NOTE: THIS IS DELIBERATELY LEFT EMPTY
+
+---@alias FormatItemAttribute
+---|{ Underline: "None"|"Single"|"Double"|"Curly"|"Dotted"|"Dashed" }
+---|{ Intensity: "Normal"|"Bold"|"Half" }
+---|{ Italic: boolean }
+
+---@alias FormatItem
+---|"ResetAttributes"
+---|{ Attribute: FormatItemAttribute }
+---|{ Foreground: ColorSpec }
+---|{ Background: ColorSpec }
+---|{ Text: string }
+
+---This is a virtual modifier used by wezterm
+---@alias Modifiers
+---|"ALT"
+---|"CTRL"
+---|"ENHANCED_KEY"
+---|"LEADER"
+---|"LEFT_ALT"
+---|"LEFT_CTRL"
+---|"LEFT_SHIFT"
+---|"NONE"
+---|"RIGHT_ALT"
+---|"RIGHT_CTRL"
+---|"RIGHT_SHIFT"
+---|"SHIFT"
+---|"SUPER"
+
+---@alias IntegratedTitleButton
+---|"Hide"
+---|"Maximize"
+---|"Close"
+
+---@alias IntegratedTitleButtonAlignment
+---|"Right"
+---|"Left"
+
+---@alias IntegratedTitleButtonStyle
+---|"Windows"
+---|"Gnome"
+---|"MacOsNative"
+
+---Configures whether the window has a title bar and/or resizable border.
+---
+---The value is a set of flags:
+---
+---  - `"NONE"`: disables titlebar and border (borderless mode),
+---              but causes problems with resizing and minimizing the window,
+---              so you probably want to use `"RESIZE"` instead of `"NONE"`
+---              if you just want to remove the title bar
+---  - `"TITLE"`: disable the resizable border and enable only the title bar
+---  - `"RESIZE"`: disable the title bar but enable the resizable border
+---  - `"TITLE|RESIZE"`: Enable titlebar and border. This is the default
+---  - `"INTEGRATED_BUTTONS|RESIZE"`: place window management buttons (minimize, maximize, close)
+---                                     into the tab bar instead of showing a title bar
+---  - `"MACOS_FORCE_DISABLE_SHADOW"`: (macOS only) disable the window shadow effect
+---  - `"MACOS_FORCE_ENABLE_SHADOW"`: (macOS only) enable the window shadow effect
+---  - `"MACOS_FORCE_SQUARE_CORNERS"`: (macOS only) force the window to have square
+---                                    rather than rounded corners.
+---                                    It is not compatible with `"TITLE"` or `"INTEGRATED_BUTTONS"`
+---  - `"MACOS_USE_BACKGROUND_COLOR_AS_TITLEBAR_COLOR"`: (macOS only) change the system titlebar background color
+---                                                      to match the terminal background color defined
+---                                                      by your configuration.
+---                                                      This option doesn't make sense to use without
+---                                                      also including `"TITLE|RESIZE"` in the set of decorations
+---
+---@alias WindowDecorations
+---|"NONE"
+---|"TITLE"
+---|"RESIZE"
+---|"MACOS_FORCE_DISABLE_SHADOW"
+---|"MACOS_FORCE_ENABLE_SHADOW"
+---|"MACOS_FORCE_SQUARE_CORNERS"
+---|"TITLE|RESIZE"
+---|"TITLE|MACOS_FORCE_DISABLE_SHADOW"
+---|"TITLE|MACOS_FORCE_ENABLE_SHADOW"
+---|"RESIZE|INTEGRATED_BUTTONS"
+---|"RESIZE|MACOS_FORCE_DISABLE_SHADOW"
+---|"RESIZE|MACOS_FORCE_ENABLE_SHADOW"
+---|"RESIZE|MACOS_FORCE_SQUARE_CORNERS"
+---|"TITLE|RESIZE|MACOS_FORCE_DISABLE_SHADOW"
+---|"TITLE|RESIZE|MACOS_FORCE_ENABLE_SHADOW"
+---|"TITLE|RESIZE|MACOS_USE_BACKGROUND_COLOR_AS_TITLEBAR_COLOR"
+---|"RESIZE|INTEGRATED_BUTTONS|MACOS_FORCE_DISABLE_SHADOW"
+---|"RESIZE|INTEGRATED_BUTTONS|MACOS_FORCE_ENABLE_SHADOW"
+---|"TITLE|RESIZE|INTEGRATED_BUTTONS|MACOS_FORCE_DISABLE_SHADOW"
+---|"TITLE|RESIZE|INTEGRATED_BUTTONS|MACOS_FORCE_ENABLE_SHADOW"
+---|"TITLE|RESIZE|INTEGRATED_BUTTONS|MACOS_USE_BACKGROUND_COLOR_AS_TITLEBAR_COLOR"
+---|string
+---Add other valid combinations if needed
+
+---@alias TabBarIntensity
+---|"Normal"
+---|"Half"
+---|"Bold"
+
+---@alias TabBarUnderline
+---|"None"
+---|"Single"
+---|"Double"
+
+---@alias PaletteAnsi
+---|"black"
+---|"maroon"
+---|"green"
+---|"olive"
+---|"navy"
+---|"purple"
+---|"teal"
+---|"silver"
+
+---@alias PaletteBrights
+---|"grey"
+---|"red"
+---|"lime"
+---|"yellow"
+---|"blue"
+---|"fuchsia"
+---|"aqua"
+---|"white"
+
+---@alias AnsiColor
+---|"Black"
+---|"Maroon"
+---|"Green"
+---|"Olive"
+---|"Navy"
+---|"Purple"
+---|"Teal"
+---|"Silver"
+---|"Grey"
+---|"Red"
+---|"Lime"
+---|"Yellow"
+---|"Blue"
+---|"Fuchsia"
+---|"Aqua"
+---|"White"
+
+---@class TabBarColor
+---The color of the background area for the tab.
+---
+---@field bg_color? string
+---The color of the text for the tab.
+---
+---@field fg_color? string
+---Specify whether you want `"Half"`, `"Normal"` or `"Bold"` intensity for the
+---label shown for this tab.
+---
+---The default is `"Normal"`.
+---
+---@field intensity? TabBarIntensity
+---Specify whether you want `"None"`, `"Single"` or `"Double"` underline for
+---label shown for this tab.
+---
+---The default is `"None"`.
+---
+---@field underline? TabBarUnderline
+---Specify whether you want the text to be italic for this tab.
+---
+---The default is `false`.
+---
+---@field italic? boolean
+---Specify whether you want the text to be rendered with strikethrough (true)
+---or not for this tab.
+---
+---The default is `false`.
+---
+---@field strikethrough? boolean
+
+---@class TabBarColors
+---The text color to use when the attributes are reset to default.
+---
+---@field background? string
+---@field inactive_tab_edge? string
+---@field inactive_tab_edge_hover? string
+
+---Configure the color and styling for the tab bar.
+---
+---@class TabBar: TabBarColors
+---The color of the strip that goes along the top of the window
+---(does not apply when fancy tab bar is in use).
+---
+---@field background string
+---The active tab is the one that has focus in the window.
+---
+---@field active_tab TabBarColor
+---Inactive tabs are the tabs that do not have focus.
+---
+---@field inactive_tab TabBarColor
+---You can configure some alternate styling when the mouse pointer
+---moves over inactive tabs.
+---
+---@field inactive_tab_hover TabBarColor
+---The new tab button that let you create new tabs.
+---
+---@field new_tab TabBarColor
+---You can configure some alternate styling when the mouse pointer
+---moves over the new tab button.
+---
+---@field new_tab_hover TabBarColor
+
+---@alias ColorSpec table<"AnsiColor", AnsiColor>|table<"Color", string>
+
+---@class Palette
+---The text color to use when the attributes are reset to default.
+---
+---@field foreground? string
+---The background color to use when the attributes are reset to default.
+---
+---@field background? string
+---The foreground color of the cursor.
+---
+---@field cursor_fg? string
+---The background color of the cursor.
+---
+---@field cursor_bg? string
+---The border of the cursor.
+---
+---@field cursor_border? string
+---The foreground color of selected text.
+---
+---@field selection_fg? string
+---The background color of selected text.
+---
+---@field selection_bg? string
+---A list of 8 colors corresponding to the basic ANSI palette.
+---
+---@field ansi? table<integer, PaletteAnsi>
+---A list of 8 colors corresponding to the brights.
+---
+---@field brights? table<integer, PaletteBrights>
+---A map for setting arbitrary colors ranging from 16 to 256 in the color palette.
+---
+---@field indexed? string[]|table
+---The color of the "thumb" of the scrollbar; the segment that represents
+---the current viewable area.
+---
+---@field scrollbar_thumb? string
+---The color of the split line between panes.
+---
+---@field split? string
+---The color of the visual bell.
+---
+---If unspecified, the foreground color is used instead.
+---
+---@field visual_bell? string
+---The color to use for the cursor when a dead key or leader state is active.
+---
+---@field compose_cursor? string
+---Use [`AnsiColor`](lua://AnsiColor) to specify one of the ansi color palette values
+---(index 0-15) using one of the following values:
+---
+--- - `"Black"`
+--- - `"Maroon"`
+--- - `"Green"`
+--- - `"Olive"`
+--- - `"Navy"`
+--- - `"Purple"`
+--- - `"Teal"`
+--- - `"Silver"`
+--- - `"Grey"`
+--- - `"Red"`
+--- - `"Lime"`
+--- - `"Yellow"`
+--- - `"Blue"`
+--- - `"Fuchsia"`
+--- - `"Aqua"`
+--- - `"White"`
+---
+---@field copy_mode_active_highlight_fg? ColorSpec
+---Colors for copy_mode and quick_select.
+---
+---In copy_mode, the color of the active text is:
+---1. `copy_mode_active_highlight` if additional text was selected using the mouse
+---2. `selection` otherwise
+---
+---@field copy_mode_active_highlight_bg? ColorSpec
+---Use [`AnsiColor`](lua://AnsiColor) to specify one of the ansi color palette values
+---(index 0-15) using one of the following values:
+---
+--- - `"Black"`
+--- - `"Maroon"`
+--- - `"Green"`
+--- - `"Olive"`
+--- - `"Navy"`
+--- - `"Purple"`
+--- - `"Teal"`
+--- - `"Silver"`
+--- - `"Grey"`
+--- - `"Red"`
+--- - `"Lime"`
+--- - `"Yellow"`
+--- - `"Blue"`
+--- - `"Fuchsia"`
+--- - `"Aqua"`
+--- - `"White"`
+---
+---@field copy_mode_inactive_highlight_fg? ColorSpec
+---Colors for copy_mode and quick_select.
+---
+---In copy_mode, the color of the active text is:
+---1. `copy_mode_active_highlight` if additional text was selected using the mouse
+---2. `selection` otherwise
+---
+---@field copy_mode_inactive_highlight_bg? ColorSpec
+---@field quick_select_label_fg? ColorSpec
+---@field quick_select_label_bg? ColorSpec
+---@field quick_select_match_fg? ColorSpec
+---@field quick_select_match_bg? ColorSpec
+---@field input_selector_label_fg? ColorSpec
+---@field input_selector_label_bg? ColorSpec
+---@field launcher_label_bg? ColorSpec
+---@field launcher_label_fg? ColorSpec
+---@field tab_bar? TabBar
+
+---@alias FontWeight
+---|"Regular"
+---|"Black"
+---|"Bold"
+---|"Book"
+---|"DemiBold"
+---|"DemiLight"
+---|"ExtraBlack"
+---|"ExtraBold"
+---|"ExtraLight"
+---|"Light"
+---|"Medium"
+---|"Thin"
+
+---@alias FontStretch
+---|"Normal"
+---|"Condensed"
+---|"Expanded"
+---|"ExtraCondensed"
+---|"ExtraExpanded"
+---|"SemiCondensed"
+---|"SemiExpanded"
+---|"UltraCondensed"
+---|"UltraExpanded"
+
+---@alias FontStyle
+---|"Normal"
+---|"Italic"
+---|"Oblique"
+
+---@alias FreeTypeLoadTarget
+---|"Normal"
+---|"HorizontalLcd"
+---|"Light"
+---|"Mono"
+---|"VerticalLcd"
+
+---@alias FreeTypeLoadFlags
+---|"DEFAUlT"
+---|"NO_HINTING"
+---|"NO_BITMAP"
+---|"FORCE_AUTOHINT"
+---|"MONOCHROME"
+---|"NO_AUTOHINT"
+
+---TODO: Find out what do the undocumented options do
+---@alias HarfbuzzFeatures
+---|"calt=0"
+---|"clig=0"
+---|"liga=0"
+---|"calt=1"
+---|"clig=1"
+---|"liga=1"
+---|"zero" -- `0`
+---|"onum" -- numbers
+---|"cv01"
+---|"cv02"
+---|"cv03"
+---|"cv04"
+---|"cv05"
+---|"cv06"
+---|"cv07"
+---|"cv08"
+---|"cv09"
+---|"cv10"
+---|"cv11" -- numbers
+---|"cv12" -- numbers
+---|"cv13" -- numbers
+---|"cv14" -- numbers
+---|"cv15" -- `*`
+---|"cv16" -- `*`
+---|"cv17" -- `~`
+---|"cv18" -- `%`
+---|"cv19" -- `<=`
+---|"cv20" -- `<=`
+---|"cv21"
+---|"cv22"
+---|"cv23" -- `>=`
+---|"cv24" -- `/=`
+---|"cv25" -- `.-`
+---|"cv26" -- `:-`
+---|"cv27" -- `[]`
+---|"cv28" -- `{. .}`
+---|"cv29" -- `{}`
+---|"cv30" -- `|`
+---|"cv31" -- `()`
+---|"cv32" -- `.=`
+---|"ss01"
+---|"ss02" -- `<=`, `>=`
+---|"ss03" -- `&`
+---|"ss04" -- `$`
+---|"ss05" -- `@`
+---|"ss06" -- `\\`
+---|"ss07" -- `=~`, `!~`
+---|"ss08" -- `==`, `===`, `!=`, `!==`
+---|"ss09" -- `>>=`, `<<=`, `||=`, `|=`
+---|"ss10"
+
+---@class FontAttributes
+---Whether the font should be a bold variant.
+---
+---@field weight? FontWeight
+---@field stretch? FontStretch
+---Whether the font should be an italic variant.
+---
+---@field style? FontStyle
+---@field is_fallback? boolean
+---@field is_synthetic? boolean
+---@field scale? number
+
+---`FontAttributes`-like class but with font family specified.
+---
+---@class FontFamilyAttributes: FontAttributes
+---@field family string
+
+---@class FontFamilyExtendedAttributes: FontFamilyAttributes
+---@field harfbuzz_features? HarfbuzzFeatures[]
+---@field freetype_load_target? FreeTypeLoadTarget
+---@field freetype_render_target? FreeTypeLoadTarget
+---you can combine the flags like `"NO_HINTING|MONOCHROME"`
+---**(you probably wouldn't want to do this)**.
+---
+---@field freetype_load_flags? FreeTypeLoadFlags
+---@field assume_emoji_presentation? boolean
+
+---@class Fonts
+---@field fonts FontAttributes[]
+
+---@class WindowFrameConfig
+---@field inactive_titlebar_bg? string
+---@field active_titlebar_bg? string
+---@field inactive_titlebar_fg? string
+---@field active_titlebar_fg? string
+---@field inactive_titlebar_border_bottom? string
+---@field active_titlebar_border_bottom? string
+---@field button_fg? string
+---@field button_bg? string
+---@field button_hover_fg? string
+---@field button_hover_bg? string
+---@field border_left_width? string|number
+---@field border_right_width? string|number
+---@field border_top_height? string|number
+---@field border_bottom_height? string|number
+---@field border_left_color? string
+---@field border_right_color? string
+---@field border_top_color? string
+---@field border_bottom_color? string
+
+---@class TabBarStyle
+---@field new_tab? string
+---@field new_tab_hover? string
+---@field window_hide? string
+---@field window_hide_hover? string
+---@field window_maximize? string
+---@field window_maximize_hover? string
+---@field window_close? string
+---@field window_close_hover? string
+
+---@class HyperlinkRule
+---@field regex string
+---@field format string
+---@field highlight? 1
+
+---@class SerialDomain
+---The name of this specific domain.
+---
+---Must be unique amongst all types of domain in the configuration file.
+---
+---@field name string
+---Specifies the serial device name.
+---
+--- - On Windows systems this can be a name like `COM0`
+--- - On POSIX systems this will be something like `/dev/ttyUSB0`
+--- - If omitted, the name will be interpreted as the port
+---
+---@field port string
+---Set the baud rate.
+---
+---The default is `9600` baud.
+---
+---@field baud number|9600
+
+---@class GpuInfo
+---@field name string
+---@field device_type string
+---@field backend string
+---@field driver string
+---@field driver_info string
+---@field vendor integer
+---@field device integer
+
+---@class UnixDomain
+---The name of this specific domain.
+---
+---Must be unique amongst all types of domain in the configuration file.
+---
+---@field name string
+---The path to the socket.
+---
+---If unspecified, a resonable default value will be computed.
+---
+---@field socket_path string
+---If `true`, connect to this domain automatically at startup.
+---
+---@field connect_automatically boolean
+---If `true`, do not attempt to start this server if we try and fail to
+---connect to it.
+---
+---@field no_serve_automatically boolean
+---If we decide that we need to start the server, the command to run
+---to set that up.
+---
+---The default is to spawn:
+---
+---```sh
+---wezterm-mux-server --daemonize
+---```
+---
+---To start up a UNIX domain inside a WSL container:
+---
+---```sh
+---wsl -e wezterm-mux-server --daemonize
+---```
+---
+---@field serve_command string[]
+---Instead of directly connecting to `socket_path`
+---spawn this command and use its stdin/stdout in place of
+---the socket.
+---
+---@field proxy_command string[]
+---If `true`, bypass checking for secure ownership of the socket_path.
+---
+---This is not recommended on a multi-user system,
+---but is useful, for example, when running the server inside a WSL container
+---but with the socket on the host NTFS volume.
+---
+---@field skip_permissions_check boolean
+---@field read_timeout integer
+---Don"t use `default_local_echo_threshold_ms()` here to disable
+---the predictive echo for UNIX domains by default.
+---
+---@field write_timeout integer
+---Show time since last response when waiting for a response.
+---
+---[_Recommended Source_](https://wezfurlong.org/wezterm/config/lua/pane/get_metadata.html#since_last_response_ms).
+---
+---@field local_echo_threshold_ms integer
+---@field overlay_lag_indicator boolean
+
+---@class LeaderKey: KeyNoAction
+---Maximum time to wait for next key.
+---
+---Default is `1000` ms.
+---
+---@field timeout_milliseconds? integer
+
+---@class HyperLinkRule
+---The regular expression to match.
+---
+---@field regex string
+---Controls which parts of the regex match will be used to form the link.
+---
+---Must have a prefix: signaling the protocol type (e.g., `https:/mailto:`),
+---which can either come from the regex match or needs to be explicitly added.
+---
+---The format string can use placeholders like `$0`, `$1`, `$2` etc.
+---that will be replaced with that numbered capture group.
+---So, `$0` will take the entire region of text matched by the whole regex,
+---while `$1` matches out the first capture group.
+---
+---@field format string
+---Specifies the range of the matched text that should be highlighted/underlined
+---when the mouse hovers over the link.
+---
+---The value is a number that corresponds to a capture group in the regex.
+---
+---The default is `0`, highlighting the entire region of text matched by the regex.
+---`1` would be the first capture group, and so on...
+---
+---@field highlight? number
+
+---@class BatteryInfo
+---The battery level expressed as a number between `0.0` (empty) and `1.0` (full).
+---
+---@field state_of_charge number
+---If known, shows battery manufacturer name or `"unknown"` otherwise.
+---
+---@field vendor string|"unknown"
+---If known, shows the battery model string or `"unknown"` otherwise.
+---
+---@field model string|"unknown"
+---If known, shows the battery serial number or `"unknown"` otherwise.
+---
+---@field serial string|"unknown"
+---If charging, how long until the battery is full (in seconds).
+---
+---@field time_to_full? number
+---If discharing, how long until the battery is empty (in seconds).
+---
+---@field time_to_empty? number
+---@field state "Charging"|"Discharging"|"Empty"|"Full"|"Unknown"
+
+---@class AugmentCommandPaletteReturn
+---The brief description for the entry.
+---
+---@field brief string
+---A long description that may be shown after the entry, or that may be used in
+---future versions of wezterm to provide more information about the command.
+---
+---@field doc? string
+---The action to take when the item is activated.
+---
+---Can be any key assignment action.
+---
+---See [`KeyAssignment`](lua://KeyAssignment).
+---
+---@field action KeyAssignment
+---**(OPTIONAL)** Nerd Fonts glyph name to use for the icon for the entry.
+---
+---See [`Wezterm.NerdFont`](lua://Wezterm.NerdFont) for a list of icon names.
+---@field icon? Wezterm.NerdFont
+
+---@alias CursorShape
+---|"BlinkingBlock"
+---|"BlinkingBar"
+---|"BlinkingUnderline"
+---|"SteadyBar"
+---|"SteadyBlock"
+---|"SteadyUnderline"
+
+---@alias CursorVisibility
+---|"Visible"
+---|"Hidden"
+
+---@class StableCursorPosition
+---The horizontal cell index.
+---
+---@field x number
+---The vertical stable row index.
+---
+---@field y number
+---The CursorShape enum value.
+---
+---@field shape CursorShape
+---The CursorVisibility enum value.
+---
+---@field visibility CursorVisibility
+
+---@class LinearGradientOrientation
+---@field angle number
+
+---@class RadialGradientOrientation
+---@field radius? number
+---@field cx? number
+---@field cy? number
+
+---@alias GradientOrientation
+---|"Horizontal"
+---|"Vertical"
+---|{ Linear: LinearGradientOrientation }
+---|{ Radial: RadialGradientOrientation }
+
+---@class Gradient
+---@field colors string[]
+---@field orientation? GradientOrientation
+---@field interpolation? "Linear"|"Basis"|"CatmullRom"
+---@field blend? "Rgb"|"LinearRgb"|"Hsv"|"Oklab"
+---@field noise? number
+---@field segment_size? number
+---@field segment_smoothness? number
+
+---@class ColorSchemeMetaData
+---@field name? string
+---@field author? string
+---@field origin_url? string
+---@field wezterm_version? string
+---@field aliases? string[]
+
+---@alias ActionCallback fun(win: Window, pane: Pane, ...: any): false?
+
+--- - `"Light"`: The normal appearance, with dark text on a light background
+--- - `"Dark"`: Dark mode with predominantly dark colors and probably a lighter,
+---            lower contrasting, text color on a dark background
+--- - `"LightHighContrast"`: Light mode but with high contrast colors (not reported on all systems)
+--- - `"DarkHighContrast"`: Dark mode but with high contrast colors (not reported on all systems)
+---
+---@alias Appearance
+---|"Dark"
+---|"DarkHighContrast"
+---|"Light"
+---|"LightHighContrast"
+
+---@alias Clipboard
+---|"Clipboard"
+---|"PrimarySelection"
+---|"ClipboardAndPrimarySelection"
+
+---@alias CopyMode
+---|"AcceptPattern"
+---|"ClearPattern"
+---|"ClearSelectionMode"
+---|"Close"
+---|"CycleMatchType"
+---|"EditPattern"
+---|"MoveBackwardSemanticZone"
+---|"MoveBackwardWord"
+---|"MoveDown"
+---|"MoveForwardSemanticZone"
+---|"MoveForwardWord"
+---|"MoveForwardWordEnd"
+---|"MoveLeft"
+---|"MoveRight"
+---|"MoveToEndOfLineContent"
+---|"MoveToScrollbackBottom"
+---|"MoveToScrollbackTop"
+---|"MoveToSelectionOtherEnd"
+---|"MoveToSelectionOtherEndHoriz"
+---|"MoveToStartOfLine"
+---|"MoveToStartOfLineContent"
+---|"MoveToStartOfNextLine"
+---|"MoveToViewportBottom"
+---|"MoveToViewportMiddle"
+---|"MoveToViewportTop"
+---|"MoveUp"
+---|"NextMatch"
+---|"NextMatchPage"
+---|"PriorMatch"
+---|"PriorMatchPage"
+---|{ MoveBackwardSemanticZoneOfType: SemanticZoneType }
+---|{ MoveForwardSemanticZoneOfType: SemanticZoneType }
+---|{ SetSelectionMode: SelectionMode|"SemanticZone" }
+
+---@alias CursorStyle
+---|"BlinkingBlock"
+---|"SteadyBlock"
+---|"BlinkingUnderline"
+---|"SteadyUnderline"
+---|"BlinkingBar"
+---|"SteadyBar"
+
+---@alias Direction
+---|"Left"
+---|"Right"
+---|"Up"
+---|"Down"
+---|"Next"
+---|"Prev"
+
+---@alias EasingFunction
+---|"Constant"
+---|"Ease"
+---|"EaseIn"
+---|"EaseInOut"
+---|"EaseOut"
+---|"Linear"
+---|{ CubicBezier: number[] }
+
+---@alias FreetypeLoadTarget
+---|"Normal"
+---|"HorizontalLcd"
+---|"Light"
+---|"Mono"
+
+---@alias Stretch
+---|"Normal"
+---|"Condensed"
+---|"Expanded"
+---|"ExtraCondensed"
+---|"ExtraExpanded"
+---|"SemiCondensed"
+---|"SemiExpanded"
+---|"UltraCondensed"
+---|"UltraExpanded"
+
+---@alias Style
+---|"Normal"
+---|"Italic"
+---|"Oblique"
+
+---@alias Weight
+---|"Regular"
+---|"Black"
+---|"Bold"
+---|"Book"
+---|"DemiBold"
+---|"DemiLight"
+---|"ExtraBlack"
+---|"ExtraBold"
+---|"ExtraLight"
+---|"Light"
+---|"Medium"
+---|"Thin"
+
+---@class ScreenInformation
+---@field name string
+---@field x number
+---@field y number
+---@field height number
+---@field width number
+---@field max_fps? number
+
+---@class KeyBindingBase
+---@field key string
+---@field action Action
+
+---@class KeyBinding: KeyBindingBase
+---@field mods string
+
+---@class MouseEventInfo
+---@field streak number
+---@field button "Left"|"Right"|"Middle"|{ WheelDown: number }|{ WheelUp: number }
+
+---@class MouseDownEvent
+---@field Down MouseEventInfo
+
+---@class MouseUpEvent
+---@field Up MouseEventInfo
+
+---@class MouseDragEvent
+---@field Drag MouseEventInfo
+
+---@alias MouseEvent
+---|MouseDownEvent
+---|MouseDragEvent
+---|MouseUpEvent
+
+---@class MouseBindingBase
+---@field event MouseEvent
+---@field action Action
+---@field mouse_reporting? boolean
+---@field alt_screen? boolean|"Any"
+
+---@class MouseBinding: MouseBindingBase
+---@field mods string
+
+--- - The first event parameter is a `Window` object that represents the GUI window
+--- - The second event parameter is a `Pane` object that represents the pane in which
+---   the bell was rung, which may not be active pane;
+---   it could be in an unfocused pane or tab
+---
+---@alias CallbackWindowPane fun(window: Window, pane: Pane)
+
+---@alias AugmentCallbackWindowPane fun(window: Window, pane: Pane): AugmentCommandPaletteReturn
+
+---@class Wezterm: ExecDomain
+---Provides global, in-process, in-memory, data storage for JSON-like variables
+---that persists across config reloads.
+---
+---WezTerm's Lua files may be re-loaded and re-evaluated multiple times in different contexts
+---or in different threads.
+---If you'd like to keep track of state that lasts for the lifetime
+---of your wezterm process then you cannot simply use
+---global variables in the Lua script.
+---
+---`wezterm.GLOBAL` is a special `userdata` value that acts like a table.
+---Writing to keys will copy the data that you assign into a global in-memory table
+---and allow it to be read back later.
+---
+---Reads and writes from/to `wezterm.GLOBAL` are thread-safe but don't currently provide
+---synchronization primitives for managing read-modify-write operations.
+---
+---You may store values with the following types:
+---
+--- -  `string`
+--- -  `number`
+--- -  `table`
+--- -  `boolean`
+---
+---**Attempting to assign other types will raise an error.**
+---
+---@field GLOBAL userdata
+---The `wezterm.color` module exposes functions that work with colors.
+---
+---See [`Wezterm.Color`](lua://Wezterm.Color) for more info.
+---
+---@field color Wezterm.Color
+---The `wezterm.gui` module exposes functions that operate on the GUI layer.
+---
+---The multiplexer may not be connected to a GUI, so attempting to
+---resolve this module from the mux server will return `nil`.
+---
+---See [`Wezterm.Gui`](lua://Wezterm.Gui) for more info.
+---
+---@field gui? Wezterm.Gui
+---See [`Wezterm.Mux`](lua://Wezterm.Mux) for more info.
+---
+---@field mux Wezterm.Mux
+---See [`Wezterm.NerdFont`](lua://Wezterm.NerdFont) for more info.
+---
+---@field nerdfonts Wezterm.NerdFont
+---The `wezterm.plugin` module provides functions to manage Wezterm plugins.
+---
+---See [`Wezterm.Plugin`](lua://Wezterm.Plugin) for more info.
+---
+---@field plugin Wezterm.Plugin
+---The `wezterm.procinfo` module exposes functions that allow querying information
+---about processes that are running on the local system.
+---
+---See [`Wezterm.ProcInfo`](lua://Wezterm.ProcInfo) for more info.
+---
+---@field procinfo Wezterm.ProcInfo
+---The `wezterm.serde` module provides functions for parsing the given string as
+---JSON, YAML, or TOML, returning the corresponding Lua values, and vice versa.
+---
+---See [`Wezterm.Serde`](lua://Wezterm.Serde) for more info.
+---
+---@field serde Wezterm.Serde
+---The `wezterm.time` module exposes functions that allow working with time.
+---
+---See [`Wezterm.Time`](lua://Wezterm.Time) for more info.
+---
+---@field time Wezterm.Time
+---The `wezterm.url` module exposes functions that allow working with URLs.
+---
+---See [`Wezterm.Url`](lua://Wezterm.Url) for more info.
+---
+---@field url Wezterm.Url
+---Helper for defining key assignment actions in your configuration file.
+---
+---This is really just sugar for the underlying Lua ==> Rust deserialation mapping
+---that makes it a bit easier to identify where syntax errors may exist
+---in your configuration file.
+---
+---See the [`Action`](lua://Action) type for more info.
+---
+---@field action Action
+---This function is a helper to register a custom event
+---and return an action triggering it.
+---
+---It is helpful to write custom key bindings directly,
+---without having to declare the event and use it in a different place.
+---
+---The implementation is essentially the same as:
+---
+---```lua
+---function wezterm.action_callback(callback)
+---  local event_id = '...' -- the function generates a unique event id
+---  wezterm.on(event_id, callback)
+---  return wezterm.action.EmitEvent(event_id)
+---end
+---```
+---
+---@field action_callback fun(callback: ActionCallback): Action
+---Adds path to the list of files that are watched for config changes.
+---
+---If `automatically_reload_config` is enabled, then the config will be reloaded
+---when any of the files that have been added to the watch list have changed.
+---
+---@field add_to_config_reload_watch_list fun(path: string)
+---Accepts an argument list; it will attempt to spawn that command in the background.
+---
+---@field background_child_process fun(args: string[])
+---Returns the battery information for each of the installed batteries on the system.
+---
+---This is useful for example to assemble status information for the status bar.
+---
+---@field battery_info fun(): BatteryInfo[]
+---Given a `string` parameter, returns the number of columns that text occupies
+---in the terminal, which is useful together with `format-tab-title` and `update-right-status`
+---to compute/layout tabs and status information.
+---
+---@field column_width fun(value: string): number
+---Returns a `Config` object that can be used to define your configuration.
+---
+---See the [`Config`](lua://Config) type for more info.
+---
+---@field config_builder fun(): Config
+---This constant is set to the path to the directory
+---in which your `wezterm.lua` configuration file was found.
+---
+---@field config_dir string
+---This constant is set to the path to the `wezterm.lua` that is in use.
+---
+---@field config_file string
+---Returns the compiled-in default hyperlink rules as a table.
+---
+---See the [`HyperLinkRule`](lua://HyperLinkRule) type for more info.
+---
+---@field default_hyperlink_rules fun(): HyperLinkRule[]
+---Computes a list of [`SshDomain`](lua://SshDomain) objects based on the set of hosts
+---discovered in `~/.ssh/config`.
+---
+---Each host will have both a plain SSH and a multiplexing SSH domain
+---generated and returned in the list of domains.
+---The former don't require wezterm to be installed on the remote host,
+---while the latter do require it.
+---
+---The intended purpose of this function is to give you the opportunity
+---to edit/adjust the returned information before assigning it to your config.
+---
+---@field default_ssh_domains fun(): SshDomain[]
+---Computes a list of [`WslDomain`](lua://WslDomain) objects, each one representing
+---an installed WSL distribution on your system.
+---
+---This list is the same as the default value for the `wsl_domains` configuration option,
+---which is to make a `WslDomain` with the `distribution` field set to the name
+---of the WSL distro and the `name` field set to name of the distro
+---but with `"WSL:"` prefixed to it.
+---
+---@field default_wsl_domains fun(): WslDomain[]
+---@field emit fun(event: string, ...: any)
+---This function will parse your ssh configuration file(s) and extract from them
+---the set of literal (non-pattern, non-negated) host names that are specified
+---in `Host` and `Match` stanzas contained in those configuration files
+---and return a mapping from the hostname to the effective ssh config options for that host.
+---
+---You may optionally pass a list of ssh configuration files that should be read
+---in case you have a special configuration.
+---
+---@field enumerate_ssh_hosts fun(ssh_config_file_name: (string[]|string)?): table<string, SshHost>
+---This constant is set to the directory containing the wezterm executable file.
+---
+---@field executable_dir string
+---This function constructs a Lua table that corresponds to the internal [`FontAttributes`](lua://FontAttributes) struct
+---that is used to select a single named font:
+---
+---```lua
+---local wezterm = require 'wezterm'
+---
+---return {
+---  font = wezterm.font 'JetBrains Mono',
+---}
+---```
+---
+---The first parameter is the name of the font; the name can be one of the following types of names:
+---
+--- - The font family name, e.g. `"JetBrains Mono"`. The family name doesn't include any style information
+---   (such as `weight`, `stretch` or `italic`), which can be specified via the `attributes` parameter.
+---   This is the recommended name to use for the font, as it the most compatible way to resolve
+---   an installed font.
+--- - The computed full name, which is the family name with the sub-family
+---   (which incorporates style information) appended, e.g. `"JetBrains Mono Regular"`.
+--- - The postscript name, which is an ostensibly unique name identifying a given font and style
+---   that is encoded into the font by the font designer.
+---
+---When specifying a font using its family name, the second attributes parameter is
+---an **optional** table that can be used to specify style attributes.
+---
+---See [`FontAttributes`](lua://FontAttributes)
+---See [`FontFamilyAttributes`](lua://FontFamilyAttributes)
+---See [`FontFamilyExtendedAttributes`](lua://FontFamilyExtendedAttributes)
+---
+---@field font (fun(attributes: FontFamilyAttributes|FontFamilyExtendedAttributes): FontFamilyAttributes)|(fun(name: string, attributes: FontAttributes?): FontFamilyAttributes)
+---TODO: Complete description.
+---
+---[Info](https://wezterm.org/config/lua/wezterm/font_with_fallback.html).
+---
+---@field font_with_fallback fun(fonts: (string|FontAttributes)[]): Fonts
+---Can be used to produce a formatted string with terminal graphic attributes
+---such as `bold`, `italic` and `colors`.
+---
+---The result is a string with wezterm-compatible escape sequences embedded.
+---
+---@field format fun(...: FormatItem[]): string
+---Returns a Lua table keyed by color scheme name and whose values are
+---the color scheme definition of the builtin color schemes.
+---
+---This is useful for programmatically deciding things about the scheme to use
+---based on its color, or for taking a scheme and overriding a couple of entries
+---just from your `wezterm.lua` configuration file.
+---
+---This function moved to [`wezterm.color.get_builtin_schemes()`](https://wezterm.org/config/lua/wezterm.color/get_builtin_schemes.html)
+---but can still be called as `wezterm.get_builtin_color_schemes()`.
+---See that page for more examples.
+---
+---@field get_builtin_color_schemes fun(): PaletteDict
+---This function evalutes the glob pattern and returns an array
+---containing the absolute file names of the matching results.
+---
+---Due to limitations in the Lua bindings,
+---all of the paths must be able to be represented as `UTF-8`
+---or this function will generate an error.
+---
+---@field glob fun(pattern: string, relative_to: string?): string[]
+---@field has_action fun(action: string): boolean
+---@field home_dir string
+---@field hostname fun(): string
+---@field json_encode fun(value: any): string
+---@field json_parse fun(value: string): any
+---@field log_error fun(msg: string, ...: any)
+---@field log_info fun(msg: string, ...: any)
+---@field log_warn fun(msg: string, ...: any)
+---@field open_with fun(path_or_url: string, application: string?)
+---@field pad_left fun(string: string, min_width: integer): string Returns a copy of string that is at least min_width columns (as measured by wezterm.column_width)
+---@field pad_right fun(string: string, min_width: integer): string Returns a copy of string that is at least min_width columns (as measured by wezterm.column_width).
+---@field permute_any_or_no_mods any #TODO
+---@field permute_any_mods (fun(tbl: MouseBindingBase): MouseBinding)|(fun(tbl: KeyBindingBase): KeyBinding)
+---@field read_dir fun(path: string): string Returns an array containing the absolute file names of the directory specified. Due to limitations in the Lua bindings, all of the paths must be able to be represented as UTF-8 or this function will generate an error.
+---@field reload_configuration fun(): nil Immediately causes the configuration to be reloaded and re-applied.
+---@field run_child_process fun(args: string[]): success: boolean, stdout: string, stderr: string  Will attempt to spawn that command and will return a tuple consisting of the boolean success of the invocation, the stdout data and the stderr data.
+---@field running_under_wsl fun(): boolean Returns a boolean indicating whether we believe that we are running in a Windows Services for Linux (WSL) container.
+---@field shell_join_args fun(args: string[]): string Joins together its array arguments by applying posix style shell quoting on each argument and then adding a space.
+---@field shell_quote_arg fun(string: string): string Quotes its single argument using posix shell quoting rules.
+---@field shell_split fun(line: string): string[] Splits a command line into an argument array according to posix shell rules.
+---@field sleep_ms fun(milliseconds: number): nil wezterm.sleep_ms suspends execution of the script for the specified number of milliseconds. After that time period has elapsed, the script continues running at the next statement.
+---@field split_by_newlines fun(string: string): string[] takes the input string and splits it by newlines (both \n and \r\n are recognized as newlines) and returns the result as an array of strings that have the newlines removed.
+---@field strftime fun(format: string): string Formats the current local date/time into a string using the Rust chrono strftime syntax.
+---@field strftime_utc fun(format: string): string Formats the current UTC date/time into a string using the Rust chrono strftime syntax.
+---@field target_triple string This constant is set to the Rust target triple for the platform on which wezterm was built. This can be useful when you wish to conditionally adjust your configuration based on the platform.
+---@field truncate_left fun(string: string, max_width: number): string Returns a copy of string that is no longer than max_width columns (as measured by wezterm.column_width). Truncation occurs by reemoving excess characters from the left end of the string.
+---@field truncate_right fun(string: string, max_width: number): string Returns a copy of string that is no longer than max_width columns (as measured by wezterm.column_width). Truncation occurs by reemoving excess characters from the right end of the string.
+---@field utf16_to_utf8 fun(string: string): string Overly specific and exists primarily to workaround this wsl.exe issue. It takes as input a string and attempts to convert it from utf16 to utf8.
+---This constant is set to the wezterm version string that is also reported
+---by running `wezterm -V`.
+---
+---This can potentially be used to adjust configuration according to the installed version
+---@field version string
+---@field gradient_colors fun(gradient: Gradient, num_colors: number): Color[]
+local Wezterm = {}
+
+---This event is emitted when the Command Palette is shown.
+---
+---Its purpose is to enable you to add additional entries to the list of commands shown in the palette.
+---
+---This hook is synchronous; calling asynchronous functions will not succeed.
+------
+---The `"augment-command-palette"` event is emitted when
+---the `Command Palette` is shown.
+---
+---Its purpose is to enable you to add additional entries
+---to the list of commands shown in the palette.
+---
+---This hook is synchronous; calling asynchronous functions will not succeed.
+---
+---The return value is an [`AugmentCommandPaletteReturn`](lua://AugmentCommandPaletteReturn) table.
+---
+---@param event "augment-command-palette"
+---@param callback AugmentCallbackWindowPane
+---@return AugmentCommandPaletteReturn
+function Wezterm.on(event, callback) end
+
+--- - The first event parameter is a `Window` object that represents the GUI window
+--- - The second event parameter is a `Pane` object that represents
+---   the pane in which the bell was rung, which may not be active pane;
+---   it could be in an unfocused pane or tab
+---
+------
+---The `"bell"` event is emitted when the `ASCII BEL` sequence
+---is emitted to a pane in the window.
+---
+---Defining an event handler doesn't alter wezterm's handling of the bell;
+---the event supplements it and allows you
+---to take additional action over the configured behavior.
+---
+---@param event "bell"
+---@param callback CallbackWindowPane
+function Wezterm.on(event, callback) end
+
+---The parameters to the event are:
+---
+--- - `tab`: The `TabInformation` for the active tab
+--- - `tabs`: An array containing `TabInformation` objects
+---         for each of the tabs in the window
+--- - `panes`: An array containing `PaneInformation` objects
+---          for each of the panes in the active tab
+--- - `config`: The effective configuration for the window
+--- - `hover`: `true` if the current tab is in the hover state
+--- - `max_width`: The maximum number of cells available
+---              to draw this tab when using the retro tab bar style
+---
+---The return value of the event can be:
+---
+--- - A string, holding the text to use for the tab title
+--- - A [`FormatItem`](lua://FormatItem) object as used in the `wezterm.format()` function.
+---   This allows formatting style and color information
+---   for individual elements within the tab
+---
+---If the event encounters an error, or returns something that is not one of the types mentioned above,
+---then the default tab title text will be computed and used instead.
+---
+---When the tab bar is computed, this event is called twice for each tab;
+---on the first pass, `hover` will be false and `max_width` will be set to `tab_max_width`.
+---WezTerm will then compute the tab widths that will fit in the tab bar,
+---and then call the event again for the set of tabs,
+---this time with appropriate hover and max_width values.
+---
+---Only the first `"format-tab-title"` event will be executed;
+---it doesn't make sense to define multiple instances of the event
+---with `multiple wezterm.on("format-tab-title", ...)` calls.
+---
+------
+---The `"format-tab-title"` event is emitted when the text for a tab title
+---needs to be recomputed.
+---
+---This event is a bit special in that it is synchronous and must return
+---as quickly as possible in order to avoid blocking the GUI thread.
+---
+---The most notable consequence of this is that some functions that are asynchronous
+---(e.g. `wezterm.run_child_process()`) are not possible to call
+---from inside the event handler and will generate a
+---`format-tab-title: runtime error: attempt to yield from outside a coroutine` error.
+---
+---@param event "format-tab-title"
+---@param callback fun(tab: MuxTab, tabs: MuxTab[], panes: Pane[], config: Config, hover: boolean, max_width: number): string|FormatItem
+function Wezterm.on(event, callback) end
+
+---A custom declared event function.
+---
+---@param event string
+---@param callback fun(...: any)
+---@return ...
+function Wezterm.on(event, callback) end
+
+---The parameters to the event are:
+---
+--- - `tab`: The `TabInformation` object for the active tab
+--- - `pane`: The `PaneInformation` object for the active pane
+--- - `tabs`: An array containing TabInformation objects
+---        for each of the tabs in the window
+--- - `panes`: An array containing `PaneInformation` objects
+---         for each of the panes in the active tab
+--- - `config`: The effective configuration for the window
+---
+---The return value of the event should be a `string`,
+---and if it is then it will be used as the title text in the window title bar.
+---
+---If the event encounters an error, or returns something that is not a `string`,
+---then the default window title text will be computed and used instead.
+---
+---Only the first `"format-window-title"` event will be executed;
+---it doesn't make sense to define multiple instances of the event
+---with multiple `wezterm.on("format-window-title", ...)` calls.
+---
+------
+---The `"format-window-title"` event is emitted when the text for the window title
+---needs to be recomputed.
+---
+---This event is a bit special in that it is synchronous and must return
+---as quickly as possible in order to avoid blocking the GUI thread.
+---
+---The most notable consequence of this is that some functions that are asynchronous
+---(e.g. `wezterm.run_child_process()`) are not possible to call
+---from inside the event handler and will generate a
+---`format-window-title: runtime error: attempt to yield from outside a coroutine` error.
+---
+---@param event "format-window-title"
+---@param callback fun(window: Window, pane: Pane, tabs: MuxTab[], panes: Pane[], config: Config): string
+function Wezterm.on(event, callback) end
+
+---@param event "gui-attached"
+---@param callback fun(domain: ExecDomain)
+function Wezterm.on(event, callback) end
+
+---@param event "gui-startup"
+---@param callback fun(cmd?: SpawnCommand)
+function Wezterm.on(event, callback) end
+
+--- - The first event parameter is a [`Window`](lua://Window) object that represents the GUI window
+--- - The second event parameter is a [`Pane`](lua://Pane) object that represents the active pane in the window
+---
+------
+---The `"new-tab-button-click"` event is emitted when the user clicks on the
+---`"new tab"` button in the tab bar.
+---
+---This is the `+` button that is drawn to the right of the last tab.
+---
+---@param event "new-tab-button-click"
+---@param callback fun(window: Window, pane: Pane, button: "Left"|"Middle"|"Right", default_action: KeyAssignment)
+function Wezterm.on(event, callback) end
+
+--- - The first event parameter is a [`Window`](lua://Window) object that represents the GUI window
+--- - The second event parameter is a [`Pane`](lua://Pane) object that represents the pane
+--- - The third event parameter is the URI string
+---
+------
+---The `"open-uri"` event is emitted when
+---the `CompleteSelectionOrOpenLinkAtMouseCursor` key/mouse assignment is triggered.
+---
+---The default action is to open the active URI in your browser,
+---but if you register for this event you can co-opt the default behavior.
+---
+---@param event "open-uri"
+---@param callback fun(window: Window, pane: Pane, uri: string)
+function Wezterm.on(event, callback) end
+
+---This event is considered to be deprecated and you should migrate to using `"update-status"`,
+---which behaves the same way, but doesn't overly focus on the right status area.
+------
+--- - The first event parameter is a [`Window`](lua://Window) object that represents the GUI window
+--- - The second event parameter is a [`Pane`](lua://Pane) object that represents the active pane in that window
+---
+---There is no defined return value for the event, but its purpose is
+---to allow you the chance to carry out some activity and then ultimately
+---call `Window:set_right_status()`.
+---
+---WezTerm will ensure that only a single instance of this event is outstanding;
+---if the hook takes longer than the `status_update_interval` to complete,
+---`wezterm` won't schedule another call until `status_update_interval_milliseconds`
+---have elapsed since the last call completed.
+---
+------
+---The `"update-right-status"` event is emitted periodically
+---(based on the interval specified by `config.status_update_interval`).
+---
+---@param event "update-right-status"
+---@param callback CallbackWindowPane
+---@deprecated
+function Wezterm.on(event, callback) end
+
+--- - The first event parameter is a [`Window`](lua://Window) object that represents the GUI window
+--- - The second event parameter is a [`Pane`](lua://Pane) object that represents the active pane in that window
+---
+---There is no defined return value for the event, but its purpose is
+---to allow you the chance to carry out some activity and then ultimately call either
+---`Window:set_right_status()` or `Window:set_left_status()`.
+---
+---WezTerm will ensure that only a single instance of this event is outstanding;
+---if the hook takes longer than the `status_update_interval` to complete,
+---`wezterm` won't schedule another call until `status_update_interval` milliseconds
+---have elapsed since the last call completed.
+---
+------
+---The `"update-status"` event is emitted periodically
+---(based on the interval specified by the status_update_interval configuration value).
+---
+---@param event "update-status"
+---@param callback CallbackWindowPane
+function Wezterm.on(event, callback) end
+
+---You can use something like the following from your shell
+---to set the user var named `foo` to the value `bar`:
+---
+---```sh
+---printf "\033]1337;SetUserVar=%s=%s\007" foo `echo -n bar | base64`
+---```
+---
+---Then, if you have this in your config:
+---
+---```lua
+---local wezterm = require 'wezterm'
+---
+---wezterm.on('user-var-changed', function(window, pane, name, value)
+---  wezterm.log_info('var', name, value)
+---end)
+---
+---return {}
+---```
+---
+---your event handler will be called with `name = 'foo'` and `value = 'bar'`.
+---
+---See `Pane:get_user_vars()`.
+---
+------
+---The `"user-var-changed"` event is emitted when a _user var escape sequence_
+---is used to set a user var.
+---
+---@param event "user-var-changed"
+---@param callback fun(window: Window, pane: Pane, name: string, value: string)
+function Wezterm.on(event, callback) end
+
+---This event is _fire-and-forget_ from the perspective of wezterm;
+---it fires the event to advise of the config change, but has no other expectations.
+---
+---If you call `Window:set_config_overrides()` from inside this event callback
+---then an additional window-config-reloaded event will be triggered.
+---
+---You should take care to avoid creating a loop by only calling `Window:set_config_overrides()`
+---when the actual override values are changed.
+---
+--- - The first event parameter is a [`Window`](lua://Window) object that represents the GUI window
+--- - The second event parameter is a [`Pane`](lua://Pane) object that represents the active pane in that window
+---
+------
+---The `"window-config-reloaded"` event is emitted when the configuration for
+---a window has been reloaded.
+---
+---This can occur when the configuration file is detected as changed
+---(when `Config.automatically_reload_config` is enabled),
+---when the configuration is explicitly reloaded via the `ReloadConfiguration` key action,
+---and when `Window:set_config_overrides()` is called for the window.
+---
+---@param event "window-config-reloaded"
+---@param callback CallbackWindowPane
+function Wezterm.on(event, callback) end
+
+---This event is _fire-and-forget_ from the perspective of wezterm;
+---it fires the event to advise of the config change, but has no other expectations.
+---
+--- - The first event parameter is a `Window` object that represents the GUI window
+--- - The second event parameter is a `Pane` object that represents the active pane in that window
+---
+------
+---The `"window-focus-changed"` event is emitted when the focus state
+---for a window is changed.
+---
+---@param event "window-focus-changed"
+---@param callback CallbackWindowPane
+function Wezterm.on(event, callback) end
+
+--- - The first event parameter is a `Window` object that represents the GUI window
+--- - The second event parameter is a `Pane` object that represents the active pane in that window
+---
+---The `"window-resized"` event is emitted when the window is resized
+---and when transitioning between full-screen and regular windowed mode.
+---
+---The event is triggered asynchronously with respect to the potentially-ongoing
+---live resize operation. `wezterm` will coalesce the stream of multiple events
+---generated by a live resize such that there can be
+---a maximum of 1 event executing and 1 event buffered.
+---
+---@param event "window-resized"
+---@param callback CallbackWindowPane
+function Wezterm.on(event, callback) end
