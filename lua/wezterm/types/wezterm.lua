@@ -18,6 +18,8 @@
 ---@class Deprecated
 ---NOTE: THIS IS DELIBERATELY LEFT EMPTY
 
+---@alias ColorSpec table<"AnsiColor", AnsiColor>|table<"Color", string>
+
 ---@alias FormatItemAttribute
 ---|{ Underline: "None"|"Single"|"Double"|"Curly"|"Dotted"|"Dashed" }
 ---|{ Intensity: "Normal"|"Bold"|"Half" }
@@ -45,20 +47,6 @@
 ---|"RIGHT_SHIFT"
 ---|"SHIFT"
 ---|"SUPER"
-
----@alias IntegratedTitleButton
----|"Hide"
----|"Maximize"
----|"Close"
-
----@alias IntegratedTitleButtonAlignment
----|"Right"
----|"Left"
-
----@alias IntegratedTitleButtonStyle
----|"Windows"
----|"Gnome"
----|"MacOsNative"
 
 ---Configures whether the window has a title bar and/or resizable border.
 ---
@@ -108,16 +96,6 @@
 ---|"TITLE|RESIZE|INTEGRATED_BUTTONS|MACOS_USE_BACKGROUND_COLOR_AS_TITLEBAR_COLOR"
 ---|string
 ---Add other valid combinations if needed
-
----@alias TabBarIntensity
----|"Normal"
----|"Half"
----|"Bold"
-
----@alias TabBarUnderline
----|"None"
----|"Single"
----|"Double"
 
 ---@alias PaletteAnsi
 ---|"black"
@@ -169,13 +147,13 @@
 ---
 ---The default is `"Normal"`.
 ---
----@field intensity? TabBarIntensity
+---@field intensity? "Normal"|"Half"|"Bold"
 ---Specify whether you want `"None"`, `"Single"` or `"Double"` underline for
 ---label shown for this tab.
 ---
 ---The default is `"None"`.
 ---
----@field underline? TabBarUnderline
+---@field underline? "None"|"Single"|"Double"
 ---Specify whether you want the text to be italic for this tab.
 ---
 ---The default is `false`.
@@ -201,26 +179,24 @@
 ---The color of the strip that goes along the top of the window
 ---(does not apply when fancy tab bar is in use).
 ---
----@field background string
+---@field background? string
 ---The active tab is the one that has focus in the window.
 ---
----@field active_tab TabBarColor
+---@field active_tab? TabBarColor
 ---Inactive tabs are the tabs that do not have focus.
 ---
----@field inactive_tab TabBarColor
+---@field inactive_tab? TabBarColor
 ---You can configure some alternate styling when the mouse pointer
 ---moves over inactive tabs.
 ---
----@field inactive_tab_hover TabBarColor
+---@field inactive_tab_hover? TabBarColor
 ---The new tab button that let you create new tabs.
 ---
----@field new_tab TabBarColor
+---@field new_tab? TabBarColor
 ---You can configure some alternate styling when the mouse pointer
 ---moves over the new tab button.
 ---
----@field new_tab_hover TabBarColor
-
----@alias ColorSpec table<"AnsiColor", AnsiColor>|table<"Color", string>
+---@field new_tab_hover? TabBarColor
 
 ---@class Palette
 ---The text color to use when the attributes are reset to default.
@@ -252,7 +228,7 @@
 ---@field brights? table<integer, PaletteBrights>
 ---A map for setting arbitrary colors ranging from 16 to 256 in the color palette.
 ---
----@field indexed? string[]|table
+---@field indexed? string[]
 ---The color of the "thumb" of the scrollbar; the segment that represents
 ---the current viewable area.
 ---
@@ -289,11 +265,11 @@
 --- - `"White"`
 ---
 ---@field copy_mode_active_highlight_fg? ColorSpec
----Colors for copy_mode and quick_select.
+---Colors for `copy_mode` and `quick_select`.
 ---
----In copy_mode, the color of the active text is:
----1. `copy_mode_active_highlight` if additional text was selected using the mouse
----2. `selection` otherwise
+---In `copy_mode`, the color of the active text is:
+--- 1. `copy_mode_active_highlight` if additional text was selected using the mouse
+--- 2. `selection` otherwise
 ---
 ---@field copy_mode_active_highlight_bg? ColorSpec
 ---Use [`AnsiColor`](lua://AnsiColor) to specify one of the ansi color palette values
@@ -317,11 +293,12 @@
 --- - `"White"`
 ---
 ---@field copy_mode_inactive_highlight_fg? ColorSpec
----Colors for copy_mode and quick_select.
+---Colors for `copy_mode` and `quick_select`.
 ---
----In copy_mode, the color of the active text is:
----1. `copy_mode_active_highlight` if additional text was selected using the mouse
----2. `selection` otherwise
+---In `copy_mode`, the color of the active text is:
+---
+--- 1. `copy_mode_active_highlight` if additional text was selected using the mouse
+--- 2. `selection` otherwise
 ---
 ---@field copy_mode_inactive_highlight_bg? ColorSpec
 ---@field quick_select_label_fg? ColorSpec
@@ -359,11 +336,6 @@
 ---|"UltraCondensed"
 ---|"UltraExpanded"
 
----@alias FontStyle
----|"Normal"
----|"Italic"
----|"Oblique"
-
 ---@alias FreeTypeLoadTarget
 ---|"Normal"
 ---|"HorizontalLcd"
@@ -380,6 +352,7 @@
 ---|"NO_AUTOHINT"
 
 ---TODO: Find out what do the undocumented options do
+
 ---@alias HarfbuzzFeatures
 ---|"calt=0"
 ---|"clig=0"
@@ -439,7 +412,7 @@
 ---@field stretch? FontStretch
 ---Whether the font should be an italic variant.
 ---
----@field style? FontStyle
+---@field style? "Normal"|"Italic"|"Oblique"
 ---@field is_fallback? boolean
 ---@field is_synthetic? boolean
 ---@field scale? number
@@ -448,8 +421,6 @@
 ---
 ---@class FontFamilyAttributes: FontAttributes
 ---@field family string
-
----@class FontFamilyExtendedAttributes: FontFamilyAttributes
 ---@field harfbuzz_features? HarfbuzzFeatures[]
 ---@field freetype_load_target? FreeTypeLoadTarget
 ---@field freetype_render_target? FreeTypeLoadTarget
@@ -992,8 +963,10 @@
 ---
 ---@field battery_info fun(): BatteryInfo[]
 ---Given a `string` parameter, returns the number of columns that text occupies
----in the terminal, which is useful together with `format-tab-title` and `update-right-status`
----to compute/layout tabs and status information.
+---in the terminal.
+---
+---This is useful together with the `"format-tab-title"` and `"update-right-status"`
+---events to compute/layout tabs and status information.
 ---
 ---@field column_width fun(value: string): number
 ---Returns a `Config` object that can be used to define your configuration.
@@ -1034,7 +1007,23 @@
 ---but with `"WSL:"` prefixed to it.
 ---
 ---@field default_wsl_domains fun(): WslDomain[]
----@field emit fun(event: string, ...: any)
+---`wezterm.emit` resolves the registered callback(s) for the specified event name
+---and calls each of them in turn, passing the additional arguments
+---through to the callback.
+---
+---If a callback returns `false` then it prevents later callbacks from being called
+---for this particular call to `wezterm.emit`, and `wezterm.emit` will return `false`
+---to indicate that no additional/default processing should take place.
+---
+---If none of the callbacks returned `false` then `wezterm.emit` will itself return `true`
+---to indicate that default processing should take place.
+---
+---This function has no special knowledge of which events are defined by wezterm,
+---or what their required arguments might be.
+---
+---See [`wezterm.on`](lua://Wezterm.on) for more information about event handling.
+---
+---@field emit fun(event: string, ...: any): boolean
 ---This function will parse your ssh configuration file(s) and extract from them
 ---the set of literal (non-pattern, non-negated) host names that are specified
 ---in `Host` and `Match` stanzas contained in those configuration files
@@ -1047,36 +1036,6 @@
 ---This constant is set to the directory containing the wezterm executable file.
 ---
 ---@field executable_dir string
----This function constructs a Lua table that corresponds to the internal [`FontAttributes`](lua://FontAttributes) struct
----that is used to select a single named font:
----
----```lua
----local wezterm = require 'wezterm'
----
----return {
----  font = wezterm.font 'JetBrains Mono',
----}
----```
----
----The first parameter is the name of the font; the name can be one of the following types of names:
----
---- - The font family name, e.g. `"JetBrains Mono"`. The family name doesn't include any style information
----   (such as `weight`, `stretch` or `italic`), which can be specified via the `attributes` parameter.
----   This is the recommended name to use for the font, as it the most compatible way to resolve
----   an installed font.
---- - The computed full name, which is the family name with the sub-family
----   (which incorporates style information) appended, e.g. `"JetBrains Mono Regular"`.
---- - The postscript name, which is an ostensibly unique name identifying a given font and style
----   that is encoded into the font by the font designer.
----
----When specifying a font using its family name, the second attributes parameter is
----an **optional** table that can be used to specify style attributes.
----
----See [`FontAttributes`](lua://FontAttributes)
----See [`FontFamilyAttributes`](lua://FontFamilyAttributes)
----See [`FontFamilyExtendedAttributes`](lua://FontFamilyExtendedAttributes)
----
----@field font (fun(attributes: FontFamilyAttributes|FontFamilyExtendedAttributes): FontFamilyAttributes)|(fun(name: string, attributes: FontAttributes?): FontFamilyAttributes)
 ---TODO: Complete description.
 ---
 ---[Info](https://wezterm.org/config/lua/wezterm/font_with_fallback.html).
@@ -1117,9 +1076,15 @@
 ---@field log_info fun(msg: string, ...: any)
 ---@field log_warn fun(msg: string, ...: any)
 ---@field open_with fun(path_or_url: string, application: string?)
----@field pad_left fun(string: string, min_width: integer): string Returns a copy of string that is at least min_width columns (as measured by wezterm.column_width)
----@field pad_right fun(string: string, min_width: integer): string Returns a copy of string that is at least min_width columns (as measured by wezterm.column_width).
----@field permute_any_or_no_mods any #TODO
+---Returns a copy of a string that is at least `min_width` columns
+---(as measured by `wezterm.column_width()`).
+---
+---@field pad_left fun(string: string, min_width: integer): string
+---Returns a copy of a string that is at least min_width columns
+---(as measured by `wezterm.column_width()`).
+---
+---@field pad_right fun(string: string, min_width: integer): string
+---@field permute_any_or_no_mods any
 ---@field permute_any_mods (fun(tbl: MouseBindingBase): MouseBinding)|(fun(tbl: KeyBindingBase): KeyBinding)
 ---@field read_dir fun(path: string): string Returns an array containing the absolute file names of the directory specified. Due to limitations in the Lua bindings, all of the paths must be able to be represented as UTF-8 or this function will generate an error.
 ---@field reload_configuration fun(): nil Immediately causes the configuration to be reloaded and re-applied.
@@ -1130,16 +1095,43 @@
 ---@field shell_split fun(line: string): string[] Splits a command line into an argument array according to posix shell rules.
 ---@field sleep_ms fun(milliseconds: number): nil wezterm.sleep_ms suspends execution of the script for the specified number of milliseconds. After that time period has elapsed, the script continues running at the next statement.
 ---@field split_by_newlines fun(string: string): string[] takes the input string and splits it by newlines (both \n and \r\n are recognized as newlines) and returns the result as an array of strings that have the newlines removed.
----@field strftime fun(format: string): string Formats the current local date/time into a string using the Rust chrono strftime syntax.
----@field strftime_utc fun(format: string): string Formats the current UTC date/time into a string using the Rust chrono strftime syntax.
----@field target_triple string This constant is set to the Rust target triple for the platform on which wezterm was built. This can be useful when you wish to conditionally adjust your configuration based on the platform.
----@field truncate_left fun(string: string, max_width: number): string Returns a copy of string that is no longer than max_width columns (as measured by wezterm.column_width). Truncation occurs by reemoving excess characters from the left end of the string.
----@field truncate_right fun(string: string, max_width: number): string Returns a copy of string that is no longer than max_width columns (as measured by wezterm.column_width). Truncation occurs by reemoving excess characters from the right end of the string.
----@field utf16_to_utf8 fun(string: string): string Overly specific and exists primarily to workaround this wsl.exe issue. It takes as input a string and attempts to convert it from utf16 to utf8.
+---Formats the current local date/time into a string using
+---the Rust `chrono strftime` syntax.
+---
+---@field strftime fun(format: string): string
+---Formats the current UTC date/time into a string using
+---the Rust `chrono strftime` syntax.
+---
+---@field strftime_utc fun(format: string): string
+---This constant is set to the Rust target triple for
+---the platform on which wezterm was built.
+---
+---This can be useful when you wish to conditionally adjust your configuration
+---based on the platform.
+---
+---@field target_triple string
+---Returns a copy of a string that is no longer than `max_width` columns
+---(as measured by `wezterm.column_width()`).
+---
+---Truncation occurs by reemoving excess characters from the left end of the string.
+---
+---@field truncate_left fun(string: string, max_width: number): string
+---Returns a copy of a string that is no longer than `max_width` columns
+---(as measured by `wezterm.column_width()`).
+---
+---Truncation occurs by reemoving excess characters from the right end of the string.
+---
+---@field truncate_right fun(string: string, max_width: number): string
+---Overly specific and exists primarily to workaround this wsl.exe issue.
+---It takes as input a string and attempts to convert it from utf16 to utf8.
+---
+---@field utf16_to_utf8 fun(string: string): string
 ---This constant is set to the wezterm version string that is also reported
 ---by running `wezterm -V`.
 ---
----This can potentially be used to adjust configuration according to the installed version
+---This can potentially be used to adjust configuration according to
+---the installed version.
+---
 ---@field version string
 ---@field gradient_colors fun(gradient: Gradient, num_colors: number): Color[]
 local Wezterm = {}
@@ -1437,3 +1429,66 @@ function Wezterm.on(event, callback) end
 ---@param event "window-resized"
 ---@param callback CallbackWindowPane
 function Wezterm.on(event, callback) end
+
+---This function constructs a Lua table that corresponds to the internal
+---[`FontFamilyAttributes`](lua://FontFamilyAttributes) struct that is used to select a single named font:
+---
+---```lua
+---local wezterm = require 'wezterm'
+---
+---return {
+---  font = wezterm.font 'JetBrains Mono',
+---}
+---```
+---
+---The first parameter is the name of the font; the name can be one of the following types of names:
+---
+--- - The font family name, e.g. `"JetBrains Mono"`. The family name doesn't include any style information
+---   (such as `weight`, `stretch` or `italic`), which can be specified via the `attributes` parameter.
+---   This is the recommended name to use for the font, as it the most compatible way to resolve
+---   an installed font.
+--- - The computed full name, which is the family name with the sub-family
+---   (which incorporates style information) appended, e.g. `"JetBrains Mono Regular"`.
+--- - The postscript name, which is an ostensibly unique name identifying a given font and style
+---   that is encoded into the font by the font designer.
+---
+---When specifying a font using its family name, the second attributes parameter is
+---an **optional** table that can be used to specify style attributes.
+---
+---See [`FontAttributes`](lua://FontAttributes) and [`FontFamilyAttributes`](lua://FontFamilyAttributes).
+---
+---@param name string
+---@param attributes? FontAttributes
+---@return Fonts|FontFamilyAttributes
+function Wezterm.font(name, attributes) end
+
+---This function constructs a Lua table that corresponds to the internal
+---[`FontFamilyAttributes`](lua://FontFamilyAttributes) struct that is used to select a single named font.
+---
+---You can use the expanded form mentioned above to override freetype and harfbuzz settings
+---just for the specified font.
+---
+---This example shows how to disable the default ligature feature just for this particular font:
+---
+---```lua
+---local wezterm = require 'wezterm'
+---return {
+---  font = wezterm.font {
+---    family = 'JetBrains Mono',
+---    harfbuzz_features = { 'calt=0', 'clig=0', 'liga=0' },
+---  },
+---}
+---```
+---
+---The following options can be specified in the same way:
+---
+--- - [`harfbuzz_features`](lua://FontFamilyAttributes.harfbuzz_features)
+--- - [`freetype_load_target`](lua://FontFamilyAttributes.freetype_load_target)
+--- - [`freetype_render_target`](lua://FontFamilyAttributes.freetype_render_target)
+--- - [`freetype_load_flags`](lua://FontFamilyAttributes.freetype_load_flags)
+--- - [`assume_emoji_presentation`](lua://FontFamilyAttributes.assume_emoji_presentation) to control
+---   whether a font is considered to have emoji (rather than text) presentation glyphs for emoji
+---
+---@param attributes FontFamilyAttributes
+---@return Fonts|FontFamilyAttributes
+function Wezterm.font(attributes) end
