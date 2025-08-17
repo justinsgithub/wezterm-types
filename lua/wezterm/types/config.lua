@@ -290,7 +290,7 @@
 ---
 ---@field char_select_font_size? number
 ---Defines the set of exit codes that are considered to be a "clean" exit
----by 'config.exit_behavior` when the program running in the terminal completes.
+---by `config.exit_behavior` when the program running in the terminal completes.
 ---
 ---Acceptable values are an array of integer exit codes that you wish
 ---to treat as successful.
