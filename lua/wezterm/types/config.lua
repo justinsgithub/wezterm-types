@@ -5,13 +5,8 @@
 ---@module "wezterm.types.objects"
 ---@module "wezterm.types.wezterm"
 
----@alias HorizontalAlign
----|"Left"
----|"Center"
----|"Right"
-
 ---@class ContentAlignment
----@field horizontal HorizontalAlign
+---@field horizontal "Left"|"Center"|"Right"
 ---@field vertical "Top"|"Center"|"Bottom"
 
 ---@alias DroppedFileQuoting
@@ -137,7 +132,7 @@
 --- - `"Center"`
 --- - `"Right"`
 ---
----@field horizontal_align? HorizontalAlign
+---@field horizontal_align? "Left"|"Center"|"Right"
 ---Same as `vertical_offset` but applies to the x-direction.
 ---
 ---@field horizontal_offset? number|string
@@ -191,10 +186,9 @@
 ---|Fonts
 ---|FontAttributes
 ---|FontFamilyAttributes
----|FontFamilyExtendedAttributes
 
 ---@class FontRules
----@field font? Fonts|FontAttributes|FontFamilyAttributes
+---@field font? AllFontAttributes
 ---@field italic? boolean
 ---@field reverse? boolean
 ---@field strikethrough? boolean
@@ -269,9 +263,8 @@
 --- - ambiguous character width for CJK text
 --- - square emojis defined as EAW=Neutral
 ---
----The `cell_widths` configuration parameter allows users
----to override the default character width.
----This setting takes priority over the `treat_east_asian_ambiguous_width_as_wide` setting.
+---The `config.cell_widths` configuration parameter allows users to override the default character width.
+---This setting takes priority over the `config.treat_east_asian_ambiguous_width_as_wide` setting.
 ---
 ---Note that changing this setting may have consequences for layout in text UI applications
 ---if their expectation of width differs from your choice of configuration.
@@ -297,19 +290,18 @@
 ---
 ---@field char_select_font_size? number
 ---Defines the set of exit codes that are considered to be a "clean" exit
----by exit_behavior when the program running in the terminal completes.
+---by 'config.exit_behavior` when the program running in the terminal completes.
 ---
 ---Acceptable values are an array of integer exit codes that you wish
 ---to treat as successful.
 ---
 ---For example, if you often `CTRL-C` a program and then `CTRL-D`,
 ---bash will typically exit with status `130` to indicate
----that a program was terminated with `SIGINT`,
----but that bash itself wasn't.
----In that situation you may wish to set this config to treat `130` as OK:
+---that a program was terminated with `SIGINT`, but that bash itself wasn't.
+---In that situation you may wish to set this config to treat `130` as `OK`:
 ---
 ---```lua
----config.clean_exit_codes = { 130 }
+---config.clean_exit_codes = { 130 } --- `OK`
 ---```
 ---
 ---Note that `0` is always treated as a clean exit code
@@ -318,27 +310,26 @@
 ---@field clean_exit_codes? integer[]
 ---The color scheme to be used.
 ---
----See [Colors & Appearance](https://wezterm.org/config/appearance.html#defining-a-color-scheme-in-your-weztermlua).
+---See [Colors & Appearance](https://wezterm.org/config/appearance.html).
 ---
 ---@field color_scheme? string
 ---@field color_scheme_dirs? string[]
 ---Specifies various named color schemes in your configuration file.
 ---
----Described in more detail in [Colors & Appearance](https://wezterm.org/config/appearance.html#defining-a-color-scheme-in-your-weztermlua).
+---Described in more detail in [Colors & Appearance](https://wezterm.org/config/appearance.html).
 ---
 ---@field color_schemes? table<string, Palette>
 ---Specifies the color palette.
 ---
----Described in more detail in [Colors & Appearance](https://wezterm.org/config/appearance.html#defining-a-color-scheme-in-your-weztermlua).
+---Described in more detail in [Colors & Appearance](https://wezterm.org/config/appearance.html).
 ---
 ---@field colors? Palette
 ---@field command_palette_bg_color? string
 ---@field command_palette_fg_color? string
 ---Configures the font to use for command palette.
 ---
----The command_palette_font setting can specify a set of fallbacks and other options,
+---The `config.command_palette_font` setting can specify a set of fallbacks and other options,
 ---and is described in more detail in the [Fonts section](https://wezterm.org/config/fonts.html).
----
 ---If not specified, the font is same as the font in `window_frame.font`.
 ---
 ---You will typically use `wezterm.font()` or `wezterm.font_with_fallback()` to specify the font.
@@ -354,7 +345,8 @@
 ---
 ---@field command_palette_font_size? number
 ---Specifies the number of rows displayed by the command palette.
----`ActivateCommandPalette`.
+---
+---[`ActivateCommandPalette`](https://wezterm.org/config/lua/keyassignment/ActivateCommandPalette.html).
 ---
 ---If unset or `nil`, a default value based on the terminal display will be used.
 ---
@@ -408,14 +400,14 @@
 ---There are three fields supported:
 ---
 --- - `pid_file`: Specify the location of the PID and lock file.
----            The default location is `$XDG_RUNTIME_DIR/wezterm/pid` on X11/Wayland systems,
----            or `$HOME/.local/share/wezterm/pid`
+---             The default location is `$XDG_RUNTIME_DIR/wezterm/pid` on X11/Wayland systems,
+---             or `$HOME/.local/share/wezterm/pid`
 --- - `stdout`: Specifies where a log of the `stdout` stream from the daemon will be placed.
----          The default is `$XDG_RUNTIME_DIR/wezterm/stdout` on X11/Wayland systems,
----          or `$HOME/.local/share/wezterm/stdout`
+---           The default is `$XDG_RUNTIME_DIR/wezterm/stdout` on X11/Wayland systems,
+---           or `$HOME/.local/share/wezterm/stdout`
 --- - `stderr`: Specifies where a log of the `stderr` stream from the daemon will be placed.
----          The default is `$XDG_RUNTIME_DIR/wezterm/stderr` on X11/Wayland systems,
----          or `$HOME/.local/share/wezterm/stderr`
+---           The default is `$XDG_RUNTIME_DIR/wezterm/stderr` on X11/Wayland systems,
+---           or `$HOME/.local/share/wezterm/stderr`
 ---
 ---@field daemon_options? DaemonOptions
 ---When set to `true`, each key event will be logged by the GUI layer
@@ -800,10 +792,10 @@
 ---Specifies the height of a new window, expressed in character cells.
 ---
 ---@field initial_rows? integer
----@field integrated_title_button_alignment? IntegratedTitleButtonAlignment
+---@field integrated_title_button_alignment? "Right"|"Left"
 ---@field integrated_title_button_color? "Auto"|AnsiColor
----@field integrated_title_button_style? IntegratedTitleButtonStyle
----@field integrated_title_buttons? IntegratedTitleButton[]
+---@field integrated_title_button_style? "Windows"|"Gnome"|"MacOsNative"
+---@field integrated_title_buttons? ("Hide"|"Maximize"|"Close")[]
 ---When combined with `window_background_opacity`, enables background blur
 ---using the KDE Wayland blur protocol.
 ---
@@ -993,7 +985,7 @@
 ---config.pane_select_font = wezterm.font 'Roboto'
 ---```
 ---
----@field pane_select_font? Fonts|FontAttributes|FontFamilyAttributes
+---@field pane_select_font? AllFontAttributes
 ---Depending on the OS and windowing environment, there are a number of different ways
 ---to access the GPU.
 ---
