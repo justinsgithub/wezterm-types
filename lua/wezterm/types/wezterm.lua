@@ -434,24 +434,26 @@
 ---@field fonts FontAttributes[]
 
 ---@class WindowFrameConfig
----@field inactive_titlebar_bg? string
 ---@field active_titlebar_bg? string
----@field inactive_titlebar_fg? string
----@field active_titlebar_fg? string
----@field inactive_titlebar_border_bottom? string
 ---@field active_titlebar_border_bottom? string
----@field button_fg? string
----@field button_bg? string
----@field button_hover_fg? string
----@field button_hover_bg? string
----@field border_left_width? string|number
----@field border_right_width? string|number
----@field border_top_height? string|number
+---@field active_titlebar_fg? string
+---@field border_bottom_color? string
 ---@field border_bottom_height? string|number
 ---@field border_left_color? string
+---@field border_left_width? string|number
 ---@field border_right_color? string
+---@field border_right_width? string|number
 ---@field border_top_color? string
----@field border_bottom_color? string
+---@field border_top_height? string|number
+---@field button_bg? string
+---@field button_fg? string
+---@field button_hover_bg? string
+---@field button_hover_fg? string
+---@field font? AllFontAttributes
+---@field font_size? number
+---@field inactive_titlebar_bg? string
+---@field inactive_titlebar_border_bottom? string
+---@field inactive_titlebar_fg? string
 
 ---@class TabBarStyle
 ---@field new_tab? string

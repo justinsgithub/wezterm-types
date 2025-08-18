@@ -216,6 +216,12 @@
 ---At the time of writing, it is not a complete list.
 ---
 ---@class Config
+---@field adjust_window_size_when_changing_font_size? boolean
+---@field allow_download_protocols? boolean
+---@field allow_square_glyphs_to_overflow_width? "Always"|"Never"|"WhenFollowedBySpace"
+---@field allow_win32_input_mode? boolean
+---@field alternate_buffer_wheel_scroll_speed? integer
+---@field animation_fps? integer
 ---Control whether `config.custom_block_glyphs` are rendered
 ---using anti-aliasing or not.
 ---
@@ -223,6 +229,7 @@
 ---look so nice at smaller font sizes.
 ---
 ---@field anti_alias_custom_block_glyphs? boolean
+---@field audible_bell? "Disabled"|"SystemBeep"
 ---When `true`, watch the config file and reload it automatically
 ---when it is detected as changing.
 ---
@@ -254,6 +261,8 @@
 ---and then match it against the mouse assignments.
 ---
 ---@field bypass_mouse_reporting_modifiers? Modifiers
+---@field canonicalize_pasted_newlines? NewlineCanon
+---@field cell_width? number
 ---The character width recommended by the Unicode standard is occasionally
 ---inconsistent and may not align with linguistic tradition.
 ---
@@ -279,16 +288,19 @@
 ---Configures the font to use for character selection.
 ---
 ---The `char_select_font` setting can specify a set of fallbacks and other options,
----and is described in more detail in the Fonts section.
+---and is described in more detail in the [Fonts section](https://wezterm.org/config/fonts.html).
 ---
----If not specified, the font is same as the font in `window_frame.font`
+---If not specified, the font is same as the font in [`config.window_frame.font`](lua://WindowFrameConfig.font).
 ---
----You will typically use `wezterm.font` or `wezterm.font_with_fallback` to specify the font.
+---You will typically use [`wezterm.font`](lua://Wezterm.font) or
+---[`wezterm.font_with_fallback`](lua://Wezterm.font_with_fallback) to specify the font.
 ---
 ---@field char_select_font? AllFontAttributes
 ---Specifies the size of the font used with [`CharSelect`](https://wezterm.org/config/lua/keyassignment/CharSelect.html).
 ---
 ---@field char_select_font_size? number
+---@field check_for_updates? boolean
+---@field check_for_updates_interval_seconds? integer
 ---Defines the set of exit codes that are considered to be a "clean" exit
 ---by `config.exit_behavior` when the program running in the terminal completes.
 ---
@@ -330,9 +342,10 @@
 ---
 ---The `config.command_palette_font` setting can specify a set of fallbacks and other options,
 ---and is described in more detail in the [Fonts section](https://wezterm.org/config/fonts.html).
----If not specified, the font is same as the font in `window_frame.font`.
+---If not specified, the font is same as the font in [`config.window_frame.font`](lua://WindowFrameConfig.font).
 ---
----You will typically use `wezterm.font()` or `wezterm.font_with_fallback()` to specify the font.
+---You will typically use [`wezterm.font`](lua://Wezterm.font) or
+---[`wezterm.font_with_fallback`](lua://Wezterm.font_with_fallback) to specify the font.
 ---
 ---To specify `config.command_palette_font`:
 ---
@@ -624,7 +637,8 @@
 ---The font setting can specify a set of fallbacks and other options,
 ---and is described in more detail in the [Fonts section](https://wezterm.org/config/fonts.html).
 ---
----You will typically use `wezterm.font` or `wezterm.font_with_fallback` to specify the font.
+---You will typically use [`wezterm.font`](lua://Wezterm.font) or
+---[`wezterm.font_with_fallback`](lua://Wezterm.font_with_fallback) to specify the font.
 ---
 ---@field font? AllFontAttributes
 ---DEPRECATED
@@ -661,6 +675,8 @@
 ---has no impact on the match: the rule doesn't care about that attribute
 ---and will match based on the attributes that were listed.
 ---
+---See [`FontRules`](lua://FontRules).
+---
 ---@field font_rules? FontRules
 ---Specifies the method by which text is mapped to glyphs in the available fonts.
 ---
@@ -671,13 +687,11 @@
 ---
 ---@field font_shaper? "Harfbuzz"
 ---@field font_size? number
----When `config.force_reverse_video_cursor = true`, override the
----`config.cursor_fg`, `config.cursor_bg`, `config.cursor_border`
+---When `true` it'll override the `cursor_fg`, `cursor_bg`, `cursor_border`
 ---settings from the color scheme and force the cursor to use reverse video colors
 ---based on the foreground and background colors.
 ---
----When `config.force_reverse_video_cursor = false` (the default),
----`config.cursor_fg`, `config.cursor_bg` and `config.cursor_border`
+---When `false` (the default) `cursor_fg`, `cursor_bg` and `cursor_border`
 ---color scheme settings are applied as normal.
 ---
 ---If escape sequences are used to change the cursor color,
@@ -803,11 +817,10 @@
 ---a crystal clear transparent window effect.
 ---
 ---@field kde_window_background_blur? boolean
----Controls how keys without an explicit phys: or mapped: prefix are treated.
+---Controls how keys without an explicit `phys:` or `mapped:` prefix are treated.
 ---
----If `config.key_map_preference = "Mapped"` (the default), then `mapped:`
----is assumed.
----If `config.key_map_preference = "Physical"` then `phys:` is assumed.
+---If `"Mapped"` (the default), then `mapped:` is assumed.
+---Otherwise if `"Physical"` then `phys:` is assumed.
 ---
 ---Default key assignments also respect `config.key_map_preference`.
 ---
@@ -828,7 +841,7 @@
 ---You can define your own entries for the [Launcher Menu](https://wezterm.org/config/launch.html#the-launcher-menu)
 ---using this configuration setting.
 ---
----Each entry in `launch_menu` is an instance of a `SpawnCommand` object.
+---Each entry in `config.launch_menu` is an instance of a [`SpawnCommand`](lua://SpawnCommand) object.
 ---
 ---@field launch_menu? SpawnCommand[]
 ---A leader key is a a modal modifier key. If leader is specified in the configuration then pressing
@@ -852,7 +865,7 @@
 ---@field leader? LeaderKey
 ---Scales the computed line height to adjust the spacing between successive rows of text.
 ---
----The default line height is controlled by the `config.font_size` configuration option.
+---The default line height is controlled by the [`config.font_size`](lua://Config.font_size) configuration option.
 ---
 ---If you feel that your chosen font feels too vertically cramped then you can set
 ---`config.line_height = 1.2` to increase the vertical spacing by 20%.
@@ -901,7 +914,7 @@
 ---```
 ---
 ---@field macos_fullscreen_extend_behind_notch? boolean
----When combined with window_background_opacity, configures the blur radius amount
+---When combined with [`config.window_background_opacity`](lua://Config.window_background_opacity) it configures the blur radius amount
 ---used by macOS when compositing the window on the screen.
 ---
 ---This can be used to produce a translucent window effect
@@ -975,9 +988,10 @@
 ---The `pane_select_font` setting can specify a set of fallbacks and other options,
 ---and is described in more detail in the [Fonts section](https://wezterm.org/config/fonts.html).
 ---
----If not specified, the font is same as the font in `window_frame.font`.
+---If not specified, the font is same as the font in [`config.window_frame.font`](lua://WindowFrameConfig.font).
 ---
----You will typically use `wezterm.font` or `wezterm.font_with_fallback` to specify the font.
+---You will typically use [`wezterm.font`](lua://Wezterm.font) or
+---[`wezterm.font_with_fallback`](lua://Wezterm.font_with_fallback) to specify the font.
 ---
 ---To specify `config.pane_select_font`:
 ---
@@ -986,6 +1000,12 @@
 ---```
 ---
 ---@field pane_select_font? AllFontAttributes
+---If non-zero, specifies the period (in seconds) at which various
+---statistics are logged.
+---
+---Note that there is a minimum period of 10 seconds.
+---
+---@field periodic_stat_logging? integer
 ---Depending on the OS and windowing environment, there are a number of different ways
 ---to access the GPU.
 ---
@@ -1020,7 +1040,7 @@
 ---on the home raw, top row, bottom row, followed by the characters
 ---in the middle of the keyboard that may be harder to reach.
 ---
----@field quick_select_alphabet? string
+---@field quick_select_alphabet? "qwerty"|"qwertz"|"azerty"|"dvorak"|"colemak"
 ---Specify additional patterns to match when in quick select mode.
 ---
 ---This setting is a table listing out a set of regular expressions.
@@ -1057,11 +1077,11 @@
 ---will be used instead.
 ---
 ---@field reverse_video_cursor_min_contrast? number
----If false, do not scroll to the bottom of the terminal when
+---If `false`, do not scroll to the bottom of the terminal when
 ---you send input to the terminal.
 ---
 ---The default is to scroll to the bottom when you send input
----to the terminal.
+---to the terminal (`true`).
 ---
 ---@field scroll_to_bottom_on_input? boolean
 ---How many lines of scrollback you want to retain.
@@ -1095,7 +1115,7 @@
 ---
 ---When `false`, no numeric prefix is shown.
 ---
----The tab_and_split_indices_are_zero_based setting controls
+---The [`config.tab_and_split_indices_are_zero_based`](lua://Config.tab_and_split_indices_are_zero_based) setting controls
 ---whether numbering starts with `0` or `1`.
 ---
 ---@field show_tab_index_in_tab_bar? boolean
@@ -1127,8 +1147,8 @@
 ---The default is `false` and the tab shows a one-based index.
 ---
 ---@field tab_and_split_indices_are_zero_based? boolean
----When `config.tab_bar_at_bottom = true`, the tab bar will be rendered
----at the bottom of the window rather than the top of the window.
+---When `true`, the tab bar will be rendered at the bottom of the window
+---rather than the top of the window.
 ---
 ---The default is `false`.
 ---
@@ -1145,6 +1165,8 @@
 ---What to set the `$TERM` variable to.
 ---
 ---@field term? string
+---@field text_blink_ease_in? EasingFunction
+---@field text_blink_ease_out? EasingFunction
 ---@field text_blink_rapid_ease_in? EasingFunction
 ---@field text_blink_rapid_ease_out? EasingFunction
 ---Specifies how often blinking text (normal speed) transitions
@@ -1170,8 +1192,9 @@
 ------
 ---Note that blinking is no longer a binary blink, but interpolates
 ---between invisible and visible text using an easing function.
----See `text_blink_rapid_ease_in` and `text_blink_rapid_ease_out`
----for more information.
+---
+---See [`config.text_blink_rapid_ease_in`](lua://Config.text_blink_rapid_ease_in)
+---and [`config.text_blink_rapid_ease_out`](lua://Config.text_blink_rapid_ease_out) for more information.
 ---
 ---@field text_blink_rate_rapid? integer
 ---An optional floating point value that defaults to `nil`.
@@ -1209,7 +1232,7 @@
 ---by sending plain `Ctrl-Alt` keys, which won't be understood as `AltGr`.
 ---
 ---To fix this behavior you can tell WezTerm to treat left `Ctrl-Alt` keys as `AltGr`
----with the option `treat_left_ctrlalt_as_altgr`.
+---with the option `config.treat_left_ctrlalt_as_altgr`.
 ---
 ---Note that the key bindings using separate `Ctrl` and `Alt` won't be triggered anymore.
 ---
@@ -1249,25 +1272,26 @@
 ---
 ---This option is only applicable when you have configured `config.front_end = "WebGpu"`.
 ---
----You can use the `wezterm.gui.enumerate_gpus()` function to return a list of GPUs.
+---You can use the [`wezterm.gui.enumerate_gpus()`](lua://Wezterm.Gui.enumerate_gpus) function
+---to return a list of GPUs.
 ---
 ---@field webgpu_preferred_adapter? GpuInfo
 ---When combined with `config.win32_system_backdrop = "Acrylic"` on Windows systems
 ---earlier than build 22621, this option specifies the accent color used
 ---with the Acrylic composition effect.
 ---
----See also `config.win32_system_backdrop`.
+---See also [`config.win32_system_backdrop`](lua://Config.win32_system_backdrop).
 ---
 ---@field win32_acrylic_accent_color? string
----When combined with window_background_opacity,
----chooses from available window background effects provided by Windows.
+---When combined with [`config.window_background_opacity`](lua://Config.window_background_opacity)
+---it chooses from available window background effects provided by Windows.
 ---
 ---@field win32_system_backdrop? SystemBackdrop
----Dynamically generates a `window_background_image`
+---Dynamically generates a [`config.window_background_image`](lua://Config.window_background_image)
 ---from the provided gradient specification.
 ---
 ---When `config.window_background_gradient` is configured,
----the value for `config.window_background_image` is ignored.
+---the value for [`config.window_background_image`](lua://Config.window_background_image) is ignored.
 ---
 ---Linear gradients with vertical or horizontal orientation are supported.
 ---
@@ -1286,9 +1310,8 @@
 ---Specifies the alpha value to use when rendering the background
 ---of the window.
 ---
----The background is taken either from `window_background_image`,
----or if there is none, the background color of the cell
----in the current position.
+---The background is taken either from [`config.window_background_image`](lua://config.window_background_image)
+---or, if there is none, the background color of the cell in the current position.
 ---
 ---The default is `1.0` which is 100% opaque.
 ---Setting it to a number between `0.0` and `1.0`
@@ -1334,9 +1357,10 @@
 ---                                                      This option doesn't make sense to use without
 ---                                                      also including `"TITLE|RESIZE"` in the set of decorations
 ---
+---See [`WindowDecorations`](lua://WindowDecorations) for more info.
+---
 ---@field window_decorations? WindowDecorations
 ---This setting is applicable primarily on Wayland systems when client side decorations are in use.
----
 ---It allows you to customize the colors of the window frame.
 ---
 ---Some of these colors are used by the fancy tab bar.
@@ -1383,25 +1407,30 @@
 ---The default value of `font` is `Roboto`.
 ---The default value of `font_size` is `10pt` on Windows and `12pt` on other systems.
 ---
+---See [`WindowFrameConfig`](lua://WindowFrameConfig) for more info.
+---
 ---@field window_frame? WindowFrameConfig
 ---Controls the amount of padding between the window border and the terminal cells.
 ---
 ---Padding is measured in pixels.
 ---
----If `config.enable_scroll_bar` is `true`, then the value you set
+---If [`config.enable_scroll_bar`](lua://Config.enable_scroll_bar) is `true`, then the value you set
 ---for right will control the width of the scrollbar.
+---
 ---If you have enabled the scrollbar and have set right to `0` then
 ---the right padding (and thus the scrollbar width)
 ---will instead match the width of a cell.
 ---
+---See [`WindowPadding`](lua://WindowPadding) for more info.
+---
 ---@field window_padding? WindowPadding
 ---Configures WSL domains.
 ---
----This option accepts a list of `WslDomain` objects.
+---This option accepts a list of [`WslDomain`](lua://WslDomain) objects.
 ---
 ---The default is a list derived from parsing the output of `wsl -l -v`.
 ---
----See `wezterm.default_wsl_domains()` for more about that list,
+---See [`wezterm.default_wsl_domains()`](lua://Wezterm.default_wsl_domains) for more about that list,
 ---and on how to override it.
 ---
 ---@field wsl_domains? WslDomain[]
@@ -1424,23 +1453,3 @@
 ---will cause wezterm to connect to fcitx regardless of the value of `XMODIFIERS`.
 ---
 ---@field xim_im_name? string
----@field animation_fps? integer
----@field text_blink_ease_in? EasingFunction
----@field text_blink_ease_out? EasingFunction
----If non-zero, specifies the period (in seconds) at which various
----statistics are logged.
----
----Note that there is a minimum period of 10 seconds.
----
----@field periodic_stat_logging? integer
----@field adjust_window_size_when_changing_font_size? boolean
----@field allow_download_protocols? boolean
----@field allow_square_glyphs_to_overflow_width? "Always"|"Never"|"WhenFollowedBySpace"
----@field allow_win32_input_mode? boolean
----@field alternate_buffer_wheel_scroll_speed? integer
----@field audible_bell? "Disabled"|"SystemBeep"
----@field canonicalize_pasted_newlines? NewlineCanon
----@field cell_width? any
----@field check_for_updates? boolean
----@field check_for_updates_interval_seconds? integer
----@field cursor_thickess? string|number
