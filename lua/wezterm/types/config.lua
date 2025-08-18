@@ -5,24 +5,20 @@
 ---@module "wezterm.types.objects"
 ---@module "wezterm.types.wezterm"
 
----@class ContentAlignment
----@field horizontal "Left"|"Center"|"Right"
----@field vertical "Top"|"Center"|"Bottom"
-
 ---@alias DroppedFileQuoting
 ---|"None"
----|"SpacesOnly"
 ---|"Posix"
+---|"SpacesOnly"
 ---|"Windows"
 ---|"WindowsAlwaysQuoted"
 
 ---@alias DefaultCursorStyle
----|"SteadyBlock"
+---|"BlinkingBar"
 ---|"BlinkingBlock"
----|"SteadyUnderline"
 ---|"BlinkingUnderline"
 ---|"SteadyBar"
----|"BlinkingBar"
+---|"SteadyBlock"
+---|"SteadyUnderline"
 
 ---@class HsbTransform
 ---@field hue? number
@@ -106,10 +102,10 @@
 --- - `"10cell"` to specify a size based on the terminal cell metrics
 ---
 ---@field repeat_x_size? string|number
----Same as `repeat_x` but affects the y-direction.
+---Same as [`repeat_x`](lua://BackgroundLayer.repeat_x) but affects the y-direction.
 ---
 ---@field repeat_y? BackgroundLayerRepeat
----Same as `repeat_x_size` but affects the y-direction.
+---Same as [`repeat_x_size`](lua://BackgroundLayer.repeat_x_size) but affects the y-direction.
 ---
 ---@field repeat_y_size? number|string
 ---Controls the initial vertical position of the layer, relative to the viewport:
@@ -133,7 +129,7 @@
 --- - `"Right"`
 ---
 ---@field horizontal_align? "Left"|"Center"|"Right"
----Same as `vertical_offset` but applies to the x-direction.
+---Same as [`vertical_offset`](lua://BackgroundLayer.vertical_offset) but applies to the x-direction.
 ---
 ---@field horizontal_offset? number|string
 ---A number in the range `0.0` through `1.0` inclusive that is multiplied
@@ -143,13 +139,15 @@
 ---Using a smaller value makes the layer less opaque/more transparent.
 ---
 ---@field opacity? number
----A _hue, saturation, brightness_ transformation that can be used to adjust
+---A _hue_, _saturation_, _brightness_ transformation that can be used to adjust
 ---those attributes of the layer.
 ---
 ---See [`HsbTransform`](lua://HsbTransform) for more information about this kind of transform.
 ---
 ---@field hsb? HsbTransform
----Controls the height of the image. The following values are accepted:
+---Controls the height of the image.
+---
+---The following values are accepted:
 ---
 --- - `"Cover"`: (default) scales the image, preserving aspect ratio, to the smallest
 --- -          possible size to fill the viewport, leaving no empty space.
@@ -164,20 +162,14 @@
 ---@field height? BackgroundLayerHeightWidth
 ---Controls the width of the image.
 ---
----Same details as `height` but applies to the x-direction.
+---Same details as [`height`](lua://BackgroundLayer.height) but applies to the x-direction.
 ---
 ---@field widtht? BackgroundLayerHeightWidth
 
----@alias NewlineCanon
----|"None"
----|"LineFeed"
----|"CarriageReturn"
----|"CarriageReturnAndLineFeed"
-
 ---@alias UIKeyCapRendering
----|"UnixLong" `Super`, `Meta`, `Ctrl`, `Shift`
----|"Emacs" `Super`, `M`, `C`, `S`
 ---|"AppleSymbols" use macOS style symbols for `Command`, `Option` and so on
+---|"Emacs" `Super`, `M`, `C`, `S`
+---|"UnixLong" `Super`, `Meta`, `Ctrl`, `Shift`
 ---|"WindowsLong" `Win`, `Alt`, `Ctrl`, `Shift`
 ---|"WindowsSymbols" like `"WindowsLong"` but using a logo for the `Win` key
 
@@ -356,9 +348,7 @@
 ---If bracketed paste mode is enabled by the application the effective value
 ---of this configuration option is `"None"`.
 ---
----See [`NewlineCanon`](lua://NewlineCanon) for the different values.
----
----@field canonicalize_pasted_newlines? NewlineCanon|boolean
+---@field canonicalize_pasted_newlines? "None"|"LineFeed"|"CarriageReturn"|"CarriageReturnAndLineFeed"|boolean
 ---Scales the computed cell width to adjust the spacing between successive cells of text.
 ---
 ---If possible, you should prefer to specify the stretch parameter when selecting a font
@@ -477,6 +467,17 @@
 ---See [Colors & Appearance](https://wezterm.org/config/appearance.html) for more info.
 ---
 ---@field color_scheme? string
+---If you wish to place your color scheme files in some other location,
+---then you will need to instruct wezterm where to look for your scheme files.
+---The `config.color_scheme_dirs` setting specifies a list of directories to be searched:
+---
+---```lua
+---config.color_scheme_dirs = { '/some/path/to/my/color/schemes' }
+---```
+---
+---Color scheme names that are defined in files in your `config.color_scheme_dirs` list
+---take precedence over the built-in color schemes.
+---
 ---@field color_scheme_dirs? string[]
 ---Specifies various named color schemes in your configuration file.
 ---
@@ -488,7 +489,11 @@
 ---Described in more detail in [Colors & Appearance](https://wezterm.org/config/appearance.html).
 ---
 ---@field colors? Palette
+---Specifies the background color used by [`ActivateCommandPalette`](lua://ActionFuncClass.ActivateCommandPalette).
+---
 ---@field command_palette_bg_color? string
+---Specifies the text color used by [`ActivateCommandPalette`](lua://ActionFuncClass.ActivateCommandPalette).
+---
 ---@field command_palette_fg_color? string
 ---Configures the font to use for command palette.
 ---
@@ -506,7 +511,7 @@
 ---```
 ---
 ---@field command_palette_font? AllFontAttributes
----Specifies the size of the font used with [`ActivateCommandPalette`](https://wezterm.org/config/lua/keyassignment/ActivateCommandPalette.html).
+---Specifies the size of the font used with [`ActivateCommandPalette`](lua://ActionFuncClass.ActivateCommandPalette).
 ---
 ---@field command_palette_font_size? number
 ---Specifies the number of rows displayed by the command palette.
@@ -519,7 +524,14 @@
 ---Specifies the easing function to use when computing the color for the text cursor
 ---when it is set to a blinking style.
 ---
+---See [`config.visual_bell`](lua://Config.visual_bell) for more information about easing functions.
+---
 ---@field cursor_blink_ease_in? EasingFunction
+---Specifies the easing function to use when computing the color for the text cursor
+---when it's set to a blinking style.
+---
+---See [`config.visual_bell`](lua://Config.visual_bell) for more information about easing functions.
+---
 ---@field cursor_blink_ease_out? EasingFunction
 ---Specifies how often a blinking cursor transitions between visible and invisible,
 ---expressed in milliseconds.
@@ -545,7 +557,7 @@
 ---           at a thickness double the normal size
 --- - `"0.1cell"`: takes the cell height, scales it by 0.1 and uses that as the thickness
 ---
----@field cursor_thickness? number|string
+---@field cursor_thickness? number|integer|string
 ---When set to `true` (the default), WezTerm will compute its own idea
 ---of what the glyphs in the following unicode ranges should be,
 ---instead of using glyphs resolved from a font.
@@ -603,10 +615,46 @@
 ---
 ---@field default_cursor_style? DefaultCursorStyle
 ---Specifies the default current working directory if none is specified
----through configuration or OSC 7 (see docs for `config.default_cwd`
----for more info).
+---through configuration or OSC 7.
 ---
 ---@field default_cwd? string
+---Note: This option only applies to the GUI.
+---For the equivalent option in the standalone mux server, see [`config.default_mux_server_domain`](lua://Config.default_mux_server_domain).
+---
+------
+---When starting the GUI (not using the serial or connect subcommands),
+---by default wezterm will set the built-in `"local"` domain as the default multiplexing domain.
+---
+---The `"local"` domain represents processes that are spawned directly on the local system.
+---
+---Windows users, particularly those who use WSL, may wish to override the default domain
+---to instead use a particular WSL distribution so that wezterm launches directly into a Linux shell
+---rather than having to manually invoke `wsl.exe`.
+---Using a [`WslDomain`](lua://WslDomain) for this has the advantage that wezterm can then use
+---[shell integration](https://wezterm.org/shell-integration.html) to track the current directory inside WSL
+---and use it when splitting new panes or spawning new tabs.
+---
+---For example, if:
+---
+---```
+---; wsl -l -v
+---  NAME            STATE           VERSION
+---* Ubuntu-18.04    Running         1
+---```
+---
+---then wezterm will by default create a `WslDomain` with the name `"WSL:Ubuntu-18.04"` and
+---if I set my config like this:
+---
+---```lua
+---config.default_domain = 'WSL:Ubuntu-18.04'
+---```
+---
+---then when wezterm starts up, it will open with a shell running inside that Ubuntu distribution
+---rather than using the default `cmd` or `powershell`.
+---
+---While these examples are WSL-centric, `config.default_domain` will accept the name of any
+---of the available [multiplexing domains](https://wezterm.org/multiplexing.html).
+---
 ---@field default_domain? string
 ---When launching the GUI using either `wezterm` or `wezterm-gui`
 ---(with no subcommand explicitly specified), WezTerm will use
@@ -634,6 +682,21 @@
 ---that runs the subcommand you desire.
 ---
 ---@field default_gui_startup_args? string[]|table|{ [1]: "start" }
+---Note: This option only applies to the standalone mux server. For the equivalent option in the GUI,
+---see [`config.default_domain`](lua://Config.default_domain).
+---
+------
+---When starting the mux server, by default wezterm will set the built-in `"local"` domain
+---as the default multiplexing domain.
+---
+---The `"local"` domain represents processes that are spawned directly on the local system.
+---
+---This option allows you to change the default domain to some other domain, such as an [`ExecDomain`](lua://ExecDomain).
+---
+---It is not possible to configure a client multiplexing domain such as a TLS, SSH or Unix domain
+---as the default for the multiplexer server.
+---That is prohibited in order to prevent recursion when a client connects to the server.
+---
 ---@field default_mux_server_domain? string
 ---If no `prog` is specified on the command line, use this
 ---instead of running the user's shell.
@@ -682,7 +745,11 @@
 ---```
 ---
 ---@field default_ssh_auth_sock? string
----@field default_workspace? string
+---Specifies the name of the default workspace.
+---
+---The default value is `"default"`.
+---
+---@field default_workspace? string|"default"
 ---When set to `true`, on UNIX systems, for local panes, WezTerm will query
 ---the _termios_ associated with the PTY to see whether local echo is disabled
 ---and canonical input is enabled.
@@ -696,8 +763,24 @@
 ---
 ---@field detect_password_input? boolean
 ---@field disable_default_key_bindings? boolean
+---If set to `true`, the default mouse assignments will not be used,
+---allowing you to tightly control those assignments.
+---
 ---@field disable_default_mouse_bindings? boolean
+---When set to `true`, the default set of quick select patterns are omitted,
+---and [`config.quick_select_patterns`](lua://Config.quick_select_patterns) specifies the total set
+---of patterns used for quick select mode.
+---
+---Defaults to `false`.
+---
 ---@field disable_default_quick_select_patterns? boolean
+---Configures whether subpixel anti-aliasing should produce either `"RGB"` or `"BGR"` ordered output.
+---
+---If your display has a `BGR` pixel geometry then you will want to set this to `"BGR"`
+---for the best results when using subpixel antialiasing.
+---
+---The default value is `"RGB"`.
+---
 ---@field display_pixel_geometry? "RGB"|"BGR"
 ---Override the detected DPI (dots per inch) for the display.
 ---
@@ -730,8 +813,9 @@
 ---Microsoft Windows reports the true DPI for the monitor on which the window is displayed,
 ---and will similarly adjust as the window is dragged between monitors.
 ---
----**DPI is poorly supported by X11 itself**; while it is possible to query the displays
----to determine their dimensions, the results are generally inaccurate.
+---**DPI is poorly supported by X11 itself**.
+---While it is possible to query the displays to determine their dimensions,
+---the results are generally inaccurate.
 ---It is common for X11 environments to publish an `Xft.dpi` value as a property
 ---of the root window as a hint for the DPI of the display.
 ---While that is a reasonable workaround for a single-monitor system,
@@ -751,6 +835,9 @@
 ---
 ---@field enable_csi_u_key_encoding? boolean
 ---@field enable_kitty_graphics? boolean
+---When set to `true`, wezterm will honor kitty keyboard protocol escape sequences that modify
+---the [keyboard encoding](https://wezterm.org/config/key-encoding.html).
+---
 ---@field enable_kitty_keyboard? boolean
 ---Enable the scrollbar.
 ---
@@ -1484,7 +1571,7 @@
 ---
 ---You can use this option to control where the additional gap will be.
 ---
----@field window_content_alignment? ContentAlignment
+---@field window_content_alignment? { horizontal: "Left"|"Center"|"Right", vertical: "Top"|"Center"|"Bottom" }
 ---Configures whether the window has a title bar and/or resizable border.
 ---
 ---The value is a set of flags:

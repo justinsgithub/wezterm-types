@@ -84,7 +84,7 @@
 ---|"ToggleFullScreen"
 ---|"TogglePaneZoomState"
 
----@class KeyNoAction
+---@class Key
 ---A single unicode character, like 'A' or 'a'. Pay attention to the case of the text that you use
 ---and the state of the SHIFT modifier, as this matters whether 'A' or 'a' is matched.
 ---
@@ -165,13 +165,12 @@
 ---You can also combine modifiers using the `|` symbol, like `"CMD|CTRL"`.
 ---
 ---@field mods? string Optional modifiers keys.
-
----@class Key :KeyNoAction
----@field action KeyAssignment
+---@field action? KeyAssignment
 
 ---@alias KeyAssignFunction fun(param: any): KeyAssignment
 
----Can also be called as function like older versions of wezterm did
+---Can also be called as function like older versions of wezterm did.
+---
 ---@class ActionFuncClass
 ---@field ActivateCommandPalette KeyAssignFunction
 ---@field ActivateCopyMode KeyAssignFunction
