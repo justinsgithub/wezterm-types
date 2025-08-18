@@ -146,7 +146,7 @@
 ---A _hue, saturation, brightness_ transformation that can be used to adjust
 ---those attributes of the layer.
 ---
----See `config.foreground_text_hsb` for more information about this kind of transform.
+---See [`HsbTransform`](lua://HsbTransform) for more information about this kind of transform.
 ---
 ---@field hsb? HsbTransform
 ---Controls the height of the image. The following values are accepted:
@@ -222,7 +222,7 @@
 ---@field allow_win32_input_mode? boolean
 ---@field alternate_buffer_wheel_scroll_speed? integer
 ---@field animation_fps? integer
----Control whether `config.custom_block_glyphs` are rendered
+---Control whether [`config.custom_block_glyphs`](lua://Config.custom_block_glyphs) are rendered
 ---using anti-aliasing or not.
 ---
 ---Anti-aliasing makes lines look smoother but may not
@@ -273,7 +273,7 @@
 --- - square emojis defined as EAW=Neutral
 ---
 ---The `config.cell_widths` configuration parameter allows users to override the default character width.
----This setting takes priority over the `config.treat_east_asian_ambiguous_width_as_wide` setting.
+---This setting takes priority over the [`config.treat_east_asian_ambiguous_width_as_wide`](lua://Config.treat_east_asian_ambiguous_width_as_wide) setting.
 ---
 ---Note that changing this setting may have consequences for layout in text UI applications
 ---if their expectation of width differs from your choice of configuration.
@@ -287,7 +287,7 @@
 ---@field char_select_fg_color? string
 ---Configures the font to use for character selection.
 ---
----The `char_select_font` setting can specify a set of fallbacks and other options,
+---The `config.char_select_font` setting can specify a set of fallbacks and other options,
 ---and is described in more detail in the [Fonts section](https://wezterm.org/config/fonts.html).
 ---
 ---If not specified, the font is same as the font in [`config.window_frame.font`](lua://WindowFrameConfig.font).
@@ -302,7 +302,7 @@
 ---@field check_for_updates? boolean
 ---@field check_for_updates_interval_seconds? integer
 ---Defines the set of exit codes that are considered to be a "clean" exit
----by `config.exit_behavior` when the program running in the terminal completes.
+---by [`config.exit_behavior`](lua://Config.exit_behavior) when the program running in the terminal completes.
 ---
 ---Acceptable values are an array of integer exit codes that you wish
 ---to treat as successful.
@@ -322,7 +322,7 @@
 ---@field clean_exit_codes? integer[]
 ---The color scheme to be used.
 ---
----See [Colors & Appearance](https://wezterm.org/config/appearance.html).
+---See [Colors & Appearance](https://wezterm.org/config/appearance.html) for more info.
 ---
 ---@field color_scheme? string
 ---@field color_scheme_dirs? string[]
@@ -359,9 +359,9 @@
 ---@field command_palette_font_size? number
 ---Specifies the number of rows displayed by the command palette.
 ---
----[`ActivateCommandPalette`](https://wezterm.org/config/lua/keyassignment/ActivateCommandPalette.html).
----
 ---If unset or `nil`, a default value based on the terminal display will be used.
+---
+---See [`ActivateCommandPalette`](https://wezterm.org/config/lua/keyassignment/ActivateCommandPalette.html).
 ---
 ---@field command_palette_rows? integer?
 ---Specifies the easing function to use when computing the color for the text cursor
@@ -383,13 +383,13 @@
 ---@field cursor_blink_rate? integer
 ---If specified, overrides the base thickness of the lines used to render the textual cursor glyph.
 ---
----The default is to use the underline_thickness.
+---The default is to use the [`config.underline_thickness`](lua://Config.underline_thickness).
 ---
 ---This config option accepts different units that have slightly different interpretations:
 ---
 --- - `2`, `2.0` or `"2px"`: all specify a thickness of 2 pixels
 --- - `"2pt"`: specifies a thickness of 2 points, which scales according to the DPI of the window
---- - `"200%"`: takes the underline_thickness and multiplies it by 2 to arrive
+--- - `"200%"`: takes the value of `config.underline_thickness` and multiplies it by 2 to arrive
 ---           at a thickness double the normal size
 --- - `"0.1cell"`: takes the cell height, scales it by 0.1 and uses that as the thickness
 ---
@@ -595,7 +595,7 @@
 ---
 ---The default for this option is `false`.
 ---
----Note that `config.allow_win32_input_mode` takes precedence over this option.
+---Note that [`config.allow_win32_input_mode`](lua://Config.allow_win32_input_mode) takes precedence over this option.
 ---
 ---@field enable_csi_u_key_encoding? boolean
 ---@field enable_kitty_graphics? boolean
@@ -616,9 +616,11 @@
 ---@field enable_tab_bar? boolean
 ---Whether the terminal should respond to requests to read the
 ---title string.
+---
 ---Disabled by default for security concerns with shells that might
 ---otherwise attempt to execute the response.
----<https://marc.info/?l=bugtraq&m=104612710031920&w=2>
+---More info [here](https://marc.info/?l=bugtraq&m=104612710031920&w=2).
+---
 ---@field enable_title_reporting? boolean
 ---If `false`, do not try to use a Wayland protocol connection
 ---when starting the gui frontend, and instead use X11.
@@ -696,6 +698,7 @@
 ---
 ---If escape sequences are used to change the cursor color,
 ---they will take precedence over `config.force_reverse_video_cursor`.
+---
 ---In earlier releases, setting `config.force_reverse_video_cursor = true`
 ---always ignored the configured cursor color.
 ---
@@ -894,12 +897,11 @@
 ---that are commonly used in unix terminal programs from working as expected.
 ---
 ---@field macos_forward_to_ime_modifier_mask? Modifiers
----When `true` and in full screen mode,
----the window will extend behind the notch on macOS.
+---When `true` and in full screen mode, the window will extend behind the notch on macOS.
 ---
 ---The default value for `config.macos_fullscreen_extend_behind_notch` is `false`.
 ---
----Must be used with `config.native_macos_fullscreen_mode` set to `false`.
+---Must be used with [`config.native_macos_fullscreen_mode`](lua://Config.native_macos_fullscreen_mode) set to `false`.
 ---
 ---Toggling full screen with the native macOS full screen button
 ---or a window manager command won't have any effect and you must use the
@@ -1270,17 +1272,14 @@
 ---@field webgpu_power_preference? "LowPower"|"HighPerformance"
 ---Specifies which WebGpu adapter should be used.
 ---
----This option is only applicable when you have configured `config.front_end = "WebGpu"`.
+---This option is only applicable when you have configured [`config.front_end`](lua://Config.front_end) as `"WebGpu"`.
 ---
 ---You can use the [`wezterm.gui.enumerate_gpus()`](lua://Wezterm.Gui.enumerate_gpus) function
 ---to return a list of GPUs.
 ---
 ---@field webgpu_preferred_adapter? GpuInfo
----When combined with `config.win32_system_backdrop = "Acrylic"` on Windows systems
----earlier than build 22621, this option specifies the accent color used
----with the Acrylic composition effect.
----
----See also [`config.win32_system_backdrop`](lua://Config.win32_system_backdrop).
+---When combined with [`config.win32_system_backdrop`](lua://Config.win32_system_backdrop) as `"Acrylic"` on Windows systems
+---this option specifies the accent color used with the Acrylic composition effect.
 ---
 ---@field win32_acrylic_accent_color? string
 ---When combined with [`config.window_background_opacity`](lua://Config.window_background_opacity)
@@ -1310,7 +1309,7 @@
 ---Specifies the alpha value to use when rendering the background
 ---of the window.
 ---
----The background is taken either from [`config.window_background_image`](lua://config.window_background_image)
+---The background is taken either from [`config.window_background_image`](lua://Config.window_background_image)
 ---or, if there is none, the background color of the cell in the current position.
 ---
 ---The default is `1.0` which is 100% opaque.
