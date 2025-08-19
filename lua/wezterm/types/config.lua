@@ -870,8 +870,53 @@
 ---The default is `true`.
 ---
 ---@field enable_wayland? boolean
+---A list of [`ExecDomain`](lua://ExecDomain) objects.
+---
 ---@field exec_domains? ExecDomain[]
+---Controls the behavior when the shell program spawned by the terminal exits. There are three possible values:
+---
+--- - `"Close"`: close the corresponding pane as soon as the program exits
+--- - `"Hold"`: keep the pane open after the program exits.
+---           The pane must be manually closed via [`CloseCurrentPane`](https://wezterm.org/config/lua/keyassignment/CloseCurrentPane.html),
+---           [`CloseCurrentTab`](https://wezterm.org/config/lua/keyassignment/CloseCurrentTab.html) or closing the window
+--- - `"CloseOnCleanExit"`: if the shell program exited with a successful status, behave like `"Close"`.
+---                       Otherwise, behave like `"Hold"`
+---
+---Note that most UNIX shells will exit with the status of the last command that it ran
+---if you don't specify an exit status.
+---
+---For example, if you interrupt a command and then use `exit` (with no arguments),
+---or `CTRL-D` to send EOF to the shell, the shell will return an unsuccessful exit status.
+---The same thing holds if you were to run:
+---
+---```sh
+---$ false
+---$ exit
+---```
+---
+---The default is `"Close"`.
+---
+---See also [`config.clean_exit_codes`](lua://Config.clean_exit_codes) for fine tuning what is considered to be a clean exit status.
+---
 ---@field exit_behavior? "Close"|"CloseOnCleanExit"|"Hold"
+---Controls how wezterm indicates the exit status of the spawned process in a pane when it terminates.
+---
+---If [`config.exit_behavior`](lua://Config.exit_behavior) is set to keep the pane open after the process has
+---completed, wezterm will display a message to let you know that it has finished.
+---
+---This option controls that message. It can have one of the following values:
+---
+--- - `"Verbose"`: Shows 2-3 lines of explanation, including the process name,
+---              its exit status and a link to the exit_behavior documentation
+--- - `"Brief"`: Like "Verbose", but the link to the documentation is not included
+--- - `"Terse"`: A very short indication of the exit status is shown in square brackets
+--- - `"None"`: No message is shown
+---
+---In earlier versions of wezterm, this was not configurable and behaved equivalently
+---to the `"Verbose"` setting.
+---
+---Examples can be found [here](https://wezterm.org/config/lua/config/exit_behavior_messaging.html).
+---
 ---@field exit_behavior_messaging? "Verbose"|"Brief"|"Terse"|"None"
 ---Configures the font to use by default.
 ---
@@ -884,10 +929,45 @@
 ---@field font? AllFontAttributes
 ---DEPRECATED
 ---@field font_antialias? Deprecated
+---By default, wezterm will use an appropriate system-specific method for locating the fonts
+---that you specify using the options below.
+---Additionally, if you configure the `config.font_dirs` option, wezterm will load fonts
+---from that set of directories:
+---
+---```lua
+----- This tells wezterm to look first for fonts in the directory named
+----- `fonts` that is found alongside your `wezterm.lua` file.
+----- As this option is an array, you may list multiple locations if
+----- you wish.
+---config.font_dirs = { 'fonts' }
+---```
+---
+---`wezterm` will scan the `config.font_dirs` to build a database of available fonts.
+---When resolving a font, wezterm will first use the configured [`config.font_locator`](lua://Config.font_locator) which is typically
+---the system specific font resolver.
+---If the system doesn't resolve the requested font, the fonts from `config.font_dirs` are searched for a match.
+---
+---If you want to only find fonts from `config.font_dirs`, perhaps because you have a self-contained
+---wezterm config that you carry around with you between multiple systems and don't want to install
+---those fonts on every system that you use, then you can set:
+---
+---```lua
+---config.font_locator = 'ConfigDirsOnly'
+---```
+---
 ---@field font_dirs? string[]
 ---DEPRECATED
 ---@field font_hinting? Deprecated
+---Specifies the method by which system fonts are located and loaded.
+---You may specify `"ConfigDirsOnly"` to disable loading system fonts and use only the fonts
+---found in the directories that you specify in your [`config.font_dirs`](lua://Config.font_dirs) configuration option.
+---
+---Otherwise, it is recommended to omit this setting.
+---
 ---@field font_locator? "FontConfig"|"Gdi"|"CoreText"|"ConfigDirsOnly"
+---Specifies the method by which fonts are rendered on screen.
+---The only available implementation is `"FreeType"`.
+---
 ---@field font_rasterizer? "FreeType"
 ---When textual output in the terminal is styled with `bold`, `italic`
 ---or other attributes, wezterm uses `config.font_rules`
@@ -927,6 +1007,12 @@
 ---The incomplete `"Allsorts"` shaper was removed.
 ---
 ---@field font_shaper? "Harfbuzz"
+---Specifies the size of the font, measured in points.
+---
+---You may use fractional point sizes, such as `13.3`, to fine tune the size.
+---
+---The default font size is `12.0` points.
+---
 ---@field font_size? number
 ---When `true` it'll override the `cursor_fg`, `cursor_bg`, `cursor_border`
 ---settings from the color scheme and force the cursor to use reverse video colors
@@ -981,9 +1067,115 @@
 ---See [Subpixel Hinting](https://freetype.org/freetype2/docs/subpixel-hinting.html).
 ---
 ---@field freetype_interpreter_version? integer
+---An advanced option to fine tune the freetype rasterizer. This is a bitfield, so you can combine one or more of these options together, separated by the | character, although not many of the available options necessarily make sense to be combined.
+---
+---Available flags are:
+---
+--- - `"DEFAULT"`
+--- - `"NO_HINTING"`: Disable hinting.
+---                 The freetype documentation says that this generally generates ‘blurrier’
+---                 bitmap glyph when the glyph is rendered in any of the anti-aliased modes,
+---                 but that was written for rasterizing direct to bitmaps.
+---                 In the context of wezterm where we are rasterizing to a texture that is then
+---                 sampled and applied to a framebuffer through vertices on the GPU,
+---                 the hinting process can be counter-productive and result in unexpected visual artifacts
+--- - `"NO_BITMAP"`: Don't load any pre-rendered bitmap strikes
+--- - `"FORCE_AUTOHINT"`: Use the freetype auto-hinter rather than the font's native hinter
+--- - `"MONOCHROME"`: Instructs renderer to use 1-bit monochrome rendering.
+---                 This option doesn't impact the hinter
+--- - `"NO_AUTOHINT"`: Don't use the freetype auto-hinter
+---
+---```lua
+----- You probably don't want to do this, but this demonstrates
+----- that the flags can be combined
+---config.freetype_load_flags = 'NO_HINTING|MONOCHROME'
+---```
+---
+---The default value depends on the effective dpi of the display.
+---If the dpi is `100` or larger, the default value is `"NO_HINTING"`.
+---Otherwise, the default value is `"DEFAULT"`.
+---
 ---@field freetype_load_flags? FreeTypeLoadFlags
+---Configures the hinting and (potentially) the rendering mode used with the freetype rasterizer. The following values are possible:
+---
+--- - `"Normal"`: This corresponds to the default hinting algorithm,
+---             optimized for standard gray-level rendering.
+---             This is the default setting
+--- - `"Light"`: A lighter hinting algorithm for non-monochrome modes.
+---            Many generated glyphs are more fuzzy but better resemble its original shape.
+---            A bit like rendering on Mac OS X
+--- - `"Mono"`: Strong hinting algorithm that should only be used for monochrome output.
+---           The result is probably unpleasant if the glyph is rendered in non-monochrome modes
+--- - `"HorizontalLcd"`: A subpixel-rendering variant of `"Normal"` optimized for horizontally decimated
+---                    LCD displays
+--- - `"VerticalLcd"`: A subpixel-rendering variant of `"Normal"` optimized for vertically decimated
+---                  LCD displays
+---
+---See also [`config.freetype_render_target`](lua://Config.freetype_render_target) and [`config.freetype_load_flags`](lua://Config.freetype_load_flags)
+---for more advanced flags that can be primarily used to influence font hinting.
+---
+---Note: When using subpixel-rendering, it comes at the cost of the ability to explicitly set
+---the alpha channel for the text foreground color.
+---You will need to choose between using the alpha channel or using subpixel-rendering,
+---and you must select subpixel-rendering in your main configuration in order for the correct render mode
+---to activate: setting it only in a [`wezterm.font`](lua://Wezterm.font) override is not sufficient.
+---
 ---@field freetype_load_target? FreeTypeLoadTarget
+---This option provides control over the [no-long-family-names](https://freetype.org/freetype2/docs/reference/ft2-properties.html#no-long-family-names) FreeType PCF font driver property.
+---
+---The default is for this configuration to be `false` which sets the PCF driver to use
+---the un-decorated font name.
+---This corresponds to the default mode of operation of the freetype library.
+---
+---Some Linux distributions build the freetype library in a way that causes the PCF driver
+---to report font names differently; instead of reporting just `Terminus` it will prefix the font name
+---with the foundry (`xos4` in the case of `Terminus`) and potentially append `Wide` to the name
+---if the font has wide glyphs.
+---
+---The purpose of that configuration option is to disambiguate fonts,
+---as there are a number of fonts from different foundries that all have the name `Fixed`,
+---and being presented with multiple items with the same `Fixed` label is a very ambiguous user experience.
+---
+---When two different applications have differing values for this long family names property,
+---they will face inconsistencies in resolving fonts by name as they will disagree on what the name
+---of a given PCF font is.
+---
+---## When should you set this option to true?
+---
+---If all of the following are true, then you should set this option to `true`:
+---
+--- - You need to use PCF fonts and you need to use fontconfig to resolve their names to font files.
+--- - You are using a Linux distribution that builds their FreeType library with
+---   `PCF_CONFIG_OPTION_LONG_FAMILY_NAMES` defined.
+---
+---Note that PCF fonts are a legacy font format and you will be better served by OTF, TTF or
+---OTB (Open Type Binary) file formats.
+---
+---## Why doesn't wezterm use the distro FreeType or match its configuration?
+---
+---For the sake of consistency, wezterm vendors in its own copy of the latest version FreeType
+---and builds that same version on all platforms.
+---The result is that font-related behaviors in a given version of wezterm are the same on all platforms
+---regardless of what (potentially old) version of FreeType may be provided by the distribution.
+---
+---Not only does this provide consistency at runtime, but it is much simpler to reason about at build time,
+---making it simpler to build wezterm on all systems.
+---
 ---@field freetype_pcf_long_family_names? boolean
+---Configures the rendering mode used with the freetype rasterizer.
+---
+---The default is to use the value of [`config.freetype_load_target`](lua://Config.freetype_load_target).
+---
+---You may wish to override that value if you want very fine control over how
+---freetype hints and then renders glyphs.
+---
+---For example, this configuration uses light hinting but produces subpixel-antialiased glyph bitmaps:
+---
+---```lua
+---config.freetype_load_target = 'Light'
+---config.freetype_render_target = 'HorizontalLcd'
+---```
+---
 ---@field freetype_render_target? FreeTypeLoadTarget
 ---Specify the features to enable when using harfbuzz for font shaping.
 ---
@@ -997,9 +1189,9 @@
 ---This option used to have more scope in earlier versions of wezterm,
 ---but today it allows three possible values:
 ---
---- - `"OpenGL"`: use GPU accelerated rasterization
---- - `"Software"`: use CPU-based rasterization
---- - `"WebGpu"`: use GPU accelerated rasterization
+--- - `"OpenGL"`: Use GPU accelerated rasterization
+--- - `"Software"`: Use CPU-based rasterization
+--- - `"WebGpu"`: Use GPU accelerated rasterization
 ---
 ---You may wish (or need!) to select Software if there are issues with your GPU/OpenGL drivers.
 ---
@@ -1016,7 +1208,6 @@
 --- - DirectX 12 (on Windows)
 ---
 ---@field front_end? "OpenGL"|"WebGpu"|"Software"
----@field glyph_cache_image_cache_size? number
 ---When `config.font_shaper = "Harfbuzz"`, this setting affects how font shaping takes place.
 ---
 ---See [Font Shaping](https://wezterm.org/config/font-shaping.html)
@@ -1041,6 +1232,35 @@
 ---Defines rules to match text from the terminal output and generate clickable links.
 ---
 ---@field hyperlink_rules? HyperlinkRule[]
+---Control IME preedit rendering. IME preedit is an area that is used to display the string being preedited in IME. WezTerm supports the following IME preedit rendering.
+---
+--- - `"Builtin"`: (Default) IME preedit is rendered by WezTerm itself
+---
+---`"Builtin"` rendering provides good look and feel for many IMEs,
+---rendering the text using the same font as the terminal and works in concert
+---with features like [`window:composition_status()`](lua://Window.composition_status).
+---It may truncate displaying of IME preedit at the end of window
+---if IME preedit is very long because the rendering does not allow the IME preedit
+---to overflow the window and does not wrap IME preedit to the next line.
+---
+--- - `"System"`: IME preedit is rendered by system
+---
+---`"System"` rendering can be useful to avoid the truncated displaying of IME preedit
+---but has a worse look and feel compared to `"Builtin"` rendering.
+---
+---You can control IME preedit rendering in your configuration file:
+---```lua
+---config.ime_preedit_rendering = 'System'
+---```
+---
+---Otherwise, the default is `"Builtin"`.
+---
+---Note:
+---
+--- - Changing `config.ime_preedit_rendering` usually requires re-launching WezTerm to take full effect.
+--- - In macOS, `config.ime_preedit_rendering` has effected nothing yet.
+---   IME preedit is always rendered by WezTerm itself.
+---
 ---@field ime_preedit_rendering? "Builtin"|"System"
 ---Specifies the width of a new window, expressed in character cells.
 ---
