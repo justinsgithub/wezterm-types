@@ -629,18 +629,6 @@
 ---See [`Wezterm.NerdFont`](lua://Wezterm.NerdFont) for a list of icon names.
 ---@field icon? Wezterm.NerdFont
 
----@alias CursorShape
----|"BlinkingBlock"
----|"BlinkingBar"
----|"BlinkingUnderline"
----|"SteadyBar"
----|"SteadyBlock"
----|"SteadyUnderline"
-
----@alias CursorVisibility
----|"Visible"
----|"Hidden"
-
 ---@class StableCursorPosition
 ---The horizontal cell index.
 ---
@@ -648,12 +636,8 @@
 ---The vertical stable row index.
 ---
 ---@field y number
----The CursorShape enum value.
----
----@field shape CursorShape
----The CursorVisibility enum value.
----
----@field visibility CursorVisibility
+---@field shape "BlinkingBlock"|"BlinkingBar"|"BlinkingUnderline"|"SteadyBar"|"SteadyBlock"|"SteadyUnderline"
+---@field visibility "Visible"|"Hidden"
 
 ---@class LinearGradientOrientation
 ---@field angle number
@@ -933,49 +917,6 @@
 ---See the [`Action`](lua://Action) type for more info.
 ---
 ---@field action Action
----This function is a helper to register a custom event
----and return an action triggering it.
----
----It is helpful to write custom key bindings directly,
----without having to declare the event and use it in a different place.
----
----The implementation is essentially the same as:
----
----```lua
----function wezterm.action_callback(callback)
----  local event_id = '...' -- the function generates a unique event id
----  wezterm.on(event_id, callback)
----  return wezterm.action.EmitEvent(event_id)
----end
----```
----
----@field action_callback fun(callback: ActionCallback): Action
----Adds path to the list of files that are watched for config changes.
----
----If `automatically_reload_config` is enabled, then the config will be reloaded
----when any of the files that have been added to the watch list have changed.
----
----@field add_to_config_reload_watch_list fun(path: string)
----Accepts an argument list; it will attempt to spawn that command in the background.
----
----@field background_child_process fun(args: string[])
----Returns the battery information for each of the installed batteries on the system.
----
----This is useful for example to assemble status information for the status bar.
----
----@field battery_info fun(): BatteryInfo[]
----Given a `string` parameter, returns the number of columns that text occupies
----in the terminal.
----
----This is useful together with the `"format-tab-title"` and `"update-right-status"`
----events to compute/layout tabs and status information.
----
----@field column_width fun(value: string): number
----Returns a `Config` object that can be used to define your configuration.
----
----See the [`Config`](lua://Config) type for more info.
----
----@field config_builder fun(): Config
 ---This constant is set to the path to the directory
 ---in which your `wezterm.lua` configuration file was found.
 ---
@@ -983,11 +924,58 @@
 ---This constant is set to the path to the `wezterm.lua` that is in use.
 ---
 ---@field config_file string
+---This constant is set to the directory containing the wezterm executable file.
+---
+---@field executable_dir string
+---@field home_dir string
+---@field permute_any_or_no_mods any
+---This constant is set to the Rust target triple for
+---the platform on which wezterm was built.
+---
+---This can be useful when you wish to conditionally adjust your configuration
+---based on the platform.
+---
+---@field target_triple string
+---This constant is set to the wezterm version string that is also reported
+---by running `wezterm -V`.
+---
+---This can potentially be used to adjust configuration according to
+---the installed version.
+---
+---@field version string
+local Wezterm = {}
+
+---Returns the battery information for each of the installed batteries on the system.
+---
+---This is useful for example to assemble status information for the status bar.
+---
+---@return BatteryInfo[]
+function Wezterm.battery_info() end
+
+---Given a `string` parameter, returns the number of columns that text occupies
+---in the terminal.
+---
+---This is useful together with the `"format-tab-title"` and `"update-right-status"`
+---events to compute/layout tabs and status information.
+---
+---@param value string
+---@return number
+function Wezterm.column_width(value) end
+
+---Returns a `Config` object that can be used to define your configuration.
+---
+---See the [`Config`](lua://Config) type for more info.
+---
+---@return Config
+function Wezterm.config_builder() end
+
 ---Returns the compiled-in default hyperlink rules as a table.
 ---
 ---See the [`HyperLinkRule`](lua://HyperLinkRule) type for more info.
 ---
----@field default_hyperlink_rules fun(): HyperLinkRule[]
+---@return HyperLinkRule[]
+function Wezterm.default_hyperlink_rules() end
+
 ---Computes a list of [`SshDomain`](lua://SshDomain) objects based on the set of hosts
 ---discovered in `~/.ssh/config`.
 ---
@@ -999,7 +987,9 @@
 ---The intended purpose of this function is to give you the opportunity
 ---to edit/adjust the returned information before assigning it to your config.
 ---
----@field default_ssh_domains fun(): SshDomain[]
+---@return SshDomain[]
+function Wezterm.default_ssh_domains() end
+
 ---Computes a list of [`WslDomain`](lua://WslDomain) objects, each one representing
 ---an installed WSL distribution on your system.
 ---
@@ -1008,7 +998,9 @@
 ---of the WSL distro and the `name` field set to name of the distro
 ---but with `"WSL:"` prefixed to it.
 ---
----@field default_wsl_domains fun(): WslDomain[]
+---@return WslDomain[]
+function Wezterm.default_wsl_domains() end
+
 ---`wezterm.emit` resolves the registered callback(s) for the specified event name
 ---and calls each of them in turn, passing the additional arguments
 ---through to the callback.
@@ -1025,7 +1017,11 @@
 ---
 ---See [`wezterm.on`](lua://Wezterm.on) for more information about event handling.
 ---
----@field emit fun(event: string, ...: any): boolean
+---@param event string
+---@param ... any
+---@return boolean
+function Wezterm.emit(event, ...) end
+
 ---This function will parse your ssh configuration file(s) and extract from them
 ---the set of literal (non-pattern, non-negated) host names that are specified
 ---in `Host` and `Match` stanzas contained in those configuration files
@@ -1034,21 +1030,27 @@
 ---You may optionally pass a list of ssh configuration files that should be read
 ---in case you have a special configuration.
 ---
----@field enumerate_ssh_hosts fun(ssh_config_file_name: (string[]|string)?): table<string, SshHost>
----This constant is set to the directory containing the wezterm executable file.
----
----@field executable_dir string
+---@param ssh_config_file_name? string[]|string
+---@return table<string, SshHost>
+function Wezterm.enumerate_ssh_hosts(ssh_config_file_name) end
+
 ---TODO: Complete description.
 ---
 ---[Info](https://wezterm.org/config/lua/wezterm/font_with_fallback.html).
 ---
----@field font_with_fallback fun(fonts: (string|FontAttributes)[]): Fonts
+---@param fonts (string|FontAttributes)[]
+---@return Fonts
+function Wezterm.font_with_fallback(fonts) end
+
 ---Can be used to produce a formatted string with terminal graphic attributes
 ---such as `bold`, `italic` and `colors`.
 ---
 ---The result is a string with wezterm-compatible escape sequences embedded.
 ---
----@field format fun(...: FormatItem[]): string
+---@param ... FormatItem[]
+---@return string
+function Wezterm.format(...) end
+
 ---Returns a Lua table keyed by color scheme name and whose values are
 ---the color scheme definition of the builtin color schemes.
 ---
@@ -1058,85 +1060,179 @@
 ---
 ---This function moved to [`wezterm.color.get_builtin_schemes()`](https://wezterm.org/config/lua/wezterm.color/get_builtin_schemes.html)
 ---but can still be called as `wezterm.get_builtin_color_schemes()`.
----See that page for more examples.
 ---
----@field get_builtin_color_schemes fun(): PaletteDict
+---@return PaletteDict
+function Wezterm.get_builtin_color_schemes() end
+
+---@return string
+function Wezterm.hostname() end
+
+---@param value any
+---@return string
+function Wezterm.json_encode(value) end
+
+---@param value string
+---@return any
+function Wezterm.json_parse(value) end
+
+---@param msg string
+---@param ... any
+function Wezterm.log_error(msg, ...) end
+
+---@param msg string
+---@param ... any
+function Wezterm.log_info(msg, ...) end
+
+---@param msg string
+---@param ... any
+function Wezterm.log_warn(msg, ...) end
+
+---@param path_or_url string
+---@param application? string
+function Wezterm.open_with(path_or_url, application) end
+
 ---This function evalutes the glob pattern and returns an array
 ---containing the absolute file names of the matching results.
 ---
----Due to limitations in the Lua bindings,
----all of the paths must be able to be represented as `UTF-8`
+---Due to limitations in the Lua bindings, all of the paths must be able to be represented
+---as `UTF-8` or this function will generate an error.
+---
+---@param pattern string
+---@param relative_to? string
+---@return string[]
+function Wezterm.glob(pattern, relative_to) end
+
+---Returns a copy of a string that is at least `min_width` columns
+---as measured by
+---[`wezterm.column_width()`](lua://Wezterm.column_width).
+---
+---@param s string
+---@param min_width integer
+---@return string
+function Wezterm.pad_left(s, min_width) end
+
+---Returns an array containing the absolute file names of the directory specified.
+---
+---Due to limitations in the Lua bindings, all of the paths must be able to be represented as UTF-8
 ---or this function will generate an error.
 ---
----@field glob fun(pattern: string, relative_to: string?): string[]
----@field has_action fun(action: string): boolean
----@field home_dir string
----@field hostname fun(): string
----@field json_encode fun(value: any): string
----@field json_parse fun(value: string): any
----@field log_error fun(msg: string, ...: any)
----@field log_info fun(msg: string, ...: any)
----@field log_warn fun(msg: string, ...: any)
----@field open_with fun(path_or_url: string, application: string?)
----Returns a copy of a string that is at least `min_width` columns
----(as measured by `wezterm.column_width()`).
+---@param path string
+---@return string[]
+function Wezterm.read_dir(path) end
+
+---Returns a boolean indicating whether we believe that we are running in a
+---Windows Services for Linux (WSL) container.
 ---
----@field pad_left fun(string: string, min_width: integer): string
+---@return boolean
+function Wezterm.running_under_wsl() end
+
+---Joins together its array arguments by applying posix style shell quoting
+---on each argument and then adding a space.
+---
+---@param args string[]
+---@return string
+function Wezterm.shell_join_args(args) end
+
+---Quotes its single argument using posix shell quoting rules.
+---
+---@param s string
+---@return string
+function Wezterm.shell_quote_arg(s) end
+
+---Will attempt to spawn that command and will return a tuple consisting of the boolean success
+---of the invocation, the stdout data and the stderr data.
+---
+---@param args string[]
+---@return boolean success
+---@return string stdout
+---@return string stderr
+function Wezterm.run_child_process(args) end
+
+---@param tbl MouseBindingBase
+---@return MouseBinding
+function Wezterm.permute_any_mods(tbl) end
+
+---@param tbl KeyBindingBase
+---@return KeyBinding
+function Wezterm.permute_any_mods(tbl) end
+
+---Splits a command line into an argument array according to POSIX shell rules.
+---
+---@param line string
+---@return string[]
+function Wezterm.shell_split(line) end
+
 ---Returns a copy of a string that is at least min_width columns
 ---(as measured by `wezterm.column_width()`).
 ---
----@field pad_right fun(string: string, min_width: integer): string
----@field permute_any_or_no_mods any
----@field permute_any_mods (fun(tbl: MouseBindingBase): MouseBinding)|(fun(tbl: KeyBindingBase): KeyBinding)
----@field read_dir fun(path: string): string Returns an array containing the absolute file names of the directory specified. Due to limitations in the Lua bindings, all of the paths must be able to be represented as UTF-8 or this function will generate an error.
----@field reload_configuration fun(): nil Immediately causes the configuration to be reloaded and re-applied.
----@field run_child_process fun(args: string[]): success: boolean, stdout: string, stderr: string  Will attempt to spawn that command and will return a tuple consisting of the boolean success of the invocation, the stdout data and the stderr data.
----@field running_under_wsl fun(): boolean Returns a boolean indicating whether we believe that we are running in a Windows Services for Linux (WSL) container.
----@field shell_join_args fun(args: string[]): string Joins together its array arguments by applying posix style shell quoting on each argument and then adding a space.
----@field shell_quote_arg fun(string: string): string Quotes its single argument using posix shell quoting rules.
----@field shell_split fun(line: string): string[] Splits a command line into an argument array according to posix shell rules.
----@field sleep_ms fun(milliseconds: number): nil wezterm.sleep_ms suspends execution of the script for the specified number of milliseconds. After that time period has elapsed, the script continues running at the next statement.
----@field split_by_newlines fun(string: string): string[] takes the input string and splits it by newlines (both \n and \r\n are recognized as newlines) and returns the result as an array of strings that have the newlines removed.
+---@param s string
+---@param min_width integer
+---@return string
+function Wezterm.pad_right(s, min_width) end
+
+---Suspends execution of the script for the specified number of milliseconds.
+---
+---After that time period has elapsed, the script continues running at the next statement.
+---
+---@param milliseconds number
+function Wezterm.sleep_ms(milliseconds) end
+
+---Takes the input string and splits it by newlines (both `\n` and `\r\n` are recognized as newlines)
+---and returns the result as an array of strings that have the newlines removed.
+---
+---@param s string
+---@return string[]
+function Wezterm.split_by_newlines(s) end
+
+---Immediately causes the configuration to be reloaded and re-applied.
+---
+function Wezterm.reload_configuration() end
+
 ---Formats the current local date/time into a string using
 ---the Rust `chrono strftime` syntax.
 ---
----@field strftime fun(format: string): string
+---@param format string
+---@return string
+function Wezterm.strftime(format) end
+
 ---Formats the current UTC date/time into a string using
 ---the Rust `chrono strftime` syntax.
 ---
----@field strftime_utc fun(format: string): string
----This constant is set to the Rust target triple for
----the platform on which wezterm was built.
----
----This can be useful when you wish to conditionally adjust your configuration
----based on the platform.
----
----@field target_triple string
+---@param format string
+---@return string
+function Wezterm.strftime_utc(format) end
+
 ---Returns a copy of a string that is no longer than `max_width` columns
 ---(as measured by `wezterm.column_width()`).
 ---
 ---Truncation occurs by reemoving excess characters from the left end of the string.
 ---
----@field truncate_left fun(string: string, max_width: number): string
+---@param s string
+---@param max_width number
+---@return string
+function Wezterm.truncate_left(s, max_width) end
+
 ---Returns a copy of a string that is no longer than `max_width` columns
 ---(as measured by `wezterm.column_width()`).
 ---
 ---Truncation occurs by reemoving excess characters from the right end of the string.
 ---
----@field truncate_right fun(string: string, max_width: number): string
+---@param s string
+---@param max_width number
+---@return string
+function Wezterm.truncate_right(s, max_width) end
+
 ---Overly specific and exists primarily to workaround this wsl.exe issue.
 ---It takes as input a string and attempts to convert it from utf16 to utf8.
 ---
----@field utf16_to_utf8 fun(string: string): string
----This constant is set to the wezterm version string that is also reported
----by running `wezterm -V`.
----
----This can potentially be used to adjust configuration according to
----the installed version.
----
----@field version string
----@field gradient_colors fun(gradient: Gradient, num_colors: number): Color[]
-local Wezterm = {}
+---@param s string
+---@return string
+function Wezterm.utf16_to_utf8(s) end
+
+---@param gradient Gradient
+---@param num_colors number
+---@return Color[]
+function Wezterm.gradient_colors(gradient, num_colors) end
 
 ---This event is emitted when the Command Palette is shown.
 ---
@@ -1494,3 +1590,40 @@ function Wezterm.font(name, attributes) end
 ---@param attributes FontFamilyAttributes
 ---@return Fonts|FontFamilyAttributes
 function Wezterm.font(attributes) end
+
+---This function is a helper to register a custom event
+---and return an action triggering it.
+---
+---It is helpful to write custom key bindings directly,
+---without having to declare the event and use it in a different place.
+---
+---The implementation is essentially the same as:
+---
+---```lua
+---function wezterm.action_callback(callback)
+---  local event_id = '...' -- the function generates a unique event id
+---  wezterm.on(event_id, callback)
+---  return wezterm.action.EmitEvent(event_id)
+---end
+---```
+---
+---@param callback ActionCallback
+---@return Action
+function Wezterm.action_callback(callback) end
+
+---Adds path to the list of files that are watched for config changes.
+---
+---If `automatically_reload_config` is enabled, then the config will be reloaded
+---when any of the files that have been added to the watch list have changed.
+---
+---@param path string
+function Wezterm.add_to_config_reload_watch_list(path) end
+
+---@param action string
+---@return boolean
+function Wezterm.has_action(action) end
+
+---Accepts an argument list; it will attempt to spawn that command in the background.
+---
+---@param args string[]
+function Wezterm.background_child_process(args) end
