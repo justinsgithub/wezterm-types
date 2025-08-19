@@ -2144,6 +2144,26 @@
 ---The default is `false`.
 ---
 ---@field use_cap_height_to_scale_fallback_fonts? boolean
+---By default, if you are using a layout with dead keys (e.g. US International layout,
+---or a number of European layouts such as German or French) pressing a dead key in wezterm will "hold"
+---the dead key until the next character is pressed, resulting in a combined character with a diacritic.
+---For example, pressing `^` and then e will produce `ê`.
+---Pressing `^` then `SPACE` will produce `^` on its own.
+---
+---If you are a heavy user of Vi style editors then you may wish to disable dead key processing
+---so that `^` can be used with a single keypress.
+---
+---You can tell WezTerm to disable dead keys by setting this in your configuration file:
+---
+---```lua
+---config.use_dead_keys = false
+---```
+---
+---Note that for X11 systems with [`config.use_ime`](lua://Config.use_ime) set to `true`,
+---depending on the configured IME, the IME may handle dead key processing implicitly.
+---There is no way for wezterm to prevent it from doing that, short of disabling the IME.
+---
+---@field use_dead_keys? boolean
 ---When set to `true` (the default), the tab bar is rendered
 ---in a native style with proportional fonts.
 ---
