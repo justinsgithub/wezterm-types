@@ -336,13 +336,6 @@
 ---|"UltraCondensed"
 ---|"UltraExpanded"
 
----@alias FreeTypeLoadTarget
----|"Normal"
----|"HorizontalLcd"
----|"Light"
----|"Mono"
----|"VerticalLcd"
-
 ---@alias FreeTypeLoadFlags
 ---|"DEFAUlT"
 ---|"NO_HINTING"
@@ -350,8 +343,6 @@
 ---|"FORCE_AUTOHINT"
 ---|"MONOCHROME"
 ---|"NO_AUTOHINT"
-
----TODO: Find out what do the undocumented options do
 
 ---@alias HarfbuzzFeatures
 ---|"calt=0"
@@ -422,8 +413,8 @@
 ---@class FontFamilyAttributes: FontAttributes
 ---@field family string
 ---@field harfbuzz_features? HarfbuzzFeatures[]
----@field freetype_load_target? FreeTypeLoadTarget
----@field freetype_render_target? FreeTypeLoadTarget
+---@field freetype_load_target? "Normal"|"HorizontalLcd"|"Light"|"Mono"|"VerticalLcd"
+---@field freetype_render_target? "Normal"|"HorizontalLcd"|"Light"|"Mono"|"VerticalLcd"
 ---you can combine the flags like `"NO_HINTING|MONOCHROME"`
 ---**(you probably wouldn't want to do this)**.
 ---
@@ -683,53 +674,13 @@
 ---|"Light"
 ---|"LightHighContrast"
 
----@alias Clipboard
----|"Clipboard"
----|"PrimarySelection"
----|"ClipboardAndPrimarySelection"
-
----@alias CopyMode
----|"AcceptPattern"
----|"ClearPattern"
----|"ClearSelectionMode"
----|"Close"
----|"CycleMatchType"
----|"EditPattern"
----|"MoveBackwardSemanticZone"
----|"MoveBackwardWord"
----|"MoveDown"
----|"MoveForwardSemanticZone"
----|"MoveForwardWord"
----|"MoveForwardWordEnd"
----|"MoveLeft"
----|"MoveRight"
----|"MoveToEndOfLineContent"
----|"MoveToScrollbackBottom"
----|"MoveToScrollbackTop"
----|"MoveToSelectionOtherEnd"
----|"MoveToSelectionOtherEndHoriz"
----|"MoveToStartOfLine"
----|"MoveToStartOfLineContent"
----|"MoveToStartOfNextLine"
----|"MoveToViewportBottom"
----|"MoveToViewportMiddle"
----|"MoveToViewportTop"
----|"MoveUp"
----|"NextMatch"
----|"NextMatchPage"
----|"PriorMatch"
----|"PriorMatchPage"
----|{ MoveBackwardSemanticZoneOfType: SemanticZoneType }
----|{ MoveForwardSemanticZoneOfType: SemanticZoneType }
----|{ SetSelectionMode: SelectionMode|"SemanticZone" }
-
 ---@alias CursorStyle
----|"BlinkingBlock"
----|"SteadyBlock"
----|"BlinkingUnderline"
----|"SteadyUnderline"
 ---|"BlinkingBar"
+---|"BlinkingBlock"
+---|"BlinkingUnderline"
 ---|"SteadyBar"
+---|"SteadyBlock"
+---|"SteadyUnderline"
 
 ---@alias Direction
 ---|"Left"
@@ -835,6 +786,16 @@
 
 ---@alias AugmentCallbackWindowPane fun(window: Window, pane: Pane): AugmentCommandPaletteReturn
 
+---The wezterm module is the primary module that exposes wezterm configuration and control to your config file.
+---
+---You will typically place:
+---
+---```lua
+---local wezterm = require 'wezterm'
+---```
+---
+---at the top of your configuration file to enable it.
+---
 ---@class Wezterm: ExecDomain
 ---Provides global, in-process, in-memory, data storage for JSON-like variables
 ---that persists across config reloads.
@@ -874,7 +835,7 @@
 ---
 ---See [`Wezterm.Gui`](lua://Wezterm.Gui) for more info.
 ---
----@field gui? Wezterm.Gui
+---@field gui Wezterm.Gui
 ---See [`Wezterm.Mux`](lua://Wezterm.Mux) for more info.
 ---
 ---@field mux Wezterm.Mux

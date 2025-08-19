@@ -2,6 +2,56 @@
 
 ---TODO: Make key and mods more specific
 
+---@alias CopyTo
+---|"Clipboard"
+---|"ClipboardAndPrimarySelection"
+---|"PrimarySelection"
+
+---@alias CopyMode
+---|"AcceptPattern"
+---|"ClearPattern"
+---|"ClearSelectionMode"
+---|"Close"
+---|"CycleMatchType"
+---|"EditPattern"
+---|"JumpReverse"
+---|"MoveBackwardSemanticZone"
+---|"MoveBackwardWord"
+---|"MoveBackwardWordEnd"
+---|"MoveDown"
+---|"MoveForwardSemanticZone"
+---|"MoveForwardWord"
+---|"MoveForwardWordEnd"
+---|"MoveLeft"
+---|"MoveRight"
+---|"MoveToEndOfLineContent"
+---|"MoveToScrollbackBottom"
+---|"MoveToScrollbackTop"
+---|"MoveToSelectionOtherEnd"
+---|"MoveToSelectionOtherEndHoriz"
+---|"MoveToStartOfLine"
+---|"MoveToStartOfLineContent"
+---|"MoveToStartOfNextLine"
+---|"MoveToViewportBottom"
+---|"MoveToViewportMiddle"
+---|"MoveToViewportTop"
+---|"MoveUp"
+---|"NextMatch"
+---|"NextMatchPage"
+---|"PageDown"
+---|"PageUp"
+---|"PriorMatch"
+---|"PriorMatchPage"
+---|"ScrollToBottom"
+---|{ JumpBackward: { prev_char: boolean } }
+---|{ JumpForward: { prev_char: boolean } }
+---|{ MoveBackwardSemanticZoneOfType: SemanticZoneType }
+---|{ MoveByPage: number }
+---|{ MoveForwardSemanticZoneOfType: SemanticZoneType }
+---|{ SetSelectionMode: SelectionMode|"SemanticZone" }
+
+---@alias SendKey Key
+
 ---@alias KeyAssignment
 ---|"ActivateCommandPalette"
 ---|"ActivateCopyMode"
@@ -26,6 +76,7 @@
 ---|"CompleteSelection"
 ---|"CompleteSelectionOrOpenLinkAtMouseCursor"
 ---|"Copy"
+---|"CopyMode"
 ---|"CopyTo"
 ---|"DecreaseFontSize"
 ---|"DetachDomain"
@@ -195,7 +246,6 @@
 ---@field CompleteSelection KeyAssignFunction
 ---@field CompleteSelectionOrOpenLinkAtMouseCursor KeyAssignFunction
 ---@field Copy KeyAssignFunction
----@field CopyTo KeyAssignFunction
 ---@field DecreaseFontSize KeyAssignFunction
 ---@field DetachDomain KeyAssignFunction
 ---@field DisableDefaultAssignment KeyAssignFunction
@@ -207,8 +257,6 @@
 ---@field InputSelector KeyAssignFunction
 ---@field MoveTab KeyAssignFunction
 ---@field MoveTabRelative KeyAssignFunction
----@field Multiple KeyAssignFunction
----@field Nop KeyAssignFunction
 ---@field OpenLinkAtMouseCursor KeyAssignFunction
 ---@field PaneSelect KeyAssignFunction
 ---@field Paste KeyAssignFunction
@@ -232,8 +280,6 @@
 ---@field ScrollToTop KeyAssignFunction
 ---@field Search KeyAssignFunction
 ---@field SelectTextAtMouseCursor KeyAssignFunction
----@field SendKey KeyAssignFunction
----@field SendString KeyAssignFunction
 ---@field SetPaneZoomState KeyAssignFunction
 ---@field Show KeyAssignFunction
 ---@field ShowDebugOverlay KeyAssignFunction
@@ -252,6 +298,40 @@
 ---@field SwitchWorkspaceRelative KeyAssignFunction
 ---@field ToggleFullScreen KeyAssignFunction
 ---@field TogglePaneZoomState KeyAssignFunction
+local ActionFunc = {}
+
+---Causes the key press to have no effect; it behaves as though those keys were not pressed.
+---
+---If instead of this you want the key presses to pass through to the terminal,
+---look at [`DisableDefaultAssignment`](https://wezterm.org/config/lua/keyassignment/DisableDefaultAssignment.html).
+---
+function ActionFunc.Nop() end
+
+---@param s string
+function ActionFunc.SendString(s) end
+
+---@param param SendKey
+function ActionFunc.SendKey(param) end
+
+---@param act CopyMode
+function ActionFunc.CopyMode(act) end
+
+---@param destination CopyTo
+function ActionFunc.CopyTo(destination) end
+
+---Performs a sequence of multiple assignments.
+---
+---This is useful when you want a single key press to trigger multiple actions.
+---
+---@param action ActionClass[]
+function ActionFunc.Multiple(action) end
+
+---Performs a sequence of multiple assignments.
+---
+---This is useful when you want a single key press to trigger multiple actions.
+---
+---@param action ActionFuncClass[]
+function ActionFunc.Multiple(action) end
 
 ---@class ActionClass
 ---@field ActivateCommandPalette any
@@ -277,7 +357,8 @@
 ---@field CompleteSelection any
 ---@field CompleteSelectionOrOpenLinkAtMouseCursor any
 ---@field Copy any
----@field CopyTo any
+---@field CopyMode CopyMode
+---@field CopyTo CopyTo
 ---@field DecreaseFontSize any
 ---@field DetachDomain any
 ---@field DisableDefaultAssignment any
@@ -289,7 +370,11 @@
 ---@field InputSelector any
 ---@field MoveTab any
 ---@field MoveTabRelative any
----@field Multiple any
+---Performs a sequence of multiple assignments.
+---
+---This is useful when you want a single key press to trigger multiple actions.
+---
+---@field Multiple ActionClass[]|ActionFuncClass[]
 ---@field Nop any
 ---@field OpenLinkAtMouseCursor any
 ---@field PaneSelect any
@@ -314,8 +399,8 @@
 ---@field ScrollToTop any
 ---@field Search any
 ---@field SelectTextAtMouseCursor any
----@field SendKey any
----@field SendString any
+---@field SendKey SendKey
+---@field SendString string
 ---@field SetPaneZoomState any
 ---@field Show any
 ---@field ShowDebugOverlay any
