@@ -15,6 +15,7 @@
 ---@module "wezterm.types.wezterm.url"
 
 ---Deprecated data field
+---
 ---@class Deprecated
 ---NOTE: THIS IS DELIBERATELY LEFT EMPTY
 
