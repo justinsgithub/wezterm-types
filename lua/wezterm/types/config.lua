@@ -5,6 +5,13 @@
 ---@module "wezterm.types.objects"
 ---@module "wezterm.types.wezterm"
 
+---@alias QuickSelectAlphabet
+---|"asdfqwerzxcvjklmiuopghtybn"
+---|"asdfqweryxcvjkluiopmghtzbn"
+---|"qsdfazerwxcvjklmuiopghtybn"
+---|"aoeuqjkxpyhtnsgcrlmwvzfidb"
+---|"arstqwfpzxcvneioluymdhgjbk"
+
 ---@alias DroppedFileQuoting
 ---|"None"
 ---|"Posix"
@@ -1597,7 +1604,7 @@
 ---on the home raw, top row, bottom row, followed by the characters
 ---in the middle of the keyboard that may be harder to reach.
 ---
----@field quick_select_alphabet? "qwerty"|"qwertz"|"azerty"|"dvorak"|"colemak"
+---@field quick_select_alphabet? QuickSelectAlphabet
 ---Specify additional patterns to match when in quick select mode.
 ---
 ---This setting is a table listing out a set of regular expressions.
