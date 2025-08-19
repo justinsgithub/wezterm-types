@@ -50,7 +50,8 @@ require('lazy').setup({
 })
 ```
 
-**NOTE If you assign a custom `name` field for the plugin:**
+<details>
+<summary><b><ins>NOTE: If you assign a custom `name` field for the plugin</ins></b></summary>
 
 ```lua
 {
@@ -75,6 +76,8 @@ require('lazy').setup({
   },
 }
 ```
+
+</details>
 
 ---
 
