@@ -556,7 +556,7 @@
 ---@field local_echo_threshold_ms integer
 ---@field overlay_lag_indicator boolean
 
----@class LeaderKey: KeyNoAction
+---@class LeaderKey: Key
 ---Maximum time to wait for next key.
 ---
 ---Default is `1000` ms.
