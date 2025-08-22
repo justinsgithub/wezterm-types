@@ -1120,7 +1120,7 @@
 ---and you must select subpixel-rendering in your main configuration in order for the correct render mode
 ---to activate: setting it only in a [`wezterm.font`](lua://Wezterm.font) override is not sufficient.
 ---
----@field freetype_load_target? FreeTypeLoadTarget
+---@field freetype_load_target? "Normal"|"HorizontalLcd"|"Light"|"Mono"|"VerticalLcd"
 ---This option provides control over the [no-long-family-names](https://freetype.org/freetype2/docs/reference/ft2-properties.html#no-long-family-names) FreeType PCF font driver property.
 ---
 ---The default is for this configuration to be `false` which sets the PCF driver to use
@@ -1176,7 +1176,7 @@
 ---config.freetype_render_target = 'HorizontalLcd'
 ---```
 ---
----@field freetype_render_target? FreeTypeLoadTarget
+---@field freetype_render_target? "Normal"|"HorizontalLcd"|"Light"|"Mono"|"VerticalLcd"
 ---Specify the features to enable when using harfbuzz for font shaping.
 ---
 ---There is some light documentation [here](https://harfbuzz.github.io/shaping-opentype-features.html).
