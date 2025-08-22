@@ -6,7 +6,7 @@
 
 </div>
 
-- Example in [Neovim](https://github.com/neovim/neovim)
+Example in [Neovim](https://github.com/neovim/neovim):
 
 ![Neovim Demonstration](https://github.com/user-attachments/assets/c9082e54-39ad-4c7d-8d81-ddf0b1fb1fc7)
 
@@ -14,11 +14,24 @@
 
 ## Table of Contents
 
-1. [Structure](#structure)
-2. [Installation](#installation)
+1. [Roadmap](#roadmap)
+2. [Structure](#structure)
+3. [Installation](#installation)
     1. [Neovim](#neovim)
-3. [Usage](#usage)
-4. [Credits](#credits)
+4. [Usage](#usage)
+5. [Credits](#credits)
+    1. [Maintainers](#maintainers)
+    2. [Maintainers](#maintainers)
+
+---
+
+## Roadmap
+
+<div align="center">
+
+<b><ins>You can find the current roadmap</ins> <i><a href="https://github.com/DrKJeff16/wezterm-types/discussions/48" target="_self" rel="noreferrer">here</a></i></b>
+
+</div>
 
 ---
 
@@ -156,8 +169,13 @@ proper type checking and autocompletion for WezTerm configuration options.
 
 ## Credits
 
+### Maintainers
+
+- [@DrKJeff16](https://github.com/DrKJeff16) - **Maintainer, _(current owner)_**
 - [@justinsgithub](https://github.com/justinsgithub) - **The Author _(not active currently)_**
-- [@DrKJeff16](https://github.com/DrKJeff16) - **Maintainer, _de-facto_ Owner**
 - [@craigmac](https://github.com/craigmac) - **Maintainer**
 - [@gonstoll](https://github.com/gonstoll) - **Maintainer**
+
+### Contributors
+
 - [@TheLeoP](https://github.com/TheLeoP) - **Contributor**
