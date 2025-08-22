@@ -201,77 +201,20 @@
 ---@field new_tab_hover? TabBarColor
 
 ---@class Palette
----The text color to use when the attributes are
----reset to default.
+---A list of 8 colors corresponding to the basic ANSI palette.
 ---
----@field foreground? string
+---@field ansi? table<integer, PaletteAnsi>
 ---The background color to use when the attributes are
 ---reset to default.
 ---
 ---@field background? string
----The foreground color of the cursor.
----
----@field cursor_fg? string
----The background color of the cursor.
----
----@field cursor_bg? string
----The border of the cursor.
----
----@field cursor_border? string
----The foreground color of selected text.
----
----@field selection_fg? string
----The background color of selected text.
----
----@field selection_bg? string
----A list of 8 colors corresponding to the basic ANSI palette.
----
----@field ansi? table<integer, PaletteAnsi>
 ---A list of 8 colors corresponding to the brights.
 ---
 ---@field brights? table<integer, PaletteBrights>
----A map for setting arbitrary colors ranging from `16`
----to `256` in the color palette.
----
----@field indexed? string[]
----The color of the "thumb" of the scrollbar;
----the segment that represents the current viewable area.
----
----@field scrollbar_thumb? string
----The color of the split line between panes.
----
----@field split? string
----The color of the visual bell.
----
----If unspecified, the foreground color is used instead.
----
----@field visual_bell? string
 ---The color to use for the cursor when a dead key
 ---or leader state is active.
 ---
 ---@field compose_cursor? string
----Use [`AnsiColor`](lua://AnsiColor)
----to specify one of the ANSI color palette values
----(index 0-15), using one of the following values:
----
---- - `"Black"`
---- - `"Maroon"`
---- - `"Green"`
---- - `"Olive"`
---- - `"Navy"`
---- - `"Purple"`
---- - `"Teal"`
---- - `"Silver"`
---- - `"Grey"`
---- - `"Red"`
---- - `"Lime"`
---- - `"Yellow"`
---- - `"Blue"`
---- - `"Fuchsia"`
---- - `"Aqua"`
---- - `"White"`
----
----@field copy_mode_active_highlight_fg? ColorSpec
 ---Colors for `copy_mode` and `quick_select`.
 ---
 ---In `copy_mode`, the color of the active text is:
@@ -302,7 +245,7 @@
 --- - `"Aqua"`
 --- - `"White"`
 ---
----@field copy_mode_inactive_highlight_fg? ColorSpec
+---@field copy_mode_active_highlight_fg? ColorSpec
 ---Colors for `copy_mode` and `quick_select`.
 ---
 ---In `copy_mode`, the color of the active text is:
@@ -312,15 +255,72 @@
 --- 2. `selection` otherwise
 ---
 ---@field copy_mode_inactive_highlight_bg? ColorSpec
----@field quick_select_label_fg? ColorSpec
----@field quick_select_label_bg? ColorSpec
----@field quick_select_match_fg? ColorSpec
----@field quick_select_match_bg? ColorSpec
----@field input_selector_label_fg? ColorSpec
+---Use [`AnsiColor`](lua://AnsiColor)
+---to specify one of the ANSI color palette values
+---(index 0-15), using one of the following values:
+---
+--- - `"Black"`
+--- - `"Maroon"`
+--- - `"Green"`
+--- - `"Olive"`
+--- - `"Navy"`
+--- - `"Purple"`
+--- - `"Teal"`
+--- - `"Silver"`
+--- - `"Grey"`
+--- - `"Red"`
+--- - `"Lime"`
+--- - `"Yellow"`
+--- - `"Blue"`
+--- - `"Fuchsia"`
+--- - `"Aqua"`
+--- - `"White"`
+---
+---@field copy_mode_inactive_highlight_fg? ColorSpec
+---The background color of the cursor.
+---
+---@field cursor_bg? string
+---The border of the cursor.
+---
+---@field cursor_border? string
+---The foreground color of the cursor.
+---
+---@field cursor_fg? string
+---The text color to use when the attributes are
+---reset to default.
+---
+---@field foreground? string
+---A map for setting arbitrary colors ranging from `16`
+---to `256` in the color palette.
+---
+---@field indexed? string[]
 ---@field input_selector_label_bg? ColorSpec
+---@field input_selector_label_fg? ColorSpec
 ---@field launcher_label_bg? ColorSpec
 ---@field launcher_label_fg? ColorSpec
+---@field quick_select_label_bg? ColorSpec
+---@field quick_select_label_fg? ColorSpec
+---@field quick_select_match_bg? ColorSpec
+---@field quick_select_match_fg? ColorSpec
+---The color of the "thumb" of the scrollbar;
+---the segment that represents the current viewable area.
+---
+---@field scrollbar_thumb? string
+---The background color of selected text.
+---
+---@field selection_bg? string
+---The foreground color of selected text.
+---
+---@field selection_fg? string
+---The color of the split line between panes.
+---
+---@field split? string
 ---@field tab_bar? TabBar
+---The color of the visual bell.
+---
+---If unspecified, the foreground color is used instead.
+---
+---@field visual_bell? string
 
 ---@alias FontWeight
 ---|"Regular"
@@ -1085,23 +1085,27 @@ function Wezterm.font_with_fallback(fonts) end
 ---@return string
 function Wezterm.format(...) end
 
+---While this function is still valid,
+---it is recommended to instead use:
+---
+---[`wezterm.color.get_builtin_schemes`](lua://Wezterm.Color.get_builtin_schemes)
+---
+--- ---
 ---Returns a Lua table keyed by color scheme name and whose values are
 ---the color scheme definition of the builtin color schemes.
 ---
----This is useful for programmatically deciding things about the scheme to use
----based on its color, or for taking a scheme and overriding a couple of entries
----just from your `wezterm.lua` configuration file.
+---This is useful for programmatically deciding things about the scheme
+---to use based on its color, or for taking a scheme and overriding
+---a couple of entries from your `wezterm.lua` configuration file.
 ---
----This function moved to [`wezterm.color.get_builtin_schemes()`](https://wezterm.org/config/lua/wezterm.color/get_builtin_schemes.html)
----but can still be called as `wezterm.get_builtin_color_schemes()`.
----
----@return PaletteDict
+---@return table<string, Palette>
 function Wezterm.get_builtin_color_schemes() end
 
 ---This function evalutes the glob pattern and returns an array
 ---containing the absolute file names of the matching results.
 ---
----Due to limitations in the Lua bindings, all of the paths must be able to be represented
+---Due to limitations in the Lua bindings,
+---all of the paths must be able to be represented
 ---as `UTF-8` or this function will generate an error.
 ---
 ---@param pattern string
@@ -1109,29 +1113,28 @@ function Wezterm.get_builtin_color_schemes() end
 ---@return string[]
 function Wezterm.glob(pattern, relative_to) end
 
----**This function has moved to
----[`wezterm.color.gradient`](lua://Wezterm.Color.gradient)
----and that name should be used instead of this name**.
+---This function was moved to:
 ---
----In addition, the returned colors are now
----[`Color`](lua://Color) objects.
+---[`wezterm.color.gradient`](lua://Wezterm.Color.gradient)
+---
+---In addition, the returned colors are now of type:
+---
+---[`Color`](lua://Color)
 ---
 --- ---
----Given a gradient spec and a number of colors.
----Returns a table holding that many colors spaced evenly
----across the range of the gradient.
+---Given a gradient spec (`gradient`) and a number of colors
+---(`num_colors`), returns a table holding that many colors
+---spaced evenly across the range of the gradient.
 ---
----This is useful for example to generate colors for tabs,
----or to do something fancy like interpolate colors across
----a gradient based on the time of the day.
----
----`gradient` is any gradient allowed by the
----[`config.window_background_gradient`](lua://Config.window_background_gradient)
----option.
+---This is useful, for instance, for generating colors
+---for tabs, or doing something fancy like
+---interpolating colors across a gradient
+---based on the time of the day.
 ---
 ---@param gradient Gradient
 ---@param num_colors number
 ---@return Color[]
+---@deprecated
 function Wezterm.gradient_colors(gradient, num_colors) end
 
 ---@return string
@@ -1170,36 +1173,44 @@ function Wezterm.open_with(path_or_url, application) end
 ---@return string
 function Wezterm.pad_left(s, min_width) end
 
----Returns an array containing the absolute file names of the directory specified.
+---Returns an array containing the absolute file name paths
+---of the directory specified.
 ---
----Due to limitations in the Lua bindings, all of the paths must be able to be represented as UTF-8
----or this function will generate an error.
+---Due to limitations in the Lua bindings,
+---all of the paths must be able to be represented
+---as `UTF-8` or this function will generate an error.
 ---
 ---@param path string
 ---@return string[]
 function Wezterm.read_dir(path) end
 
----Returns a boolean indicating whether we believe that we are running in a
----Windows Services for Linux (WSL) container.
+---Returns a `boolean` indicating whether WezTerm
+---is believed to be running in a WSL container.
 ---
 ---@return boolean
 function Wezterm.running_under_wsl() end
 
----Joins together its array arguments by applying posix style shell quoting
----on each argument and then adding a space.
+---Joins together its array arguments by applying
+---POSIX-style shell quoting on each argument
+---and then adding a space.
 ---
 ---@param args string[]
 ---@return string
 function Wezterm.shell_join_args(args) end
 
----Quotes its single argument using posix shell quoting rules.
+---Quotes its single argument using
+---POSIX shell quoting rules.
 ---
 ---@param s string
 ---@return string
 function Wezterm.shell_quote_arg(s) end
 
----Will attempt to spawn that command and will return a tuple consisting of the boolean success
----of the invocation, the stdout data and the stderr data.
+---Will attempt to spawn a command from the given
+---string array and will return the following tuple:
+---
+--- - A `boolean` to denote a successful invocation
+--- - The `stdout` data as a `string`
+--- - The `stderr` data as a `string`
 ---
 ---@param args string[]
 ---@return boolean success
@@ -1215,11 +1226,15 @@ function Wezterm.permute_any_mods(tbl) end
 ---@return KeyBinding
 function Wezterm.permute_any_mods(tbl) end
 
----This function is intended to help with generating key or mouse binding entries
----that should apply regardless of the combination of modifier keys pressed.
+---This function is intended to help with
+---generating `KeyBinding` / `MouseBinding` entries.
+---These should apply regardless of the combination
+---of modifier keys pressed.
 ---
----For each combination of modifiers `CTRL`, `ALT`, `SHIFT` and `SUPER`, the supplied `table` value
----is copied and has `mods = <value>` set into the copy.
+---For each combination of modifiers
+---(`CTRL`, `ALT`, `SHIFT` and `SUPER`)
+---the supplied `table` value
+---is copied with a `mods = <value>` entry.
 ---
 ---In addition, an entry for `NONE` is generated
 ---(this is the only difference between
@@ -1228,42 +1243,51 @@ function Wezterm.permute_any_mods(tbl) end
 ---
 ---An array holding all of those combinations is returned.
 ---
----If this is your only binding, or it is the last binding,
----the resulting array can be unpacked into a Lua table initializer using `table.unpack()`.
+---If this is either the only binding or the last one,
+---the resulting array can be unpacked into a
+---Lua table initializer by using
+---[`table.unpack()`](lua://table.unpack).
 ---
 ---@param T table
----@return MouseBinding|KeyBinding
+---@return (MouseBinding|KeyBinding)[]
 function Wezterm.permute_any_or_no_mods(T) end
 
----Splits a command line into an argument array according to POSIX shell rules.
+---Splits a command line into a `string` argument array
+---in accordance with POSIX shell rules.
 ---
 ---@param line string
 ---@return string[]
 function Wezterm.shell_split(line) end
 
----Returns a copy of a string that is at least min_width columns
----(as measured by `wezterm.column_width()`).
+---Returns a copy of a string that is at least
+---`min_width` columns as measured by `wezterm.column_width()`.
+---
+---See:
+---
+---[`wezterm.column_width()`](lua://Wezterm.column_width)
 ---
 ---@param s string
 ---@param min_width integer
 ---@return string
 function Wezterm.pad_right(s, min_width) end
 
----Suspends execution of the script for the specified number of milliseconds.
+---Suspends the execution of the script for `ms` milliseconds.
+---When the time period has elapsed,
+---the script continues running at the next statement.
 ---
----After that time period has elapsed, the script continues running at the next statement.
----
----@param milliseconds number
-function Wezterm.sleep_ms(milliseconds) end
+---@param ms integer
+function Wezterm.sleep_ms(ms) end
 
----Takes the input string and splits it by newlines (both `\n` and `\r\n` are recognized as newlines)
----and returns the result as an array of strings that have the newlines removed.
+---Takes the input string and splits it by newlines.
+---The result as an array of strings with the newlines removed.
+---
+---Both `\n` (LF) and `\r\n` (CRLF) are recognized as newlines.
 ---
 ---@param s string
 ---@return string[]
 function Wezterm.split_by_newlines(s) end
 
----Immediately causes the configuration to be reloaded and re-applied.
+---Reloads and applies the configuration in `wezterm.lua`.
 ---
 function Wezterm.reload_configuration() end
 
@@ -1281,23 +1305,41 @@ function Wezterm.strftime(format) end
 ---@return string
 function Wezterm.strftime_utc(format) end
 
----Returns a copy of a string that is no longer than `max_width` columns
----(as measured by `wezterm.column_width()`).
+---Returns a copy of a string that is no longer than
+---`max_width` columns as measured by
+---[`wezterm.column_width()`](lua://Wezterm.column_width).
+---Truncation occurs by removing excess characters
+---from the left end of the string.
 ---
----Truncation occurs by reemoving excess characters from the left end of the string.
+---For example, `wezterm.truncate_left("hello", 3)`
+---returns `"llo"`.
+---
+---See also:
+---
+---[`wezterm.truncate_right()`](lua://Wezterm.truncate_right)
+---[`wezterm.pad_right()`](lua://Wezterm.pad_right)
 ---
 ---@param s string
----@param max_width number
+---@param max_width integer
 ---@return string
 function Wezterm.truncate_left(s, max_width) end
 
----Returns a copy of a string that is no longer than `max_width` columns
----(as measured by `wezterm.column_width()`).
+---Returns a copy of a string that is no longer than
+---`max_width` columns as measured by
+---[`wezterm.column_width()`](lua://Wezterm.column_width).
+---Truncation occurs by reemoving excess characters
+---from the right end of the string.
 ---
----Truncation occurs by reemoving excess characters from the right end of the string.
+---For example, `wezterm.truncate_right("hello", 3)`
+---returns `"hel"`.
+---
+---See also:
+---
+---[`wezterm.truncate_left()`](lua://Wezterm.truncate_left)
+---[`wezterm.pad_left()`](lua://Wezterm.pad_left)
 ---
 ---@param s string
----@param max_width number
+---@param max_width integer
 ---@return string
 function Wezterm.truncate_right(s, max_width) end
 
