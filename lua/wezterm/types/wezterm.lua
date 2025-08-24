@@ -1068,9 +1068,77 @@ function Wezterm.emit(event, ...) end
 ---@return table<string, SshHost>
 function Wezterm.enumerate_ssh_hosts(ssh_config_file_name) end
 
+---This function constructs a Lua table that corresponds to the internal
+---[`FontFamilyAttributes`](lua://FontFamilyAttributes)
+---struct that is used to select a single named font:
+---
+---```lua
+---local wezterm = require 'wezterm'
+---
+---return {
+---  font = wezterm.font 'JetBrains Mono',
+---}
+---```
+---
+---The first parameter is the name of the font; the name can be one of the following types of names:
+---
+--- - The font family name, e.g. `"JetBrains Mono"`. The family name doesn't include any style information
+---   (such as `weight`, `stretch` or `italic`), which can be specified via the `attributes` parameter.
+---   This is the recommended name to use for the font, as it the most compatible way to resolve
+---   an installed font.
+--- - The computed full name, which is the family name with the sub-family
+---   (which incorporates style information) appended, e.g. `"JetBrains Mono Regular"`.
+--- - The postscript name, which is an ostensibly unique name identifying a given font and style
+---   that is encoded into the font by the font designer.
+---
+---See [`FontAttributes`](lua://FontAttributes)
+---and [`FontFamilyAttributes`](lua://FontFamilyAttributes).
+---
+---@param name string
+---@param attributes? FontAttributes
+---@return Fonts|FontFamilyAttributes
+function Wezterm.font(name, attributes) end
+
+---This function constructs a Lua table that corresponds to the internal
+---[`FontFamilyAttributes`](lua://FontFamilyAttributes)
+---struct that is used to select a single named font.
+---
+---When specifying a font using its family name, the second attributes parameter is
+---an **optional** table that can be used to specify style attributes.
+---
+---You can use the expanded form mentioned above to override freetype and harfbuzz settings
+---just for the specified font.
+---
+---This example shows how to disable the default ligature feature just for this particular font:
+---
+---```lua
+---local wezterm = require 'wezterm'
+---return {
+---  font = wezterm.font {
+---    family = 'JetBrains Mono',
+---    harfbuzz_features = { 'calt=0', 'clig=0', 'liga=0' },
+---  },
+---}
+---```
+---
+---The following options can be specified in the same way:
+---
+--- - [`harfbuzz_features`](lua://FontFamilyAttributes.harfbuzz_features)
+--- - [`freetype_load_target`](lua://FontFamilyAttributes.freetype_load_target)
+--- - [`freetype_render_target`](lua://FontFamilyAttributes.freetype_render_target)
+--- - [`freetype_load_flags`](lua://FontFamilyAttributes.freetype_load_flags)
+--- - [`assume_emoji_presentation`](lua://FontFamilyAttributes.assume_emoji_presentation)
+---   to control whether a font is considered to have emoji (rather than text) presentation glyphs
+---   for emoji
+---
+---@param attributes FontFamilyAttributes
+---@return Fonts|FontFamilyAttributes
+function Wezterm.font(attributes) end
+
 ---TODO: Complete description.
 ---
----[Info](https://wezterm.org/config/lua/wezterm/font_with_fallback.html).
+---Here's some [info](https://wezterm.org/config/lua/wezterm/font_with_fallback.html) on this
+---function.
 ---
 ---@param fonts (string|FontAttributes)[]
 ---@return Fonts
@@ -1852,73 +1920,6 @@ function Wezterm.truncate_right(s, max_width) end
 ---@param s string
 ---@return string
 function Wezterm.utf16_to_utf8(s) end
-
----This function constructs a Lua table that corresponds to the internal
----[`FontFamilyAttributes`](lua://FontFamilyAttributes)
----struct that is used to select a single named font:
----
----```lua
----local wezterm = require 'wezterm'
----
----return {
----  font = wezterm.font 'JetBrains Mono',
----}
----```
----
----The first parameter is the name of the font; the name can be one of the following types of names:
----
---- - The font family name, e.g. `"JetBrains Mono"`. The family name doesn't include any style information
----   (such as `weight`, `stretch` or `italic`), which can be specified via the `attributes` parameter.
----   This is the recommended name to use for the font, as it the most compatible way to resolve
----   an installed font.
---- - The computed full name, which is the family name with the sub-family
----   (which incorporates style information) appended, e.g. `"JetBrains Mono Regular"`.
---- - The postscript name, which is an ostensibly unique name identifying a given font and style
----   that is encoded into the font by the font designer.
----
----See [`FontAttributes`](lua://FontAttributes)
----and [`FontFamilyAttributes`](lua://FontFamilyAttributes).
----
----@param name string
----@param attributes? FontAttributes
----@return Fonts|FontFamilyAttributes
-function Wezterm.font(name, attributes) end
-
----This function constructs a Lua table that corresponds to the internal
----[`FontFamilyAttributes`](lua://FontFamilyAttributes)
----struct that is used to select a single named font.
----
----When specifying a font using its family name, the second attributes parameter is
----an **optional** table that can be used to specify style attributes.
----
----You can use the expanded form mentioned above to override freetype and harfbuzz settings
----just for the specified font.
----
----This example shows how to disable the default ligature feature just for this particular font:
----
----```lua
----local wezterm = require 'wezterm'
----return {
----  font = wezterm.font {
----    family = 'JetBrains Mono',
----    harfbuzz_features = { 'calt=0', 'clig=0', 'liga=0' },
----  },
----}
----```
----
----The following options can be specified in the same way:
----
---- - [`harfbuzz_features`](lua://FontFamilyAttributes.harfbuzz_features)
---- - [`freetype_load_target`](lua://FontFamilyAttributes.freetype_load_target)
---- - [`freetype_render_target`](lua://FontFamilyAttributes.freetype_render_target)
---- - [`freetype_load_flags`](lua://FontFamilyAttributes.freetype_load_flags)
---- - [`assume_emoji_presentation`](lua://FontFamilyAttributes.assume_emoji_presentation)
----   to control whether a font is considered to have emoji (rather than text) presentation glyphs
----   for emoji
----
----@param attributes FontFamilyAttributes
----@return Fonts|FontFamilyAttributes
-function Wezterm.font(attributes) end
 
 ---This function is a helper to register a custom event
 ---and return an action triggering it.
