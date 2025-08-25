@@ -1369,7 +1369,7 @@ function Wezterm.on(event, callback) end
 ---`format-tab-title: runtime error: attempt to yield from outside a coroutine` error.
 ---
 ---@param event "format-tab-title"
----@param callback fun(tab: MuxTab, tabs: MuxTab[], panes: Pane[], config: Config, hover: boolean, max_width: number): string|FormatItem
+---@param callback fun(tab: TabInformation, tabs: TabInformation[], panes: PaneInformation[], config: Config, hover: boolean, max_width: number): string|FormatItem
 function Wezterm.on(event, callback) end
 
 ---A custom declared event function.
@@ -1418,7 +1418,7 @@ function Wezterm.on(event, callback) end
 function Wezterm.on(event, callback) end
 
 ---@param event "gui-attached"
----@param callback fun(domain: ExecDomain)
+---@param callback fun(domain: MuxDomain|ExecDomain)
 function Wezterm.on(event, callback) end
 
 ---@param event "gui-startup"
@@ -1454,7 +1454,7 @@ function Wezterm.on(event, callback) end
 ---but if you register for this event you can co-opt the default behavior.
 ---
 ---@param event "open-uri"
----@param callback fun(window: Window, pane: Pane, uri: string)
+---@param callback fun(window: Window, pane: Pane, uri: string): boolean?
 function Wezterm.on(event, callback) end
 
 ---This event is considered to be deprecated and you should migrate to using `"update-status"`,
